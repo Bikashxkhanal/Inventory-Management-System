@@ -1,4 +1,6 @@
 import inventoryImage from '../../public/inventory.png'
+import Button from './Button';
+
 function HomePage(){
     return(
         <>
@@ -24,12 +26,9 @@ function HomePage(){
 
        
         <div className="flex gap-4">
-          <button className="px-9 py-3 bg-lightblue text-white  border-blue-700 hover:bg-blue-700 transition rounded-full font-semibold shadow-2xs">
-            Buy Our Service
-          </button>
-          <button className="px-9 py-3 border border-skyblue hover:border-blue-700 hover:bg-blue-700 text-white transition rounded-full shadow-2xs">
-            Contact Us
-          </button>
+          <Button name="" isIcon={true} btnName="Buy our service"  />
+          <Button btnName="Contact Us"  props=' shadow-2xs'  borderColor='border-skyblue' hoverColor='bg-blue-700' backgroundColor=''  />
+         
         </div>
 
       </div>

@@ -1,5 +1,6 @@
 
 import {  NavLink } from "react-router-dom";
+import Button from "./Button";
 
 function NavBar() {
   const navItems = [
@@ -40,9 +41,8 @@ function NavBar() {
               </li>
             ))}
           </ul>
-          <button className="hidden md:block cursor-pointer text-white px-4 py-2 rounded hover:text-orange-500">
-      Login
-    </button>
+          
+    <Button props="md:px-5 md:py-3 md:block" borderColor="border-skyblue" btnName="Login"  />
         </div>
       </nav>
     </>

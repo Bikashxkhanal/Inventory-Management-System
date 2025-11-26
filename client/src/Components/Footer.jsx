@@ -1,4 +1,5 @@
-import { Circle, Arrow } from "../assets/Imagesender";
+
+import Button from "./Button";
 
 function Footer(){
     return(
@@ -12,12 +13,11 @@ function Footer(){
                 <p class="text-base text-graywhite">Use our service and grow your business</p>
                 </div>
 
-                <button class="px-14 md:px-18 py-3 border text-[20px] md:text-lg font-semibold border-darkblue bg-darkblue rounded-xl shadow-2xs cursor-pointer flex items-center gap-2">Register Now
-                   <span className="relative w-6 h-6 flex items-center justify-center">
-    <img src={Circle} className="w-full h-full invert brightness-0" alt="circle" />
-    <img src={Arrow} className="w-3 h-3 absolute inset-0 m-auto invert brightness-0" alt="arrow" />
-  </span>
-                </button>
+               
+
+                <Button isIcon={true} backgroundColor="bg-darkblue"   props='px-14 md:px-18 py-3  text-[20px] md:text-lg font-semibold' borderShape="rounded-xl" btnName="Register Now  " />
+
+
              </div>
 
              {/* <!-- Footer Segment --> */}
