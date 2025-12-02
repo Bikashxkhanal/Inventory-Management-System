@@ -1,8 +1,10 @@
 
 import {  NavLink } from "react-router-dom";
-import Button from "./Button";
+import Button from '../Button';
+import { useNavigate } from "react-router-dom";
 
 function NavBar() {
+  const navigate = useNavigate();
   const navItems = [
     {
       name: "Home",
@@ -42,7 +44,7 @@ function NavBar() {
             ))}
           </ul>
           
-    <Button props="md:px-5 md:py-3 md:block" borderColor="border-skyblue" btnName="Login"  />
+    <Button  props="md:px-5 md:py-3 md:block" borderColor="border-skyblue" btnName="Login"  onClick={() => navigate("/login") } />
         </div>
       </nav>
     </>

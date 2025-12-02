@@ -1,16 +1,16 @@
 
-import Button from "./Button";
+import Button from "../Button";
 
 function Footer(){
     return(
         <>
-         <div class="w-full bg-darkblue py-4 md:py-10">
-        <div class="flex flex-col items-center  md:max-w-7xl mx-auto px-4 gap-10 md:gap-20 text-white">
+         <div className="w-full bg-darkblue py-4 md:py-10">
+        <div className="flex flex-col items-center  md:max-w-7xl mx-auto px-4 gap-10 md:gap-20 text-white">
             {/* <!-- for call to action --> */}
-             <div class="flex flex-col items-center border text-center border-skyblue px-6 md:px-10 py-4 md:py-8 rounded-xl gap-4 bg-lightblue shadow-3xs">
+             <div className="flex flex-col items-center border text-center border-skyblue px-6 md:px-10 py-4 md:py-8 rounded-xl gap-4 bg-lightblue shadow-3xs">
                 <div >
-                <p class="text-2xl font-bold">Still managing your inventory manually?</p>
-                <p class="text-base text-graywhite">Use our service and grow your business</p>
+                <p className="text-2xl font-bold">Still managing your inventory manually?</p>
+                <p className="text-base text-graywhite">Use our service and grow your business</p>
                 </div>
 
                
@@ -21,21 +21,21 @@ function Footer(){
              </div>
 
              {/* <!-- Footer Segment --> */}
-              <div class="w-[90%]  md:w-[80%] flex flex-col justify-center items-center gap-4">
-              <div class="w-[90%] flex flex-col gap-5 md:w-[80%] md:flex-row
+              <div className="w-[90%]  md:w-[80%] flex flex-col justify-center items-center gap-4">
+              <div className="w-[90%] flex flex-col gap-5 md:w-[80%] md:flex-row
               items-start sm:mx-auto  md:justify-around ">
                 <div>
-                    <p class="font-bold text-xl">Support</p>
+                    <p className="font-bold text-xl">Support</p>
                     <p><a href="#">Resources & news</a></p>
                     <p><a href="#">Guidlines </a></p>
                 </div>
                 <div>
-                    <p class="font-bold text-xl">Contact</p>
+                    <p className="font-bold text-xl">Contact</p>
                     <p><a href="">facebook</a></p>
                     <p><a href="">Instagram</a></p>
                 </div>
                 <div>
-                    <p class="font-bold text-xl">Legal</p>
+                    <p className="font-bold text-xl">Legal</p>
                     <p><a href="">privacy policy</a></p>
                     <p><a href="">Terms of services</a></p>
                 </div>

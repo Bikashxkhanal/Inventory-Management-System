@@ -1,4 +1,4 @@
-import { Decision, UpScalling, RealTimeStock, Check, Trust, Arrow } from "../assets/Imagesender";
+import { Decision, UpScalling, RealTimeStock, Check, Trust } from "../../assets/Imagesender";
 import { useState } from "react";
 function Services() {
     const [isHovered, setIsHovered] = useState(false);

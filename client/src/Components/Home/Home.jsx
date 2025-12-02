@@ -1,5 +1,5 @@
-import inventoryImage from '../../public/inventory.png'
-import Button from './Button';
+
+import Button from '../Button';
 
 function HomePage(){
     return(
@@ -35,7 +35,7 @@ function HomePage(){
 
       
       <div className="w-full md:w-1/2 flex justify-center mb-6 md:mb-0">
-        <img src={inventoryImage} alt="inventory" className="max-w-xs md:max-w-md w-full object-contain"></img>
+        <img src="/inventory.png" alt="inventory" className="max-w-xs md:max-w-md w-full object-contain"></img>
       </div>
 
     </div>
