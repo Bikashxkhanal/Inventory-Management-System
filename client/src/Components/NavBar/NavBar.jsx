@@ -44,7 +44,7 @@ function NavBar() {
             ))}
           </ul>
           
-    <Button  props="md:px-5 md:py-3 md:block" borderColor="border-skyblue" btnName="Login"  onClick={() => navigate("/login") } />
+    <Button  props="md:px-5 md:py-3 md:block" borderColor="border-skyblue" btnName="Login"  onClick = {() => navigate('/login')} />
         </div>
       </nav>
     </>

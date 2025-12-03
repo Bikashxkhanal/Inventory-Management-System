@@ -2,7 +2,7 @@
 
 function Container({children}){
 
-    return <div className='w-full ' >
+    return <div className='w-full' >
       {children}
     </div>;
       

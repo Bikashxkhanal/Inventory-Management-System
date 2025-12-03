@@ -1,7 +1,9 @@
 
 import Button from '../Button';
+import { useNavigate } from 'react-router-dom';
 
 function HomePage(){
+  const navigate = useNavigate();
     return(
         <>
          <div id="home" className="w-full py-5 bg-darkblue">
@@ -26,7 +28,7 @@ function HomePage(){
 
        
         <div className="flex gap-4">
-          <Button name="" isIcon={true} btnName="Buy our service"  />
+          <Button name="" isIcon={true} btnName="Use our service" onClick={() => navigate('/signup')}  />
           <Button btnName="Contact Us"  props=' shadow-2xs'  borderColor='border-skyblue' hoverColor='bg-blue-700' backgroundColor=''  />
          
         </div>

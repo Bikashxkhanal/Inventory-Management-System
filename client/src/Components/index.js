@@ -12,6 +12,7 @@ import NavBar from "./NavBar/NavBar";
 
 import LoginSingupBtn from "./Login/Login&SignupBtn";
 import LoginComponent from "./Login/Login";
+import SignupComponent from "./SignUp/signup";
 
 export {
     Container, 
@@ -24,4 +25,5 @@ export {
     NavBar,
     LoginSingupBtn,
     LoginComponent,
+    SignupComponent,
 };

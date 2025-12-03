@@ -1,7 +1,10 @@
 
+import { Link } from "react-router-dom";
 import Button from "../Button";
+import { useNavigate } from "react-router-dom";
 
 function Footer(){
+    const navigate = useNavigate();
     return(
         <>
          <div className="w-full bg-darkblue py-4 md:py-10">
@@ -15,7 +18,7 @@ function Footer(){
 
                
 
-                <Button isIcon={true} backgroundColor="bg-darkblue"   props='px-14 md:px-18 py-3  text-[20px] md:text-lg font-semibold' borderShape="rounded-xl" btnName="Register Now  " />
+                <Button isIcon={true} backgroundColor="bg-darkblue"   props='px-14 md:px-18 py-3  text-[20px] md:text-lg font-semibold' borderShape="rounded-xl" btnName="Register Now  " onClick={()=> navigate('/signup')}  />
 
 
              </div>
@@ -26,18 +29,18 @@ function Footer(){
               items-start sm:mx-auto  md:justify-around ">
                 <div>
                     <p className="font-bold text-xl">Support</p>
-                    <p><a href="#">Resources & news</a></p>
-                    <p><a href="#">Guidlines </a></p>
+                    <p><Link to="#">Resources & news</Link></p>
+                    <p><Link to="#">Guidlines </Link></p>
                 </div>
                 <div>
                     <p className="font-bold text-xl">Contact</p>
-                    <p><a href="">facebook</a></p>
-                    <p><a href="">Instagram</a></p>
+                    <p><Link to="">facebook</Link></p>
+                    <p><Link to="">Instagram</Link></p>
                 </div>
                 <div>
                     <p className="font-bold text-xl">Legal</p>
-                    <p><a href="">privacy policy</a></p>
-                    <p><a href="">Terms of services</a></p>
+                    <p><Link to="">privacy policy</Link></p>
+                    <p><Link to="">Terms of services</Link></p>
                 </div>
 </div>
  <p>© 2024 BeyondLimits. All Rights Reserved</p>

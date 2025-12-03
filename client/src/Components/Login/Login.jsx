@@ -3,6 +3,7 @@ import {InputBox, LoginSingupBtn} from "../index.js";
 function LoginComponent(){
     return(
         <>
+        <div className="flex justify-center items-center min-h-screen bg-gray-50">
          <div className="
       w-full h-full min-h-screen bg-white px-6 py-10
       flex flex-col items-center
@@ -53,8 +54,8 @@ function LoginComponent(){
       <p className="my-4 text-gray-600">OR</p>
 
       <button
-        className="w-full border border-green-600 rounded-md flex items-center justify-center gap-3 py-3 hover:bg-gray-100 transition">
-        <img src="./gooleicon.svg" className="w-6 h-6" alt="Google Icon" />
+        className="w-full border border-green-600 rounded-md flex items-center justify-center gap-3 py-3 hover:bg-gray-100 transition cursor-pointer">
+        <img src="./googleLogo.svg" className="w-6 h-6 " alt="Google Icon" />
         <span className="font-medium">Continue with Google</span>
       </button>
 
@@ -67,9 +68,10 @@ function LoginComponent(){
 
       <p className="mt-4 text-gray-700">
         Don’t have an account?
-        <a href="#" className="text-green-700 font-medium hover:underline">Sign up</a>
+        <Link to="/signup" className="text-green-700 font-medium hover:underline">Sign up</Link>
       </p>
 
+    </div>
     </div>
         </>
 

@@ -8,6 +8,7 @@ function Button({
     hoverColor = "bg-blue-700",
     isIcon = false,
     borderShape = "rounded-full",
+    onClick,
     ...props
 
 
@@ -17,7 +18,7 @@ function Button({
         <button className={`${props} px-9 py-3 ${backgroundColor }  ${textColor} border ${borderColor} hover:${hoverColor} transition ${borderShape} font-semibold  ${
             isIcon? "flex items-center gap-2":""
         }
-          cursor-pointer`}>
+          cursor-pointer`} onClick={onClick}>
             {btnName}
             
                {isIcon &&
