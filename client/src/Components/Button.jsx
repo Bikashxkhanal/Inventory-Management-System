@@ -1,21 +1,21 @@
 import { Circle, Arrow } from '../assets/Imagesender';
 
 function Button({
-    backgroundColor = "bg-lightblue",
+    backgroundColor = "" ,
     btnName,
     textColor = "text-white", 
     borderColor = "border-blue-700",
-    hoverColor = "bg-blue-700",
+    hoverColor = "hover:bg-blue-700",
     isIcon = false,
     borderShape = "rounded-full",
     onClick,
-    ...props
+    className = ""
 
 
 }){
     return(
         <>
-        <button className={`${props} px-9 py-3 ${backgroundColor }  ${textColor} border ${borderColor} hover:${hoverColor} transition ${borderShape} font-semibold  ${
+        <button className={`${className} px-9 py-3 ${backgroundColor }  ${textColor} border ${borderColor} ${hoverColor} transition ${borderShape} font-semibold  ${
             isIcon? "flex items-center gap-2":""
         }
           cursor-pointer`} onClick={onClick}>

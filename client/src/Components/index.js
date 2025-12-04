@@ -13,6 +13,7 @@ import NavBar from "./NavBar/NavBar";
 import LoginSingupBtn from "./Login/Login&SignupBtn";
 import LoginComponent from "./Login/Login";
 import SignupComponent from "./SignUp/signup";
+import OtpInput from "./OtpVerification/OtpInput";
 
 export {
     Container, 
@@ -26,4 +27,5 @@ export {
     LoginSingupBtn,
     LoginComponent,
     SignupComponent,
+    OtpInput,
 };

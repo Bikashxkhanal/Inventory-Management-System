@@ -1,7 +1,7 @@
 
 
 function InputBox(
-    {name,type,placeholder, ...props}
+    {name,type,placeholder, onChange, ...props}
 ){
     return(
         <>
@@ -10,6 +10,7 @@ function InputBox(
           type={type}
           placeholder={placeholder}
           name={name}
+          onChange={onChange}
         />
         </>
 

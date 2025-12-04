@@ -1,8 +1,39 @@
 
 import { Link } from "react-router-dom";
 import {InputBox, LoginSingupBtn} from '../index';
+import { useNavigate } from "react-router-dom";
+import {useSelector, useDispatch} from 'react-redux';
+import { useState } from "react";
+import { registerUser } from "../Stores/authThunk";
 
 function SignupComponent(){
+
+  const [formData, setFormData] = useState({
+    businessName: "",
+    businessMail : "",
+    phoneNumber : "",
+
+  });
+
+  const {user, loading, error} = useSelector((state) => state.auth);
+
+  const dispatch = useDispatch();
+
+  const handleChange = (e) => { 
+    setFormData({
+      ...formData,
+      [e.target.name] : e.target.value,
+    });
+
+
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+   dispatch(registerUser(formData));
+  }
+
+
 
     return(
         <>
@@ -14,41 +45,16 @@ function SignupComponent(){
         Register with Beyond Limits
       </h2>
 
-      <form action="" method="POST" autocomplete="on" className="w-full space-y-4">
+      <form action="" method="POST" onSubmit={handleSubmit} autocomplete="on" className="w-full space-y-4">
 
-        <InputBox placeholder="Enter business name" name="businessName" type="text" />
-        <InputBox placeholder="Enter business mail" name="businessMail" type="text" />
-        <InputBox  placeholder="Enter phone number" name="username" type="text"/>
+        <InputBox placeholder="Enter business name" name="businessName" type="text" onChange={handleChange} />
+        <InputBox placeholder="Enter business mail" name="businessMail" type="text" onChange={handleChange}  />
+        <InputBox  placeholder="Enter phone number" name="phoneNumber" type="text" onChange={handleChange} />
 
-        <LoginSingupBtn Name="Create new Account" />
+        <LoginSingupBtn 
+         disabled = {loading}
 
-
-        {/* <input
-          className="pl-4 py-3 outline-none border border-gray-300 rounded-md w-full focus:border-green-600"
-          type="text"
-          placeholder="Enter your business name"
-          name="businessname"
-        /> */}
-
-        {/* <input
-          className="pl-4 py-3 outline-none border border-gray-300 rounded-md w-full focus:border-green-600"
-          type="text"
-          placeholder="Enter your business mail"
-          name="email"
-        /> */}
-
-        {/* <input
-          className="pl-4 py-3 outline-none border border-gray-300 rounded-md w-full focus:border-green-600"
-          type="number"
-          placeholder="Enter your number"
-          name="number"
-        /> */}
-
-        {/* <button
-          className="w-full bg-green-600 text-white py-3 rounded-md font-medium hover:bg-green-700"
-        >
-          Create new Account
-        </button> */}
+          Name={(loading) ? "submitting...": "Create New Account"} />
       </form>
 
       <p className="my-4 text-gray-600">OR</p>
