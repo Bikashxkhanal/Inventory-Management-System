@@ -15,6 +15,8 @@ function SignupComponent(){
 
   });
 
+  const [errors, setErrors] = useState({});
+
   const {user, loading, error} = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
@@ -28,8 +30,39 @@ function SignupComponent(){
 
   }
 
+const validateForm =() => { 
+ const signupError = {};
+ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+ const phonePattern = /^(98|97)\d{8}$/;
+ if(!formData.businessName.trim()){
+  signupError.name = "Name is required";
+ }
+
+ if(!formData.businessMail.trim()){
+  signupError.email = "Email is required";
+  
+ }else if( !emailRegex.test(formData.businessMail)){
+  signupError.email = "Email is invalid";
+ }
+
+
+
+  if(!formData.phoneNumber.trim()){
+  signupError.phoneNum = "phone number is required"
+ }else if(!phonePattern.test(formData.phoneNumber)){
+ signupError.phoneNum = "phone number is invalid"
+
+ }
+  setErrors(signupError);
+ return Object.keys(signupError).length === 0;
+}
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
+   if(!validateForm()){
+    return;
+   }
    dispatch(registerUser(formData));
   }
 
@@ -48,12 +81,16 @@ function SignupComponent(){
       <form action="" method="POST" onSubmit={handleSubmit} autocomplete="on" className="w-full space-y-4">
 
         <InputBox placeholder="Enter business name" name="businessName" type="text" onChange={handleChange} />
+        {errors.name && <p style={{color:"red"}}>{errors.name}</p>}
+
         <InputBox placeholder="Enter business mail" name="businessMail" type="text" onChange={handleChange}  />
+        {errors.email && <p style={{color:"red"}}>{errors.email}</p>}
+
         <InputBox  placeholder="Enter phone number" name="phoneNumber" type="text" onChange={handleChange} />
+        {errors.phoneNum && <p className={`text-red-600 `}>{errors.phoneNum}</p>}
 
         <LoginSingupBtn 
          disabled = {loading}
-
           Name={(loading) ? "submitting...": "Create New Account"} />
       </form>
 

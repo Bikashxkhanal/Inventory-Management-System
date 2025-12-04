@@ -2,7 +2,7 @@
 
 function LoginSingupBtn({
   
-  Name,onClick, disable = false, ...props
+  Name,onClick, disable= false, ...props
 
 }){
     return(
