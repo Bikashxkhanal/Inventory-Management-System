@@ -1,7 +1,6 @@
 
 import { Link } from "react-router-dom";
 import {InputBox, LoginSingupBtn} from '../index';
-import { useNavigate } from "react-router-dom";
 import {useSelector, useDispatch} from 'react-redux';
 import { useState } from "react";
 import { registerUser } from "../Stores/authThunk";
@@ -26,8 +25,6 @@ function SignupComponent(){
       ...formData,
       [e.target.name] : e.target.value,
     });
-
-
   }
 
 const validateForm =() => { 
