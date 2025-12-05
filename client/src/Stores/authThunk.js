@@ -1,8 +1,8 @@
 
-import { data } from 'react-router-dom';
+
 import {registerStart, registerSuccess, registerFail, loginStart, loginSucess, loginFail, otpStart, otpSuccess, otpFail} from './authSlice';
 
-import { loginAPI, userregisterAPI } from '../../services/api';
+import { loginAPI, userregisterAPI } from '../services/api';
 
 
 //User resgistration request to PHP

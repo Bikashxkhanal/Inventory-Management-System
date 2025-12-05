@@ -2,8 +2,9 @@
 import { Link } from "react-router-dom";
 import {InputBox, LoginSingupBtn} from '../index';
 import {useSelector, useDispatch} from 'react-redux';
-import { useState } from "react";
-import { registerUser } from "../Stores/authThunk";
+import { useEffect, useState } from "react";
+import { registerUser } from "../../Stores/authThunk";
+import { useNavigate } from "react-router-dom";
 
 function SignupComponent(){
 
@@ -15,10 +16,18 @@ function SignupComponent(){
   });
 
   const [errors, setErrors] = useState({});
-
+  const navigate = useNavigate();
   const {user, loading, error} = useSelector((state) => state.auth);
-
   const dispatch = useDispatch();
+
+  //navigation to OTP-verification Page
+
+  useEffect(()=> {
+    if(user.companyId){
+      navigate('/signup/email-otp-verification');
+    }
+
+  }, [ user.companyId, navigate]);
 
   const handleChange = (e) => { 
     setFormData({
@@ -61,7 +70,9 @@ const validateForm =() => {
     return;
    }
    dispatch(registerUser(formData));
+   
   }
+  
 
 
 
@@ -77,7 +88,6 @@ const validateForm =() => {
 
       <form  method="POST" onSubmit={handleSubmit}  className="w-full space-y-4">
 {error  && <p className={`text-red-600 text-center`} >Failed to register </p>}
-        {user && <p className={`text-green-600 text-center`} >Registration successfull</p>}
         <InputBox placeholder="Enter business name" name="businessName" type="text" onChange={handleChange} />
         {errors.name && <p style={{color:"red"}}>{errors.name}</p>}
 

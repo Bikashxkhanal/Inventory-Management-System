@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import {InputBox, LoginSingupBtn} from "../index.js";
 import { useDispatch, useSelector } from "react-redux";
-import { use, useState } from "react";
-import { loginUser } from "../Stores/authThunk.js";
+import { useState } from "react";
+import { loginUser } from "../../Stores/authThunk.js";
 
 
 function LoginComponent(){
@@ -71,8 +71,7 @@ function LoginComponent(){
 
       <form  method="POST"  className="w-full space-y-4" onSubmit={handleSubmit} >
 
-        {error  && <p className={`text-red-600 text-center`} >{error }</p>}
-        {user && <p className={`text-green-600 text-center`} >Login successfull</p> }
+        {(user || error) && <p className={`text-center ${user ? `text-green-700`: `text-red-700`}`}>{user? "Login successful": "could not able to login"}</p>}
         <InputBox placeholder="Phone number or email" name="username" type="text" onChange={ handleChange}  />
         {errors.usernameErr && <p className={`text-red-600`}>{errors.usernameErr}</p>}
 

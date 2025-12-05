@@ -14,6 +14,8 @@ import LoginSingupBtn from "./Login/Login&SignupBtn";
 import LoginComponent from "./Login/Login";
 import SignupComponent from "./SignUp/signup";
 import OtpInput from "./OtpVerification/OtpInput";
+import EmailOtpVerification from "./OtpVerification/EmailOtpVerification";
+import Protected from "./protectedRoute/ProtectedRoute";
 
 export {
     Container, 
@@ -28,4 +30,7 @@ export {
     LoginComponent,
     SignupComponent,
     OtpInput,
+    EmailOtpVerification,
+    Protected,
+    
 };

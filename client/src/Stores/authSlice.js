@@ -3,7 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 //register the business , login into system , OTP verification 
 
 const initialState = {
-    user: null,
+    user: {
+        companyId : null,
+        companyEmail : null,
+        companyName : null,
+        companyNumber : null,
+
+    },
     token : null,
     loading: false,
     error : null,
@@ -57,7 +63,7 @@ const authSlice = createSlice({
         },
         otpFail : (state, action) => {
             state.loading = false;
-            state.isAuthenticated = false;
+            state.otpVerificed = false;
             state.error = action.payload;
         },
     }

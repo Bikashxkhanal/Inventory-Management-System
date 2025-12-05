@@ -9,9 +9,8 @@ export const userregisterAPI = async(formData) => {
             },
             body : JSON.stringify(formData),
         });
- console.log(response);
+        console.log(response);
         const data = await response.json();
-
         console.log(data);
         return {response, data};
 

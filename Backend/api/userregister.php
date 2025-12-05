@@ -14,7 +14,10 @@ $phoneNumber = $userData["phoneNumber"];
 echo json_encode([
     "success" => true,
     "user" => [
-        "company" => $businessMail,
+         "companyId" => 1234, 
+        "companyEmail" => $businessMail,
+        "companyName" => $businessName,
+        "companyNumber" => $phoneNumber,
     ],
 ]);
 

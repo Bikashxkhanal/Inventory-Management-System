@@ -6,9 +6,10 @@ import { createBrowserRouter, RouterProvider, BrowserRouter } from 'react-router
 import LandingPage from './pages/Landingpage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import SignupPage from './pages/SignupPage.jsx'
-import EmailOtpVerification from './Components/OtpVerification/EmailOtpVerification.jsx';
 import { Provider } from 'react-redux';
-import store from './Components/Stores/Store.js'
+import store from './Stores/Store.js'
+import OtpVerificationPage from './pages/EmailOtpVerificationPage.jsx'
+import { Protected } from './Components/index.js'
 
 
  const router = createBrowserRouter([
@@ -30,7 +31,11 @@ import store from './Components/Stores/Store.js'
         },
         {
           path: '/signup/email-otp-verification',
-          element: <EmailOtpVerification />
+          element:
+          (<Protected authentication >
+            {""}
+           <OtpVerificationPage  />
+           </Protected>)
         }
       ]
       
