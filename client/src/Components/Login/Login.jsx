@@ -1,6 +1,62 @@
 import { Link } from "react-router-dom";
 import {InputBox, LoginSingupBtn} from "../index.js";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { loginUser } from "../Stores/authThunk.js";
+
+
 function LoginComponent(){
+  const [loginDetail, setLoginDetail] = useState({
+    username : "",
+    password : "",
+  });
+
+  const dispatch = useDispatch();
+  const [errors, setErrors] = useState({});
+
+  const {loading, user, error } = useSelector((state)=> state.auth);
+
+  const handleChange = (e) => {
+    setLoginDetail({
+      ...loginDetail,
+      [e.target.name] : e.target.value,
+    })
+  }
+
+  const validateForm = () => {
+    const loginErrors = {};
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneNbrRegex = /^(98|97)\d{8}$/;
+
+    //userName validation
+    
+    if(!loginDetail.username.trim()){
+      loginErrors.usernameErr = "Name is required";
+    }else if(!phoneNbrRegex.test(loginDetail.username) && !emailRegex.test(loginDetail.username)){ 
+        loginErrors.usernameErr = "Invalid email or phone number format";
+    };
+
+    if(!loginDetail.password.trim()){
+      loginErrors.passwordErr = "password is required";
+    }
+
+    //password validation
+    
+    setErrors(loginErrors);
+    return Object.keys(loginErrors).length === 0;
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    //execute validatation function
+    if(!validateForm()){
+      return;
+    }
+    dispatch(loginUser(loginDetail));
+    
+  }
+
     return(
         <>
         <div className="flex justify-center items-center min-h-screen bg-gray-50">
@@ -12,26 +68,14 @@ function LoginComponent(){
       
       <h2 className="font-bold text-xl md:text-2xl pb-6 text-green-700">Welcome to Beyond Limits </h2>
 
-      <form action="" method="POST" autocomplete="on" className="w-full space-y-4">
+      <form action="" method="POST"  className="w-full space-y-4" onSubmit={handleSubmit} >
 
-        <InputBox placeholder="Phone number or email" name="username" type="text"  />
+        <InputBox placeholder="Phone number or email" name="username" type="text" onChange={ handleChange}  />
+        {errors.usernameErr && <p className={`text-red-600`}>{errors.usernameErr}</p>}
 
-        <InputBox placeholder="password" name="password" type="password"  />
-
-        
-        {/* <input
-          className="pl-4 py-3 outline-none border border-gray-300 rounded-md w-full focus:border-green-600"
-          type="text"
-          placeholder="Phone number or email"
-          name="username"
-        /> */}
-        
-        {/* <input
-          className="pl-4 py-3 outline-none border border-gray-300 rounded-md w-full focus:border-green-600"
-          type="password"
-          placeholder="Password"
-          name="password"
-        /> */}
+        <InputBox placeholder="password" name="password" type="password"
+        onChange={ handleChange}  />
+        {errors.passwordErr && <p className={`text-red-600`}>{errors.passwordErr}</p>}
 
         <div className="flex justify-between text-sm">
           <label className="flex items-center gap-2 cursor-pointer">
@@ -41,14 +85,10 @@ function LoginComponent(){
 
           <Link  className="text-green-700 hover:underline" >Forgot password?</Link>
 
-          {/* <a href="#" className="text-green-700 hover:underline">Forgot password?</a> */}
         </div>
 
-     <LoginSingupBtn Name="Login" />
-        {/* <button
-          className="w-full bg-green-600 text-white py-3 rounded-md font-medium hover:bg-green-700">
-          Login
-        </button> */}
+     <LoginSingupBtn disable={loading} Name={(loading) ? "Loging" : "Login" } />
+      
       </form>
 
       <p className="my-4 text-gray-600">OR</p>

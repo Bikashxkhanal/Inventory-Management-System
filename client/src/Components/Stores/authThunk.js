@@ -1,30 +1,46 @@
 
+import { data } from 'react-router-dom';
 import {registerStart, registerSuccess, registerFail, loginStart, loginSucess, loginFail, otpStart, otpSuccess, otpFail} from './authSlice';
 
+import { loginAPI, userregisterAPI } from '../../services/api';
+
+
+//User resgistration request to PHP
 export const registerUser = (formData) => async (dispatch) => {
     try{
         dispatch(registerStart());
+        const {response, data} = await userregisterAPI(formData);
 
-        const response = await fetch("https://example.com/api/register", {
-            method : "POST",
-            headers : {
-                "Content-Type": "application/json",
-            },
-            body : JSON.stringify(formData),
-        });
-
-        const data = await response.json();
-
-        if(!response.ok){
+        if(!response.ok()){
             throw new Error(data.message  || "Registration failed");
         }
 
         dispatch(registerSuccess(data.user));
 
     }catch(error){
-        dispatch(registerFail(data.message));
-
+        dispatch(registerFail(error.message));
     }
 };
 
+
+//User login request to PHP
+export const loginUser = (loginData) => async (dispatch) => {
+    try {
+        dispatch(loginStart());
+
+       const {response, data} = await loginAPI(loginData);
+
+        if(!response.ok()){
+           throw new Error(data.message || "Failed to login" );
+        }
+
+        dispatch(loginSucess(data.user));
+
+
+    } catch (error) {
+        dispatch(loginFail(error.message));
+        
+    };
+
+}
 
