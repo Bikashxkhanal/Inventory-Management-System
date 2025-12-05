@@ -71,12 +71,13 @@ const validateForm =() => {
         <div
       className="w-full h-full min-h-screen bg-white px-6 py-10 flex flex-col items-center md:h-auto md:min-h-0 md:max-w-md md:rounded-lg md:shadow-sm"
     >
-      <h2 className="font-bold text-2xl pb-6 text-green-700">
+      <h2 className="font-bold text-xl  md:text-2xl pb-6 text-green-700">
         Register with Beyond Limits
       </h2>
 
-      <form action="" method="POST" onSubmit={handleSubmit} autocomplete="on" className="w-full space-y-4">
-
+      <form  method="POST" onSubmit={handleSubmit}  className="w-full space-y-4">
+{error  && <p className={`text-red-600 text-center`} >Failed to register </p>}
+        {user && <p className={`text-green-600 text-center`} >Registration successfull</p>}
         <InputBox placeholder="Enter business name" name="businessName" type="text" onChange={handleChange} />
         {errors.name && <p style={{color:"red"}}>{errors.name}</p>}
 

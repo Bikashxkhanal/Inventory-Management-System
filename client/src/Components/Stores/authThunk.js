@@ -11,7 +11,7 @@ export const registerUser = (formData) => async (dispatch) => {
         dispatch(registerStart());
         const {response, data} = await userregisterAPI(formData);
 
-        if(!response.ok()){
+        if(!response.ok){
             throw new Error(data.message  || "Registration failed");
         }
 
@@ -30,11 +30,11 @@ export const loginUser = (loginData) => async (dispatch) => {
 
        const {response, data} = await loginAPI(loginData);
 
-        if(!response.ok()){
+        if(!response.ok){
            throw new Error(data.message || "Failed to login" );
         }
 
-        dispatch(loginSucess(data.user));
+        dispatch(loginSucess(data));
 
 
     } catch (error) {

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import {InputBox, LoginSingupBtn} from "../index.js";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { use, useState } from "react";
 import { loginUser } from "../Stores/authThunk.js";
 
 
@@ -15,6 +15,7 @@ function LoginComponent(){
   const [errors, setErrors] = useState({});
 
   const {loading, user, error } = useSelector((state)=> state.auth);
+  
 
   const handleChange = (e) => {
     setLoginDetail({
@@ -68,8 +69,10 @@ function LoginComponent(){
       
       <h2 className="font-bold text-xl md:text-2xl pb-6 text-green-700">Welcome to Beyond Limits </h2>
 
-      <form action="" method="POST"  className="w-full space-y-4" onSubmit={handleSubmit} >
+      <form  method="POST"  className="w-full space-y-4" onSubmit={handleSubmit} >
 
+        {error  && <p className={`text-red-600 text-center`} >{error }</p>}
+        {user && <p className={`text-green-600 text-center`} >Login successfull</p> }
         <InputBox placeholder="Phone number or email" name="username" type="text" onChange={ handleChange}  />
         {errors.usernameErr && <p className={`text-red-600`}>{errors.usernameErr}</p>}
 

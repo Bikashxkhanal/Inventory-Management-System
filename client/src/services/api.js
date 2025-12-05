@@ -1,5 +1,5 @@
 
-const BASE_URL = `http://localhost/api`;
+const BASE_URL = `http://localhost/PROJECTS/INVENTORY MANAGEMENT SYSTEM/Backend/api`;
 
 export const userregisterAPI = async(formData) => {
       const response = await fetch(`${BASE_URL}/userregister.php`, {
@@ -9,9 +9,10 @@ export const userregisterAPI = async(formData) => {
             },
             body : JSON.stringify(formData),
         });
-
+ console.log(response);
         const data = await response.json();
 
+        console.log(data);
         return {response, data};
 
 }
@@ -25,7 +26,9 @@ export const loginAPI =  async(loginData) => {
             body : JSON.stringify(loginData),
         });
 
+        
         const data = await response.json();
+    
         return {response, data};
 
 }

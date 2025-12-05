@@ -9,6 +9,7 @@ const initialState = {
     error : null,
     isAuthenticated : false,
     otpVerificed: false,
+    
 
 }
 
