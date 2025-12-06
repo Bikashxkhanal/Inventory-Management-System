@@ -46,12 +46,9 @@ export const EmailOtpVerificationAPI =  async(emailOtp) => {
         body : JSON.stringify(emailOtp),
 });
 
-      console.log(response);
-    const data = await response.text();
-    console.log(data);
-
+    console.log(response);
+    const data = await response.json();
    
-
     return {response, data};
 
 

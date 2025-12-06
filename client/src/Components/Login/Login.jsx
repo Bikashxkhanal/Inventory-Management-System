@@ -15,7 +15,7 @@ function LoginComponent(){
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
-  const {loading, user, error, isAuthenticated, otpVerified} = useSelector((state)=> state.auth);
+  const {loading, user, error} = useSelector((state)=> state.auth);
   
 
   const handleChange = (e) => {

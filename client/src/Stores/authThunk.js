@@ -15,10 +15,15 @@ export const registerUser = (formData) => async (dispatch) => {
             throw new Error(data.message  || "Registration failed");
         }
 
+        if(!data.success){
+            throw new Error(data.message || "Registration Failed");
+        }
+
+
         dispatch(registerSuccess(data.user));
 
     }catch(error){
-        dispatch(registerFail(error.message));
+        dispatch(registerFail(data.message));
     }
 };
 
@@ -34,11 +39,17 @@ export const loginUser = (loginData) => async (dispatch) => {
            throw new Error(data.message || "Failed to login" );
         }
 
+        if(!data.success){
+            throw new Error(data.message || "Login failed");
+        }
+
+
         dispatch(loginSucess(data));
 
 
     } catch (error) {
         dispatch(loginFail(error.message));
+       
 
         
     };
@@ -55,12 +66,20 @@ export const emailOtp = (emailOtp) => async (dispatch) => {
        if(!response.ok){
         throw new Error(data.message || "Otp verification failed");
        }
+       if(!data.success){
+        throw new Error(data.message || "Wrong OTP");
+
+       }
 
        dispatch(otpSuccess());
 
     }catch(error){
 
         dispatch(otpFail(error.message));
+        
+        
+      
+        
 
     }
 }

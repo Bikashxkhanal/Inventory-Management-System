@@ -27,7 +27,7 @@ $email = $userOTP['userEmail'];
  }else{
     echo json_encode([
         "success" => false,
-        "message" => "otp didnot matched",
+        "message" => "Otp didnot matched",
     ]);
  }
 
