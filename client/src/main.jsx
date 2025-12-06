@@ -32,8 +32,7 @@ import { Protected } from './Components/index.js'
         {
           path: '/signup/email-otp-verification',
           element:
-          (<Protected authentication >
-            {""}
+          (<Protected >
            <OtpVerificationPage  />
            </Protected>)
         }

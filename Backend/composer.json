@@ -1,0 +1,17 @@
+{
+    "name": "bikashkhanal/inventory",
+    "description": "Full stack project",
+    "autoload": {
+        "psr-4": {
+            "Bikashkhanal\\Inventory\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Bikash khanal"
+        }
+    ],
+    "require": {
+        "predis/predis": "^3.3"
+    }
+}

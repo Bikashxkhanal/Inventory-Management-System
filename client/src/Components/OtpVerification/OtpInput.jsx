@@ -30,6 +30,7 @@ function OtpInput({ otp, setOtp }) {
           value={digit}
           className="outline-none w-8 h-8 md:w-10 md:h-10 border border-gray-500 text-center  rounded-sm"
           type="text"
+         
           maxLength="1"
           onChange={(e) => handleChange(e.target.value, index)}
           onKeyDown={(e) => e.key === "Backspace" && handleBackspace(e, index)}

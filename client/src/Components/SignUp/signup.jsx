@@ -23,11 +23,11 @@ function SignupComponent(){
   //navigation to OTP-verification Page
 
   useEffect(()=> {
-    if(user.companyId){
+    if(user.userId){
       navigate('/signup/email-otp-verification');
     }
 
-  }, [ user.companyId, navigate]);
+  }, [ user.userId, navigate]);
 
   const handleChange = (e) => { 
     setFormData({
@@ -87,7 +87,7 @@ const validateForm =() => {
       </h2>
 
       <form  method="POST" onSubmit={handleSubmit}  className="w-full space-y-4">
-{error  && <p className={`text-red-600 text-center`} >Failed to register </p>}
+{error  && <p className={`text-red-600 text-center`} >{error}</p>}
         <InputBox placeholder="Enter business name" name="businessName" type="text" onChange={handleChange} />
         {errors.name && <p style={{color:"red"}}>{errors.name}</p>}
 

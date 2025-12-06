@@ -1,4 +1,5 @@
 
+
 const BASE_URL = `http://localhost/PROJECTS/INVENTORY MANAGEMENT SYSTEM/Backend/api`;
 
 export const userregisterAPI = async(formData) => {
@@ -29,5 +30,29 @@ export const loginAPI =  async(loginData) => {
         const data = await response.json();
     
         return {response, data};
+
+}
+
+
+//Email Otp verification API
+
+export const EmailOtpVerificationAPI =  async(emailOtp) => {
+    const response = await fetch(`${BASE_URL}/emailotpverification.php`, {
+        method : "POST",
+        headers : {
+            "Content-Type" : "application/json",
+        },
+
+        body : JSON.stringify(emailOtp),
+});
+
+      console.log(response);
+    const data = await response.text();
+    console.log(data);
+
+   
+
+    return {response, data};
+
 
 }

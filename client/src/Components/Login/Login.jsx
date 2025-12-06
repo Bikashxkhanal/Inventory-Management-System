@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import {InputBox, LoginSingupBtn} from "../index.js";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { loginUser } from "../../Stores/authThunk.js";
-
+import { useNavigate } from "react-router-dom";
 
 function LoginComponent(){
   const [loginDetail, setLoginDetail] = useState({
@@ -13,8 +13,9 @@ function LoginComponent(){
 
   const dispatch = useDispatch();
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
-  const {loading, user, error } = useSelector((state)=> state.auth);
+  const {loading, user, error, isAuthenticated, otpVerified} = useSelector((state)=> state.auth);
   
 
   const handleChange = (e) => {
@@ -58,6 +59,13 @@ function LoginComponent(){
     
   }
 
+  //Redirect the user to their dashboard if exist
+  useEffect(()=> {
+    if(user.userId){
+      navigate(`/`);
+    }
+  }, [user, navigate]);
+
     return(
         <>
         <div className="flex justify-center items-center min-h-screen bg-gray-50">
@@ -71,7 +79,7 @@ function LoginComponent(){
 
       <form  method="POST"  className="w-full space-y-4" onSubmit={handleSubmit} >
 
-        {(user || error) && <p className={`text-center ${user ? `text-green-700`: `text-red-700`}`}>{user? "Login successful": "could not able to login"}</p>}
+        {( error) && <p className={`text-center text-red-700`}> could not able to login</p>}
         <InputBox placeholder="Phone number or email" name="username" type="text" onChange={ handleChange}  />
         {errors.usernameErr && <p className={`text-red-600`}>{errors.usernameErr}</p>}
 
