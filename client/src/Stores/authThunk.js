@@ -23,7 +23,7 @@ export const registerUser = (formData) => async (dispatch) => {
         dispatch(registerSuccess(data.user));
 
     }catch(error){
-        dispatch(registerFail(data.message));
+        dispatch(registerFail(error.message));
     }
 };
 

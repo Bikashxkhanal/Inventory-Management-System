@@ -34,7 +34,7 @@ function EmailOtpVerification() {
           <h2 className="font-bold text-2xl pt-4 text-black">
             Please verify your account
           </h2>
-          <p className="text-md text-center text-gray-400">
+          <p className="text-md text-center pr-2 text-gray-400">
             Enter your 6-digit code send to your
             <span>{user.userEmail}</span>
           </p>

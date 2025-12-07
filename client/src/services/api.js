@@ -11,7 +11,7 @@ export const userregisterAPI = async(formData) => {
             body : JSON.stringify(formData),
         });
         console.log(response);
-        const data = await response.json();
+        const data = await response.text();
         console.log(data);
         return {response, data};
 
@@ -47,7 +47,9 @@ export const EmailOtpVerificationAPI =  async(emailOtp) => {
 });
 
     console.log(response);
-    const data = await response.json();
+    const data = await response.text();
+    console.log(data);
+    
    
     return {response, data};
 
