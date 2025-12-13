@@ -1,19 +1,23 @@
 {
-    "name": "bikashkhanal/inventory",
-    "description": "Full stack project",
+    "name": "bikashkhanal/backend",
     "autoload": {
         "psr-4": {
-            "Bikashkhanal\\Inventory\\": "src/"
+            "App\\Services\\": "src/services/",
+            "App\\Controllers\\" : "src/controllers/",
+            "App\\Middlewares\\" : "src/middlewares/",
+            "App\\Models\\" : "src/models/",
+            "App\\Contracts\\" : "src/contracts/",
+            "App\\Domail\\Mail\\": "src/domain/mail/"
         }
     },
     "authors": [
         {
-            "name": "Bikash khanal"
+            "name": "Bikashxkhanal",
+            "email": "khanalbikash007@gmail.com"
         }
     ],
     "require": {
-        "predis/predis": "^3.3",
-        "phpmailer/phpmailer": "^7.0",
-        "vlucas/phpdotenv": "^5.6"
+        "vlucas/phpdotenv": "^5.6",
+        "phpmailer/phpmailer": "^7.0"
     }
 }
