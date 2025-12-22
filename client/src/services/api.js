@@ -1,8 +1,24 @@
 
-
 const BASE_URL = `http://localhost/PROJECTS/INVENTORY-MANAGEMENT-SYSTEM/backend/public`;
 
+
 export const userregisterAPI = async(formData) => {
+    const response = await fetch(`${BASE_URL}/api/auth/user-register`, {
+        method : 'POST',
+        headers : {
+            'Content-Type' : 'application/json',
+        },
+        body : JSON.stringify(formData),
+    });
+
+        console.log(response);
+    const data = await response.json();
+    console.log(data);
+    
+    return {response, data};
+}
+
+export const companyregisterAPI = async(formData) => {
       const response = await fetch(`${BASE_URL}/api/auth/setup-company`, {
             method : "POST",
             headers : {
@@ -11,7 +27,7 @@ export const userregisterAPI = async(formData) => {
             body : JSON.stringify(formData),
         });
         console.log(response);
-        const data = await response.json();
+        const data = await response.text();
         console.log(data);
         return {response, data};
 
@@ -47,10 +63,8 @@ export const EmailOtpVerificationAPI =  async(emailOtp) => {
 });
 
     console.log(response);
-    const data = await response.text();
+    const data = await response.json();
     console.log(data);
-    
-   
     return {response, data};
 
 

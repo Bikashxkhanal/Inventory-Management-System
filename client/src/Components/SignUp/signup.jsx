@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {InputBox, LoginSingupBtn} from '../index';
 import {useSelector, useDispatch} from 'react-redux';
 import { useEffect, useState } from "react";
-import { registerUser } from "../../Stores/authThunk";
+import { registerCompany } from "../../Stores/authThunk";
 import { useNavigate } from "react-router-dom";
 
 function SignupComponent(){
@@ -17,17 +17,17 @@ function SignupComponent(){
 
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-  const {user, loading, error} = useSelector((state) => state.auth);
+  const {company, loading, error} = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   //navigation to OTP-verification Page
 
   useEffect(()=> {
-    if(user.userId){
+    if(company.companyId){
       navigate('/signup/email-otp-verification');
     }
 
-  }, [ user.userId, navigate]);
+  }, [ company.companyId, navigate]);
 
   const handleChange = (e) => { 
     setFormData({
@@ -69,7 +69,7 @@ const validateForm =() => {
    if(!validateForm()){
     return;
    }
-   dispatch(registerUser(formData));
+   dispatch(registerCompany(formData));
    
   }
   

@@ -10,7 +10,8 @@
             "App\\Config\\" : "src/config/",
             "App\\Domain\\Mail\\": "src/domain/mail/",
             "App\\Infrastructures\\Cache\\" : "src/infrastructures/cache/",
-            "App\\Routes\\": "src/routes/"
+            "App\\Routes\\": "src/routes/",
+            "App\\Domain\\Session\\": "src/domain/session/"
             
         }
     },

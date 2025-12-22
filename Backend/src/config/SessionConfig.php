@@ -5,8 +5,13 @@ namespace App\Config;
 class SessionConfig{
     private $session;
     public function __construct(){
-        session_start();
-    }
+        if($this->session == PHP_SESSION_NONE){
+             session_start();
+            }
+        }
+
+        
+       
 
 }
 
