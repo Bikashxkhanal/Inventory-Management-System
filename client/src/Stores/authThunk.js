@@ -1,15 +1,17 @@
 
 
-import {registerStart, registerSuccess, registerFail, loginStart, loginSucess, loginFail, otpStart, otpSuccess, otpFail} from './authSlice';
+import {registerUserStart, registerUserSuccess, registerUserFail,
+    registerCompanyStart, registerCompanySuccess, registerCompanyFail,
+    loginStart, loginSucess, loginFail, otpStart, otpSuccess, otpFail} from './authSlice';
 
-import { loginAPI, userregisterAPI, EmailOtpVerificationAPI } from '../services/api';
+import { loginAPI, userregisterAPI, EmailOtpVerificationAPI , companyregisterAPI } from '../services/api';
 
 
 //User resgistration request to PHP
-export const registerUser = (formData) => async (dispatch) => {
+export const registerCompany = (formData) => async (dispatch) => {
     try{
-        dispatch(registerStart());
-        const {response, data} = await userregisterAPI(formData);
+        dispatch(registerCompanyStart());
+        const {response, data} = await companyregisterAPI(formData);
 
         if(!response.ok){
             throw new Error(data.message  || "Registration failed");
@@ -20,12 +22,34 @@ export const registerUser = (formData) => async (dispatch) => {
         }
 
 
-        dispatch(registerSuccess(data.user));
+        dispatch(registerCompanySuccess(data.company));
 
     }catch(error){
-        dispatch(registerFail(error.message));
+        dispatch(registerCompanyFail(error.message));
     }
 };
+
+    //company registration call to php using API
+export const  registerUser = (formData) => async(dispatch) => {
+    try{
+        dispatch(registerUserStart());
+        const {response, data } = await userregisterAPI(formData);
+
+        
+        if(!response.ok){
+            throw new Error(data.message  || "Registration failed");
+        }
+
+        if(!data.success){
+            throw new Error(data.message || "Registration Failed");
+        }
+
+        dispatch(registerUserSuccess(data.user));
+    }catch(error){
+        dispatch(registerUserFail(error.message));
+
+    }
+}
 
 
 //User login request to PHP

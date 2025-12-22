@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import store from './Stores/Store.js'
 import OtpVerificationPage from './pages/EmailOtpVerificationPage.jsx'
 import { Protected } from './Components/index.js'
+import SuperAdminVerificationPage from './pages/SuperAdminVerificationPage.jsx'
 
 
  const router = createBrowserRouter([
@@ -35,6 +36,12 @@ import { Protected } from './Components/index.js'
           (<Protected >
            <OtpVerificationPage  />
            </Protected>)
+        },
+        {
+          path: '/super-admin-verification',
+          element : (<Protected>
+            <SuperAdminVerificationPage />
+          </Protected>)
         }
       ]
       

@@ -1,8 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { act } from "react";
 
 //register the business , login into system , OTP verification 
 
 const initialState = {
+    company: {
+        companyId : null,
+        companyName: null,
+        companyEmail: null,
+        companyNumber: null,
+    },
     user: {
         userId : null,
         userEmail : null,
@@ -14,7 +21,7 @@ const initialState = {
     loading: false,
     error : null,
     isAuthenticated : false,
-    otpVerificed: false,
+    isOtpVerified: false,
     
 
 }
@@ -24,16 +31,30 @@ const authSlice = createSlice({
     initialState,
 
     reducers : {
-        registerStart: (state) => {
+
+        registerCompanyStart: (state) => {
             state.loading = true;
         },
 
-        registerSuccess : (state, action) => {
+        registerCompanySuccess : (state, action) => {
+            state.loading = false;
+            state.company = action.payload;
+        },
+        
+        registerCompanyFail : (state, action) => {
+            state.loading =false;
+            state.error = action.payload;
+        },
+        registerUserStart: (state) => {
+            state.loading = true;
+        },
+
+        registerUserSuccess : (state, action) => {
             state.loading =false;
             state.user = action.payload;
         },
 
-        registerFail : (state, action)=> {
+        registerUserFail : (state, action)=> {
             state.loading = false;
             state.error = action.payload;
         },
@@ -59,17 +80,18 @@ const authSlice = createSlice({
         },
         otpSuccess : (state)=>{
             state.loading = false;
-            state.otpVerificed = true;
+            state.isOtpVerified = true;
         },
         otpFail : (state, action) => {
             state.loading = false;
-            state.otpVerificed = false;
+            state.isOtpVerified = false;
             state.error = action.payload;
         },
     }
 
 })
 
-export const {registerStart, registerSuccess, registerFail, loginStart, loginSucess, loginFail, otpStart, otpSuccess, otpFail}  = authSlice.actions;
+export const {registerUserStart, registerUserSuccess, registerUserFail,
+    registerCompanyStart, registerCompanySuccess, registerCompanyFail, loginStart, loginSucess, loginFail, otpStart, otpSuccess, otpFail}  = authSlice.actions;
 
 export default authSlice.reducer;

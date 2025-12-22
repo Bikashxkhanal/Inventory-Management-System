@@ -16,7 +16,7 @@ import SignupComponent from "./SignUp/signup";
 import OtpInput from "./OtpVerification/OtpInput";
 import EmailOtpVerification from "./OtpVerification/EmailOtpVerification";
 import Protected from "./protectedRoute/ProtectedRoute";
-
+import SuperAdminVerification from "./SignUp/SuperAdminVerification";
 export {
     Container, 
     InputBox,
@@ -32,5 +32,6 @@ export {
     OtpInput,
     EmailOtpVerification,
     Protected,
+    SuperAdminVerification,
     
 };

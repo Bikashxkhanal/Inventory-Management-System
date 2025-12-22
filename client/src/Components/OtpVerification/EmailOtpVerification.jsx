@@ -2,13 +2,15 @@ import { OtpInput, Button } from "../index";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { emailOtp } from "../../Stores/authThunk";
+import { useNavigate } from "react-router-dom";
 
 function EmailOtpVerification() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
 
-  const { user, error } = useSelector((state) => state.auth);
+  const { company, error, isOtpVerified } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const validateOTP = () => {
     const isoptValid = otp.every((digit) => digit.trim() !== "");
@@ -16,12 +18,16 @@ function EmailOtpVerification() {
     return isoptValid ? true : false;
   };
 
+  useEffect(()=>{
+    if(isOtpVerified === true) navigate('/super-admin-verification');
+  }, [isOtpVerified, navigate])
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateOTP()) {
       return;
     }
-    const singleOtp = { otp: otp.join(""), userEmail: user.userEmail };
+    const singleOtp = { otp: otp.join(""), companyEmail: company.companyEmail };
     dispatch(emailOtp(singleOtp));
   };
 
@@ -36,7 +42,7 @@ function EmailOtpVerification() {
           </h2>
           <p className="text-md text-center pr-2 text-gray-400">
             Enter your 6-digit code send to your
-            <span>{user.userEmail}</span>
+            <span>{company.companyEmail}</span>
           </p>
           {error && <p className={`text-red-600 mt-3 text-xl `}>{error}</p>}
           <form method="POST" className="flex flex-row gap-5 mt-10">
