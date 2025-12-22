@@ -1,9 +1,9 @@
 
 
-const BASE_URL = `http://localhost/PROJECTS/INVENTORY MANAGEMENT SYSTEM/Backend/api`;
+const BASE_URL = `http://localhost/PROJECTS/INVENTORY-MANAGEMENT-SYSTEM/backend/public`;
 
 export const userregisterAPI = async(formData) => {
-      const response = await fetch(`${BASE_URL}/userregister.php`, {
+      const response = await fetch(`${BASE_URL}/api/auth/setup-company`, {
             method : "POST",
             headers : {
                 "Content-Type": "application/json",
@@ -37,7 +37,7 @@ export const loginAPI =  async(loginData) => {
 //Email Otp verification API
 
 export const EmailOtpVerificationAPI =  async(emailOtp) => {
-    const response = await fetch(`${BASE_URL}/emailotpverification.php`, {
+    const response = await fetch(`${BASE_URL}/api/auth/otp-verification`, {
         method : "POST",
         headers : {
             "Content-Type" : "application/json",

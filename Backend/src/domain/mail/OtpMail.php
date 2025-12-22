@@ -1,4 +1,5 @@
 <?php 
+    namespace App\Domain\Mail;
     use App\Contracts\MailableInterface;
     class OtpMail implements MailableInterface{
         public function __construct(

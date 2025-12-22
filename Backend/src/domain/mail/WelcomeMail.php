@@ -1,6 +1,6 @@
 <?php
     namespace App\Domain\Mail;
-    use App\Contracts\MailabelInterface;
+    use App\Contracts\MailableInterface;
 
     class WelcomeMail implements MailableInterface{
         public function __construct(

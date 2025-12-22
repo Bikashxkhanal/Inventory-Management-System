@@ -4,18 +4,37 @@
     use App\Services\SanitizationService;
     use App\Services\ValidationService;
     use App\Models\UserModel;
+    use App\Services\NotificationService;
+    use App\Services\OtpService;
+    use App\Config\RedisConfig;
+    use App\Infrastructures\Cache\RedisOtpStore;
+    use App\Domain\Mail\OtpMail;
+    use App\Infrastructures\Cache\TempUserInfo;
+    use InvalidArgumentException;
+
+    require_once __DIR__ . '/../config/envConfig.php';
+
+   
+    
     class AuthService{
        private $user;
-
+       private $redis;
+       private $redisStore;
+       private $otpService;
+       private $tempUserInfo;
         public function __construct(){
             $this->user = new UserModel();
+            $this->redis = RedisConfig::getInstance();
+            $this->redisStore = new RedisOtpStore($this->redis);
+            $this->otpService = new OtpService($this->redisStore);
+            $this->tempUserInfo =  new TempUserInfo($this->redis);
         }
         //creating new account for the company
         public function createCompanyAccount($input){
             //sanitization 
-          $rawName =  SanitizationService::string($input['name']);
-          $rawEmail=   SanitizationService::email($input['email']);
-         $rawPhnNbr=   SanitizationService::string($input['phoneNbr']);
+          $rawName =  SanitizationService::string($input['businessName']);
+          $rawEmail=   SanitizationService::email($input['businessMail']);
+         $rawPhnNbr=   SanitizationService::string($input['phoneNumber']);
 
          //validation
         $company['name']=  ValidationService::name($rawName);
@@ -23,33 +42,34 @@
         $company['phnNbr']= ValidationService::phnNbr($rawPhnNbr);
 
         if($company['name'] === false){
-            return json_encode([
-                'success' => false,
-                'message'=> 'Invalid name'
-            ]);
+           throw new InvalidArgumentException('Invalid name');
 
         }
 
         if($company['email'] === false){
-            return json_encode([
-                'success' => false,
-                'message' => 'Invalid email'
-            ]);
+           throw new InvalidArgumentException('Invalid email');
 
         }
 
         if($company['phnNbr'] === false){
-            return json_encode([
-                'success' => false,
-                'message' => 'Invalid phone number'
-            ]);
+           throw new InvalidArgumentException('Invalid phone number');
         }
+
+        //store information in redis 
+        $this->tempUserInfo->addUserInfo("signup", $company['email'], $company);
+
         //crate verification code store information in redis
-        
-        //validate comany info by email 
+        $this->otpService->generateOTP("companyAcc", $company['email']);
 
+        $mailer = createMailer();
+        $mailSender = new MailService($mailer);
+        $NotificatioinSerive = new NotificationService($mailSender);
+        $OtpMail = new OtpMail($company['email'], $this->redisStore->getOtp('companyAcc', $company['email']));
+        $NotificatioinSerive->notify($OtpMail);
 
-        //call db
+        return true;
+
+    
 
         }
 
@@ -88,6 +108,8 @@
         public function signupValidate($input){
             //sanitize , validate , store in redis , send mail , then store in db
             //sanitization
+
+        
          $rawName=   SanitizationService::string($input['name']);
          $rawEmail= SanitizationService::email($input['email']);
          $rawPhnNbr= SanitizationService::string($input['phnNbr']);
@@ -120,10 +142,41 @@
             ]);
         }
 
+        //geneate otp code and store it in redis
 
+        $this->tempUserInfo->addUserInfo("signup", $user['email'], $user);
+        $this->otpService->generateOTP('signup', $user['email']);
 
+        
+        //mail service 
+        $mailer = createMailer();
+        $mailSender = new MailService($mailer);
+        $NotificatioinSerive = new NotificationService($mailSender);
+        $OtpMail = new OtpMail($user['email'], $this->redisStore->getOtp('signup', $user['email']));
+        $NotificatioinSerive->notify($OtpMail);
 
+        return json_encode([
+            'success' => true
+        ]);
 
+    
+        }
+
+        public function OtpValidate($input){ //expect both code and useremail
+            $type = 'signup';
+         $status=   $this->otpService->verifyOtp($type, $input['email'], $input['otp']);
+         if($status === false){
+            return json_encode([
+                'success' => false,
+                'message' => 'wrong otp',
+            ]);
+         }
+
+         return json_encode([
+            'success' => true,
+            //create session 
+         ]);
+            
         }
 
         }
