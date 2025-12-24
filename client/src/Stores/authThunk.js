@@ -6,6 +6,8 @@ import {registerUserStart, registerUserSuccess, registerUserFail,
 
 import { loginAPI, userregisterAPI, EmailOtpVerificationAPI , companyregisterAPI } from '../services/api';
 
+const BASE_URL = `http://localhost/PROJECTS/INVENTORY-MANAGEMENT-SYSTEM/backend/public`;
+
 
 //User resgistration request to PHP
 export const registerCompany = (formData) => async (dispatch) => {
@@ -43,7 +45,8 @@ export const  registerUser = (formData) => async(dispatch) => {
         if(!data.success){
             throw new Error(data.message || "Registration Failed");
         }
-
+        
+        window.location.href = '/dashboard';
         dispatch(registerUserSuccess(data.user));
     }catch(error){
         dispatch(registerUserFail(error.message));
@@ -67,7 +70,7 @@ export const loginUser = (loginData) => async (dispatch) => {
             throw new Error(data.message || "Login failed");
         }
 
-
+        window.location.href = `${BASE_URL}/dashboard`;
         dispatch(loginSucess(data));
 
 

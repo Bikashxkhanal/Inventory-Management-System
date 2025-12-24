@@ -18,7 +18,7 @@
 
         public function addUserInfo(string $type, string $identifier, array $info): bool{
             $key = $this->getKey( $type, $identifier);
-            $value = json_encode($info, JSON_THROW_ON_ERROR);
+            $value = json_encode($info, flags: JSON_THROW_ON_ERROR);
          return (bool) $this->redis->set($key, $value, 'EX', $this->ttl);
 
         }

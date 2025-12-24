@@ -73,7 +73,7 @@
         }
 
         //CHECK COMPANY EXISTANCE IN DB
-        if($this->companyModel->isCompanyAccountExist($company['email'])){
+        if($this->companyModel->isCompanyAccountExist($company['email'], $company['phnNbr'])){
          throw new DomainException('Company already exists');
         }
 
@@ -105,23 +105,54 @@
         //login validation for the user
         public function loginValidate($input){
             //sanitization for input
-            $rawEmail = SanitizationService::email($input['email']);
+            $rawEmail = SanitizationService::email($input['username']);
             $rawPassword = SanitizationService::password($input['password']);
 
             //validation for input
             $mail = ValidationService::email($rawEmail);
             $password = ValidationService::password($rawPassword);
 
-            if(!$mail && !$password){
-               throw new InvalidArgumentException("Invalid name or password format");
-            }
+            if($mail === false && $password === false) {
+               throw new InvalidArgumentException("Invalid name or password format");}
+            
             //db Call
-         $userInfo=   $this->user->getByEmail($mail);
-         if(!password_verify($password, $userInfo['user_password_hash'])){
-            throw new Exception("wrong password");
+
+         $userInfo = $this->userModel->getByEmail($mail);
+         if($userInfo === false) {
+            throw new DomainException('No user of such email');
          }
 
+
+         if(!password_verify($password, $userInfo['user_password_hash'])){
+            throw new DomainException("wrong password");
+         }
+
+         $user['user_id'] = $userInfo['user_id'];
+         $user['user_name'] = $userInfo['user_fname']. " " . $userInfo['user_lname'];
+         $user['user_role'] = $userInfo['user_role'];
+
+         // switch ($userInfo['user_role']){
+         //    case 'superadmin' : $this->sessionService->createSuperAdminSession($userInfo);
+         //    break;
+
+         //    case 'admin' : 
+         //       break;
+
+         //    case 'storemanager' : 
+         //       break;
+
+
+         //    default : throw new Exception('couldnot found the user type');
+         // }
+
+        try {
+         $this->sessionService->createUserSession($user);
+      }catch(Exception $e){
+         throw new Exception('couldnot create session');
+      }
+
          //return the success = true with the role of the user
+         return true;
 
 
         }
@@ -159,7 +190,7 @@
 
         if(!$user['role']) throw new InvalidArgumentException('no role ');
 
-        if($this->userModel->isUserEmailExist($user['email'])){
+        if($this->userModel->isUserExists($user['email'], $user['phnNbr'])){
          throw new DomainException('User already exists');
 
         }
@@ -172,10 +203,14 @@
 
       //   $this->sessionService->createOtpTypeSession('USER_SIGNUP', $user['email']);
 
-      $this->userModel->create($user);
+      try{
+          $this->userModel->create($user);
+      }catch(Exception $e){
+         throw new DomainException($e->getMessage());
+      }
+     
       $this->sessionService->createSuperAdminSession($user);
          
-    
         //mail service 
       //   $mailer = createMailer();
       //   $mailSender = new MailService($mailer);

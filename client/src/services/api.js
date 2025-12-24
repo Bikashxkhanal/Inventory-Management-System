@@ -12,8 +12,9 @@ export const userregisterAPI = async(formData) => {
         body : JSON.stringify(formData),
     });
 
-       
+       console.log(response);
     const data = await response.json();
+   
    
     
     return {response, data};
@@ -30,13 +31,14 @@ export const companyregisterAPI = async(formData) => {
         });
        
         const data = await response.json();
+         console.log(data);
       
         return {response, data};
 
 }
 
 export const loginAPI =  async(loginData) => {
-     const response = await fetch(`${BASE_URL}/login.php`, {
+     const response = await fetch(`${BASE_URL}/api/auth/login`, {
             method : "POST",
             credentials : 'include',
             headers : {
@@ -47,6 +49,8 @@ export const loginAPI =  async(loginData) => {
 
         
         const data = await response.json();
+        console.log(data);
+        
         return {response, data};
 
 }
@@ -67,8 +71,6 @@ export const EmailOtpVerificationAPI =  async(emailOtp) => {
 
     
     const data = await response.json();
-  
     return {response, data};
-
 
 }

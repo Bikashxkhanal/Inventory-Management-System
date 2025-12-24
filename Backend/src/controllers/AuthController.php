@@ -2,6 +2,7 @@
     
     namespace App\Controllers;
     use App\Services\AuthService;
+    use DomainException;
     use Exception;
     use InvalidArgumentException;
 
@@ -38,6 +39,12 @@
                     'success' => false,
                     'message' => $e->getMessage(),
                 ]);
+            }catch(DomainException $e){
+                http_response_code(409);
+                echo json_encode([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ]);
             }
 
             
@@ -46,7 +53,36 @@
         }
 
         public function login($input){
-            $response = $this->authenticate->loginValidate($input);
+            try{
+                 $this->authenticate->loginValidate($input);
+                 //get user role and information(store in session do it in either authservice)
+
+                 //show dashboard as the user role , with the information required for the dashborad(dbCall)
+                 echo json_encode([
+                    'success'=> true,
+                    'message' => 'login successful'
+                 ]);
+
+            }catch(InvalidArgumentException $e){
+                http_response_code(401);
+                echo json_encode([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ]);
+            }catch(DomainException $e){
+                http_response_code(401);
+                echo json_encode([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ]);
+            }catch(Exception $e){
+                http_response_code(500);
+                echo json_encode([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ]);
+            }
+            
             
         }
 
@@ -61,12 +97,28 @@
                     'userName' => $input['firstName'].''. $input['lastName'],
                     'userEmail' => $input['email'],
                 ],
+                // 'message' => 'user registration successful',
                 ]);
-            }catch(Exception $e){
+            
+            }
+            catch(InvalidArgumentException $e){
                 http_response_code(400);
                 echo json_encode([
                     'success' => false,
+                    'message' => $e->getMessage()
+                ]);
+            }catch(DomainException $e){
+                http_response_code(409);
+                echo json_encode([
+                    'success' => false,
                     'message' => $e->getMessage(),
+                ]);
+            }
+            catch(Exception $e){
+                http_response_code(500);
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Internal server error',
                 ]);
             }
            

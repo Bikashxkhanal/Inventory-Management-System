@@ -9,6 +9,7 @@
           if(!isset($routes[$key])){
             http_response_code(404);
             echo json_encode(   [
+                'success' => false,
                 'message' => 'page not found',
             ]);
           }

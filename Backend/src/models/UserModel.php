@@ -6,9 +6,9 @@
         
         public function getByEmail($email){
             global $pdo;
-          $stmt=  $pdo->prepare("SELECT * FROM sys_user WHERE email = ?");
-          $stmt->execute([$email], );
-          return $stmt->fetch(\PDO::FETCH_ASSOC);
+          $stmt=  $pdo->prepare("SELECT * FROM sys_user WHERE user_email = ?");
+          $stmt->execute([$email] );
+          return $stmt->fetch(PDO::FETCH_ASSOC);
 
         }
 
@@ -19,10 +19,10 @@
             
         }
 
-        public function isUserEmailExist($email){
+        public function isUserExists($email, $phoneNumber){
             global $pdo;
-           $stmt =  $pdo->prepare("SELECT 1 FROM sys_user WHERE user_email = :email LIMIT 1");
-            $stmt->execute(['email' => $email]);
+           $stmt =  $pdo->prepare("SELECT 1 FROM sys_user WHERE user_email = :email OR user_phoneNo = :phoneNumber LIMIT 1");
+            $stmt->execute(['email' => $email, 'phoneNumber'=> $phoneNumber]);
           return  $stmt->fetchColumn() !== false;
         }
 
