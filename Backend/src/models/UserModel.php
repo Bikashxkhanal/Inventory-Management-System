@@ -1,6 +1,9 @@
 <?php 
      namespace App\Models;
+
+     use PDO;
     class UserModel{
+        
         public function getByEmail($email){
             global $pdo;
           $stmt=  $pdo->prepare("SELECT * FROM sys_user WHERE email = ?");
@@ -11,10 +14,16 @@
 
         public function create($user){
             global $pdo;
-            $stmt = $pdo->prepare("INSERT INTO sys_user (user_fname, user_lname, user_role, user_email, user_phoneNo, user_password_hash) VALUES (?, ?, ? ,? , ?)");
-            $stmt->execute([$user['fname'], $user['lname'], $user['user_role'], $user['email'], $user['phoneNbr'], $user['hashedPwd']]);
+            $stmt = $pdo->prepare("INSERT INTO sys_user (user_fname, user_lname, user_role, user_email, user_phoneNo, user_password_hash) VALUES (?, ?, ? ,? , ?, ?)");
+            $stmt->execute([$user['fname'], $user['lname'], $user['role'], $user['email'], $user['phnNbr'], $user['hashedPwd']]);
             
+        }
 
+        public function isUserEmailExist($email){
+            global $pdo;
+           $stmt =  $pdo->prepare("SELECT 1 FROM sys_user WHERE user_email = :email LIMIT 1");
+            $stmt->execute(['email' => $email]);
+          return  $stmt->fetchColumn() !== false;
         }
 
         

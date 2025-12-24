@@ -22,11 +22,9 @@ else if (!isOtpVerified) {
 }
 else if (!isAuthenticated) {
   navigate("/super-admin-verification");
+}else {
+  navigate("/dashboard");
 }
-else {
-  navigate("/");
-}
-
     setLoading(false);
   }, [company, isAuthenticated, navigate]);
 

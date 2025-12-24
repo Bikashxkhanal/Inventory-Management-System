@@ -1,11 +1,8 @@
 <?php 
     namespace App\Services;
     use App\Contracts\SessionInterface;
-    use App\Domain\Session\SessionManager;
-    
-
     class SessionService{
-        private SessionInterface $session;
+        private $session;
         public function __construct(SessionInterface $session){
             $this->session = $session;
         }
@@ -20,18 +17,14 @@
             $this->session->set('otp_context', $otp_context );
             $this->session->set('otp_email', $otp_email);
         }
-
-        public function get($key){
+        public function get( string $key){
             $this->session->start();
-           return $this->session->get($key);
+           return  $this->session->get($key);
         }
-
         public function delete($key){
             $this->session->start();
             return (bool) $this->session->remove($key);
         }
-
-    
     }
 
 

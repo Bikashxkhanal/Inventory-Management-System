@@ -1,16 +1,13 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import {LoginSingupBtn, InputBox} from "../index";
 import { registerUser } from "../../Stores/authThunk";
 
 function SuperAdminVerification(){
 
      const dispatch = useDispatch();
-    const navigate  = useNavigate();
     const [errors, setErrors] = useState({});
-    const {user, loading,  error } = useSelector((state) => state.auth);
+    const { loading,  error } = useSelector((state) => state.auth);
 
     const [formData, setFormData] = useState({
         firstName : "", 
@@ -29,9 +26,14 @@ function SuperAdminVerification(){
         });
     }
 
-    // useEffect(()=>{
-    //     navigate(`/dashboard/user=${user.userId}`);
-    // }, [user.userId, navigate]);
+    useEffect(()=> {
+      setFormData((prev)=> ({
+        ...prev,
+        role: 'superadmin',
+
+      }))
+
+    }, [])
 
     const validateForm = () => {
         const superAdminInfoVerify = {};
@@ -112,13 +114,6 @@ function SuperAdminVerification(){
         <InputBox placeholder="Enter your mail" name="email" type="text" onChange={handleChange}  />
         {errors.email && <p style={{color:"red"}}>{errors.email}</p>}
 
-     <div>
-        <label htmlFor="user-role">Role:</label>
-       <select name="role" id="user-role" disabled>
-        <option value="superadmin">Super Admin</option>
-       </select>
-       </div>
-       {errors.role && <p style={{color:"red"}}>{errors.role}</p>}
 
         <InputBox  placeholder="Enter phone number" name="phoneNumber" type="text" onChange={handleChange} />
         {errors.phoneNumber && <p className={`text-red-600 `}>{errors.phoneNumber}</p>}

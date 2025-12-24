@@ -42,6 +42,14 @@ import SuperAdminVerificationPage from './pages/SuperAdminVerificationPage.jsx'
           element : (<Protected>
             <SuperAdminVerificationPage />
           </Protected>)
+        },
+        {path: '/super-admin-verification/email-verify',
+          element : (
+            <Protected >
+           <OtpVerificationPage  />
+           </Protected>
+
+          )
         }
       ]
       

@@ -5,6 +5,13 @@
     class SessionManager implements SessionInterface{
         public function start(){
             if(session_status() === PHP_SESSION_NONE){
+                session_set_cookie_params([
+                    'path' => '/',
+                    'domain' => 'localhost',
+                    'secure' => true,      // true only for HTTPS
+                    'httponly' => true,
+                    'samesite' => 'None'     // use 'None' + secure=true if different domains
+                ]);
                 session_start();
             }
         }
@@ -32,7 +39,7 @@
         }
 
         public function remove($key){
-            if($_SESSION[$key]){
+            if(isset($_SESSION[$key])){
                 unset($_SESSION[$key]);
                 return true;
             }

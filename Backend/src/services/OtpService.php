@@ -2,8 +2,11 @@
 
     namespace App\Services;
 
+
     use App\Contracts\SessionInterface;
+    use App\Domain\Session\SessionManager;
     use App\infrastructures\cache\RedisOtpStore;
+    use Exception;
 
     class OtpService{
       private int $generatedOtp;
@@ -15,7 +18,8 @@
         // SessionInterface $session,
       ){
         $this->store = $store;
-        // $this->session = $session;
+        $sessionManager  = new SessionManager();
+        $this->session = new SessionService($sessionManager) ;
       }
       //generte OTP code
       public function generateOTP($type , $useId){
@@ -27,11 +31,12 @@
       //verify generated OTP code 
       public function verifyOtp($type , $userId, $userOTP):bool{
       $otp =  $this->store->getOtp($type, $userId);
-      if(!$otp) return false;
-       if($otp !== $userOTP)return false;
+      if(!$otp)  throw new Exception('otp expried');
+       if($otp !== $userOTP) throw new Exception('otp didont matched') ;
        $this->store->deleteOtp($type, $userId);
-      //  $this->session->remove($type);
-      //  $this->session->remove($userId);
+       $this->session->delete('otp_context'); // $type key must be otp_content
+       $this->session->delete('otp_email'); //$email key must be otp_email
+
        return true;
 
       }

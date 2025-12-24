@@ -5,18 +5,19 @@
     use Exception;
     use InvalidArgumentException;
 
+
     define('BASE_URL', "projects/INVENTORY-MANAGEMENT-SYSTEM/backend");
 
-    class AuthController{
+       class AuthController{
         private $authenticate;
         public function __construct(){ 
             $this->authenticate = new AuthService();
-
         }
 
         //create a account for company(mailey add the info of company and create a super admin using signup siquentially)
         public function setupCompany($input){
             try{
+                 
             
            $this->authenticate->createCompanyAccount($input);
            http_response_code(201);
@@ -39,6 +40,8 @@
                 ]);
             }
 
+            
+
            
         }
 
@@ -55,7 +58,7 @@
                 'success' => true,
                 'user' => [
                     'userId' => random_int(1000, 3000),
-                    'userName' => $input['fname'].''. $input['lname'],
+                    'userName' => $input['firstName'].''. $input['lastName'],
                     'userEmail' => $input['email'],
                 ],
                 ]);
@@ -73,8 +76,7 @@
         //otp validation for creating new bussiness account
         public function otpVerification($input){
             try{
-                   $this->authenticate->OtpValidate("companyAcc", $input);
-
+                   $this->authenticate->OtpValidate($input);
                  http_response_code(201);
                  echo json_encode([
                     'success' => true,

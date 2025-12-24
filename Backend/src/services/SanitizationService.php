@@ -15,7 +15,8 @@
         }
 
         public static function string($string){
-            return htmlspecialchars(trim($string), ENT_QUOTES, 'UTF-8');
+           
+            return htmlspecialchars(strtolower(trim($string)), ENT_QUOTES, 'UTF-8');
         }
 
         public static function special($special){

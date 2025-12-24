@@ -22,8 +22,6 @@ const initialState = {
     error : null,
     isAuthenticated : false,
     isOtpVerified: false,
-    
-
 }
 
 const authSlice = createSlice({
@@ -52,6 +50,7 @@ const authSlice = createSlice({
         registerUserSuccess : (state, action) => {
             state.loading =false;
             state.user = action.payload;
+            state.isAuthenticated = true
         },
 
         registerUserFail : (state, action)=> {

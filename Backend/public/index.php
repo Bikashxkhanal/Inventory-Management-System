@@ -10,6 +10,7 @@ require_once __DIR__ . '/../src/config/RedisConfig.php';
 
 use App\Routes\ApiRouter;
 
+
     $baseURL = "/PROJECTS/INVENTORY-MANAGEMENT-SYSTEM/backend/public";
     $url = $_SERVER['REQUEST_URI'] ?? '/';
  

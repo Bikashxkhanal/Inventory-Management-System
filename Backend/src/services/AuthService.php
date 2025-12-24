@@ -1,7 +1,9 @@
 <?php 
 
     namespace App\Services;
+
     use App\Domain\Session\SessionManager;
+    use App\Models\CompanyModel;
     use App\Services\SanitizationService;
     use App\Services\ValidationService;
     use App\Models\UserModel;
@@ -11,32 +13,37 @@
     use App\Infrastructures\Cache\RedisOtpStore;
     use App\Domain\Mail\OtpMail;
     use App\Infrastructures\Cache\TempUserInfo;
+    use DomainException;
     use Exception;
     use InvalidArgumentException;
+    use App\Services\SessionService;
+  
+    
    
 
     require_once __DIR__ . '/../config/envConfig.php';
-
-   
     
     class AuthService{
-       private $user;
+       private $userModel;
        private $redis;
        private $redisStore;
        private $otpService;
        private $tempUserInfo;
-       private $session;
+       private $sessionService;
+
+       private $companyModel;
 
         public function __construct(
            
-         
         ){
-            $this->user = new UserModel();
+            $this->userModel = new UserModel();
+            $this->companyModel = new CompanyModel();
             $this->redis = RedisConfig::getInstance();
             $this->redisStore = new RedisOtpStore($this->redis);
             $this->otpService = new OtpService($this->redisStore);
             $this->tempUserInfo =  new TempUserInfo($this->redis);
-            $this->session = new SessionManager();
+            $sessionManager = new SessionManager(); //that handles session using php 
+            $this->sessionService = new SessionService($sessionManager);
             
         }
         //creating new account for the company
@@ -65,20 +72,28 @@
            throw new InvalidArgumentException('Invalid phone number');
         }
 
+        //CHECK COMPANY EXISTANCE IN DB
+        if($this->companyModel->isCompanyAccountExist($company['email'])){
+         throw new DomainException('Company already exists');
+        }
+
         //store information in redis 
-        $this->tempUserInfo->addUserInfo("signup", $company['email'], $company);
+        $this->tempUserInfo->addUserInfo("COMPANY_SIGNUP", $company['email'], $company);
 
         //crate verification code store information in redis
-        $this->otpService->generateOTP("companyAcc", $company['email']);
+        $this->otpService->generateOTP("COMPANY_SIGNUP", $company['email']);
+        
 
         //session for storing the otp type and otp mail
-        $this->session->set('otp_context', 'COMPANY_SIGNUP');
-        $this->session->set('otp_mail', $company['email']);
+      //   $this->session->set('otp_context', 'COMPANY_SIGNUP');
+      //   $this->session->set('otp_mail', $company['email']);
+
+        $this->sessionService->createOtpTypeSession('COMPANY_SIGNUP', $company['email']);
 
         $mailer = createMailer();
         $mailSender = new MailService($mailer);
         $NotificatioinSerive = new NotificationService($mailSender);
-        $OtpMail = new OtpMail($company['email'], $this->redisStore->getOtp('companyAcc', $company['email']));
+        $OtpMail = new OtpMail($company['email'], $this->redisStore->getOtp('COMPANY_SIGNUP', $company['email']));
         $NotificatioinSerive->notify($OtpMail);
 
         return true;
@@ -120,7 +135,7 @@
          $rawEmail= SanitizationService::email($input['email']);
          $rawPhnNbr= SanitizationService::string($input['phoneNumber']);
          $rawPassword = SanitizationService::password($input['password']);
-         $rawRole = SanitizationService::string($input['role']);
+         $user['role'] = SanitizationService::string($input['role']);
 
          //validation
         $user['fname']  = ValidationService::name($rawfName);
@@ -128,9 +143,9 @@
          $user['email']=  ValidationService::email($rawEmail);
         $user['phnNbr']=  ValidationService::phnNbr($rawPhnNbr);
         $user['password'] = ValidationService::password($rawPassword);
-        $user['role'] = $rawRole;
+        
 
-        if($user['fname'] === false || $user['lname'] === false){
+        if($user['fname'] === false  || $user['lname'] === false){
         throw new Exception("Invalid Name");
         }
 
@@ -142,32 +157,69 @@
             throw new InvalidArgumentException("Invalid phone number");
         }
 
-        //geneate otp code and store it in redis
-        $this->tempUserInfo->addUserInfo("signup", $user['email'], $user);
-        $this->otpService->generateOTP('signup', $user['email']);
+        if(!$user['role']) throw new InvalidArgumentException('no role ');
 
-        
+        if($this->userModel->isUserEmailExist($user['email'])){
+         throw new DomainException('User already exists');
+
+        }
+
+                //hasing password
+        $user['hashedPwd'] = password_hash($user['password'], PASSWORD_BCRYPT);
+        //geneate otp code and store it in redis (if needed)
+      //   $this->tempUserInfo->addUserInfo("USER_SIGNUP", $user['email'], $user);
+      //   $this->otpService->generateOTP('USER_SIGNUP', $user['email']);
+
+      //   $this->sessionService->createOtpTypeSession('USER_SIGNUP', $user['email']);
+
+      $this->userModel->create($user);
+      $this->sessionService->createSuperAdminSession($user);
+         
+    
         //mail service 
-        $mailer = createMailer();
-        $mailSender = new MailService($mailer);
-        $NotificatioinSerive = new NotificationService($mailSender);
-        $OtpMail = new OtpMail($user['email'], $this->redisStore->getOtp('signup', $user['email']));
-        $NotificatioinSerive->notify($OtpMail);
+      //   $mailer = createMailer();
+      //   $mailSender = new MailService($mailer);
+      //   $NotificatioinSerive = new NotificationService($mailSender);
+      //   $OtpMail = new OtpMail($user['email'], $this->redisStore->getOtp('USER_SIGNUP', $user['email']));
+      //   $NotificatioinSerive->notify($OtpMail);
 
         return true;
 
-    
         }
 
         //method to validate otp 
-        public function OtpValidate($type , $input){ 
-            //expect both otp-code and useremail 
-         $status=   $this->otpService->verifyOtp($type, $input['companyEmail'], $input['otp']);
-         if($status === false){
-            throw new Exception("wrong otp");
-         }
+        public function OtpValidate($input){ //expect both otp-code and useremail
+            //get session otp context
+            try{
+            $type =  $this->sessionService->get('otp_context');
+            $otp_email = $this->sessionService->get('otp_email');
+            $userOrCompanyInfo = $this->tempUserInfo->getUserInfo($type, $input['companyEmail']);
+
+            if(!$type || !$userOrCompanyInfo){
+               throw new Exception('otp setup key not found');
+            }
+           $this->otpService->verifyOtp($type, $otp_email, $input['otp']); 
+
+           switch($type){
+            case 'COMPANY_SIGNUP' : 
+                  $this->companyModel->createCompanyAccount($userOrCompanyInfo);
+               break;
+
+            case 'USER_SIGNUP' : 
+               $this->userModel->create($userOrCompanyInfo);
+               break;
+
+            default : throw new Exception('wrong otp context type');
+           }
+
+         
+           
 
          return true;
+
+            }catch(Exception $e){
+               throw new Exception($e->getMessage());
+            }
         }
 
        
