@@ -14,8 +14,9 @@ function LoginComponent(){
   const dispatch = useDispatch();
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  
 
-  const {loading, user, error} = useSelector((state)=> state.auth);
+  const {loading, user, isAuthenticated, error} = useSelector((state)=> state.auth);
   
 
   const handleChange = (e) => {
@@ -25,11 +26,21 @@ function LoginComponent(){
     })
   }
 
+  // useEffect(()=> {
+  //   if(user.userId){
+  //     navigate('/dashbaord');  
+  //   }
+   
+  // }, [user.userId, navigate]);
+
   const validateForm = () => {
+
+
     const loginErrors = {};
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneNbrRegex = /^(98|97)\d{8}$/;
+
 
     //userName validation
     
@@ -55,16 +66,17 @@ function LoginComponent(){
     if(!validateForm()){
       return;
     }
-    dispatch(loginUser(loginDetail));
-    
+     dispatch(loginUser(loginDetail));
+      
   }
 
-  //Redirect the user to their dashboard if exist
-  useEffect(()=> {
-    if(user.userId){
-      navigate(`/`);
+  useEffect(()=>{
+    if(isAuthenticated && user.user_id){
+      navigate('/dashboard');
     }
-  }, [user, navigate]);
+  }, [isAuthenticated,user.user_id, navigate])
+
+  //Redirect the user to their dashboard if exist
 
     return(
         <>
@@ -79,7 +91,7 @@ function LoginComponent(){
 
       <form  method="POST"  className="w-full space-y-4" onSubmit={handleSubmit} >
 
-        {( error) && <p className={`text-center text-red-700`}> could not able to login</p>}
+        { error && <p className={`text-center text-red-700`}> {error}</p>}
         <InputBox placeholder="Phone number or email" name="username" type="text" onChange={ handleChange}  />
         {errors.usernameErr && <p className={`text-red-600`}>{errors.usernameErr}</p>}
 

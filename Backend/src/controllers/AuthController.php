@@ -1,7 +1,9 @@
 <?php
     
     namespace App\Controllers;
+    use App\Domain\Session\SessionManager;
     use App\Services\AuthService;
+    use App\Services\SessionService;
     use DomainException;
     use Exception;
     use InvalidArgumentException;
@@ -11,8 +13,11 @@
 
        class AuthController{
         private $authenticate;
+        private $sessionService;
         public function __construct(){ 
             $this->authenticate = new AuthService();
+            $sessionManager = new SessionManager();
+            $this->sessionService = new SessionService($sessionManager);
         }
 
         //create a account for company(mailey add the info of company and create a super admin using signup siquentially)
@@ -60,7 +65,17 @@
                  //show dashboard as the user role , with the information required for the dashborad(dbCall)
                  echo json_encode([
                     'success'=> true,
-                    'message' => 'login successful'
+                    'message' => 'login successful',
+                    'user' => [
+                        'user_id' => $this->sessionService->get('user_id'),
+                        'user_name' => $this->sessionService->get('user_name'),
+                        'user_role' => $this->sessionService->get('user_role'),
+                    ],
+                    'company' => [
+                        'companyId' => $this->sessionService->get('companyId') ,
+                        
+                    ],
+                    
                  ]);
 
             }catch(InvalidArgumentException $e){
@@ -144,6 +159,45 @@
                 ]);
             }
            
+        }
+
+
+        public function verifyUser(){
+            try{ 
+               $isUserExist =  $this->sessionService->hasThisKey('user_id') ;
+                if(!$isUserExist){
+                    throw new Exception('user not found');
+                }
+            if(!$this->sessionService->hasThisKey('user_role')){
+              throw new Exception('user doesnot have any role'); 
+
+            }
+
+            $userRole =  $this->sessionService->get('user_role');
+
+            if(!in_array($userRole, ['admin', 'superadmin', 'manager', 'salesperson'], true) ){
+                throw new Exception('unauthorized user');
+            }
+            echo http_response_code(202);
+            echo json_encode([
+                'success' => true,
+                'user_role' => $userRole,
+                'isUserAuthenticated' =>  true,
+                'authorizedActions' => [
+                    'addUser',
+                ],
+                ]);
+            }catch(Exception $e){
+                echo http_response_code(404);
+                echo json_encode([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                    'isUserAuthenticated' => false,
+                   
+                ]);
+            }
+            
+
         }
 
         // public function resendOtp(){

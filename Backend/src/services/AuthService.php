@@ -112,38 +112,37 @@
             $mail = ValidationService::email($rawEmail);
             $password = ValidationService::password($rawPassword);
 
-            if($mail === false && $password === false) {
-               throw new InvalidArgumentException("Invalid name or password format");}
+            if($mail === false) {
+               throw new InvalidArgumentException("Invalid name  format");}
+
+            if($password === false){
+               throw new InvalidArgumentException('invalid password format ');
+            }
             
-            //db Call
+            //db Call   
+          $userInfo = $this->userModel->getByEmail($mail);
 
-         $userInfo = $this->userModel->getByEmail($mail);
-         if($userInfo === false) {
-            throw new DomainException('No user of such email');
-         }
-
-
+               if($userInfo === false){
+                  throw new DomainException('No user of such email');
+               }
+                   
+               
+        
          if(!password_verify($password, $userInfo['user_password_hash'])){
             throw new DomainException("wrong password");
          }
 
-         $user['user_id'] = $userInfo['user_id'];
-         $user['user_name'] = $userInfo['user_fname']. " " . $userInfo['user_lname'];
-         $user['user_role'] = $userInfo['user_role'];
+         // $user['user_id'] = $userInfo['user_id'];
+         // $user['user_name'] = $userInfo['user_fname']. " " . $userInfo['user_lname'];
+         // $user['user_role'] = $userInfo['user_role'];
 
-         // switch ($userInfo['user_role']){
-         //    case 'superadmin' : $this->sessionService->createSuperAdminSession($userInfo);
-         //    break;
+         $user = [
+            'user_id' => $userInfo['user_id'],
+            'user_name' => $userInfo['user_fname'] . " " . $userInfo['user_lname'],
+            'user_role' => $userInfo['user_role'],
+            'companyId' => 10005,
 
-         //    case 'admin' : 
-         //       break;
-
-         //    case 'storemanager' : 
-         //       break;
-
-
-         //    default : throw new Exception('couldnot found the user type');
-         // }
+         ];
 
         try {
          $this->sessionService->createUserSession($user);

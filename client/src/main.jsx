@@ -11,6 +11,7 @@ import store from './Stores/Store.js'
 import OtpVerificationPage from './pages/EmailOtpVerificationPage.jsx'
 import { Protected } from './Components/index.js'
 import SuperAdminVerificationPage from './pages/SuperAdminVerificationPage.jsx'
+import SuperAdminDashboard from './pages/Dashboard/SuperAdminDashboard.jsx'
 
 
  const router = createBrowserRouter([
@@ -49,6 +50,14 @@ import SuperAdminVerificationPage from './pages/SuperAdminVerificationPage.jsx'
            <OtpVerificationPage  />
            </Protected>
 
+          )
+        },
+        {
+          path : '/dashboard',
+          element : (
+            <Protected >
+              <SuperAdminDashboard />
+               </Protected>
           )
         }
       ]

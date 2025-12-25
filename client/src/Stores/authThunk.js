@@ -1,113 +1,134 @@
+import {
+  registerUserStart,
+  registerUserSuccess,
+  registerUserFail,
+  registerCompanyStart,
+  registerCompanySuccess,
+  registerCompanyFail,
+  loginStart,
+  loginSucess,
+  loginFail,
+  otpStart,
+  otpSuccess,
+  otpFail,
+  updatePrmsaftDashSuccess,
+  updateRoleaftDashSuccess,
+  dashboardAccessFail,
+  dashboardAccessStart,
+} from "./authSlice";
 
-
-import {registerUserStart, registerUserSuccess, registerUserFail,
-    registerCompanyStart, registerCompanySuccess, registerCompanyFail,
-    loginStart, loginSucess, loginFail, otpStart, otpSuccess, otpFail} from './authSlice';
-
-import { loginAPI, userregisterAPI, EmailOtpVerificationAPI , companyregisterAPI } from '../services/api';
+import {
+  loginAPI,
+  userregisterAPI,
+  EmailOtpVerificationAPI,
+  companyregisterAPI,
+  userVerifyAPI,
+} from "../services/api";
 
 const BASE_URL = `http://localhost/PROJECTS/INVENTORY-MANAGEMENT-SYSTEM/backend/public`;
 
-
 //User resgistration request to PHP
 export const registerCompany = (formData) => async (dispatch) => {
-    try{
-        dispatch(registerCompanyStart());
-        const {response, data} = await companyregisterAPI(formData);
+  try {
+    dispatch(registerCompanyStart());
+    const { response, data } = await companyregisterAPI(formData);
 
-        if(!response.ok){
-            throw new Error(data.message  || "Registration failed");
-        }
-
-        if(!data.success){
-            throw new Error(data.message || "Registration Failed");
-        }
-
-
-        dispatch(registerCompanySuccess(data.company));
-
-    }catch(error){
-        dispatch(registerCompanyFail(error.message));
+    if (!response.ok) {
+      throw new Error(data.message || "Registration failed");
     }
+
+    if (!data.success) {
+      throw new Error(data.message || "Registration Failed");
+    }
+
+    dispatch(registerCompanySuccess(data.company));
+  } catch (error) {
+    dispatch(registerCompanyFail(error.message));
+  }
 };
 
-    //company registration call to php using API
-export const  registerUser = (formData) => async(dispatch) => {
-    try{
-        dispatch(registerUserStart());
-        const {response, data } = await userregisterAPI(formData);
+//company registration call to php using API
+export const registerUser = (formData) => async (dispatch) => {
+  try {
+    dispatch(registerUserStart());
+    const { response, data } = await userregisterAPI(formData);
 
-        
-        if(!response.ok){
-            throw new Error(data.message  || "Registration failed");
-        }
-
-        if(!data.success){
-            throw new Error(data.message || "Registration Failed");
-        }
-        
-        window.location.href = '/dashboard';
-        dispatch(registerUserSuccess(data.user));
-    }catch(error){
-        dispatch(registerUserFail(error.message));
-
+    if (!response.ok) {
+      throw new Error(data.message || "Registration failed");
     }
-}
 
+    if (!data.success) {
+      throw new Error(data.message || "Registration Failed");
+    }
+
+    window.location.href = "/dashboard";
+    dispatch(registerUserSuccess(data.user));
+  } catch (error) {
+    dispatch(registerUserFail(error.message));
+  }
+};
 
 //User login request to PHP
 export const loginUser = (loginData) => async (dispatch) => {
-    try {
-        dispatch(loginStart());
+  try {
+    dispatch(loginStart());
 
-       const {response, data} = await loginAPI(loginData);
+    const { response, data } = await loginAPI(loginData);
 
-        if(!response.ok){
-           throw new Error(data.message || "Failed to login" );
-        }
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to login");
+    }
 
-        if(!data.success){
-            throw new Error(data.message || "Login failed");
-        }
+    if (!data.success) {
+      throw new Error(data.message || "Login failed");
+    }
 
-        window.location.href = `${BASE_URL}/dashboard`;
-        dispatch(loginSucess(data));
+    dispatch(loginSucess(data));
+  } catch (error) {
+    dispatch(loginFail(error.message));
+  }
+};
 
-
-    } catch (error) {
-        dispatch(loginFail(error.message));
-       
-
-        
-    };
-
-}
-
-
-//OTP verification 
+//OTP verification
 
 export const emailOtp = (emailOtp) => async (dispatch) => {
-    try{
-        dispatch(otpStart());
-       const {response, data} = await EmailOtpVerificationAPI(emailOtp);
-       if(!response.ok){
-        throw new Error(data.message || "Otp verification failed");
-       }
-       if(!data.success){
-        throw new Error(data.message || "Wrong OTP");
-
-       }
-
-       dispatch(otpSuccess());
-
-    }catch(error){
-
-        dispatch(otpFail(error.message));
-        
-        
-      
-        
-
+  try {
+    dispatch(otpStart());
+    const { response, data } = await EmailOtpVerificationAPI(emailOtp);
+    if (!response.ok) {
+      throw new Error(data.message || "Otp verification failed");
     }
-}
+    if (!data.success) {
+      throw new Error(data.message || "Wrong OTP");
+    }
 
+    dispatch(otpSuccess());
+  } catch (error) {
+    dispatch(otpFail(error.message));
+  }
+};
+
+export const verifyUserType = () => async (dispatch) => {
+    console.log("verify-user");
+    
+  try {
+    dispatch(dashboardAccessStart());
+    const { response, data } = await userVerifyAPI();
+    if (!response.ok) {
+      throw new Error(data.message || "cannot verify user");
+    }
+
+    if (!data.success) {
+      throw new Error(data.message || "cannot verify user");
+    }
+    console.log(data);
+    
+    dispatch(updateRoleaftDashSuccess(data.user_role));
+    dispatch(updatePrmsaftDashSuccess(data.authorizedActions));
+    dispatch(isUserAuthenticated(data.isUserAuthenticated));
+  } catch (err) {
+   dispatch( dashboardAccessFail());
+   dispatch(isUserAuthenticated(data.isUserAuthenticated));
+    alert(err.message);
+  }
+};

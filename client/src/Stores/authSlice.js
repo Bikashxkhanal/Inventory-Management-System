@@ -11,12 +11,11 @@ const initialState = {
         companyNumber: null,
     },
     user: {
-        userId : null,
-        userEmail : null,
-        userName : null,
-        userNumber : null,
-
+        user_id : null,
+        user_name : null,
+        user_role : null,
     },
+    permissions : [],
     token : null,
     loading: false,
     error : null,
@@ -65,8 +64,10 @@ const authSlice = createSlice({
         loginSucess : (state, action)=>{
             state.loading = false;
             state.user = action.payload.user;
-            state.token = action.payload.token;
+            // state.token = action.payload.token;
             state.isAuthenticated = true;
+            state.company = action.payload.company;
+            state.isOtpVerified = true;
         },
 
         loginFail : (state, action)=>{
@@ -86,11 +87,37 @@ const authSlice = createSlice({
             state.isOtpVerified = false;
             state.error = action.payload;
         },
+
+        dashboardAccessStart: (state) => {
+            state.loading = true;
+
+        },
+
+        updateRoleaftDashSuccess : (state, action) => { // update role after success 
+            state.loading = false;
+            state.user.user_role = action.payload;
+           
+        },
+
+        updatePrmsaftDashSuccess : (state, action) => { // update permissions after success 
+            state.loading = false;
+            state.permissions = action.payload;
+        },
+
+
+        dashboardAccessFail : (state) => {
+            state.loading = false;
+        },
+
+        isUserAuthenticated : (state, action) => {
+            state.isAuthenticated = action.payload;
+        }
+
     }
 
 })
 
 export const {registerUserStart, registerUserSuccess, registerUserFail,
-    registerCompanyStart, registerCompanySuccess, registerCompanyFail, loginStart, loginSucess, loginFail, otpStart, otpSuccess, otpFail}  = authSlice.actions;
+    registerCompanyStart, registerCompanySuccess, registerCompanyFail, loginStart, loginSucess, loginFail, otpStart, otpSuccess, otpFail, dashboardAccessFail, dashboardAccessStart, updatePrmsaftDashSuccess, updateRoleaftDashSuccess, isUserAuthenticated}  = authSlice.actions;
 
 export default authSlice.reducer;

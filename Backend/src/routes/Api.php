@@ -6,7 +6,7 @@
         'POST /api/auth/login'  => [AuthController::class, 'login'],
         'POST /api/auth/user-register' => [AuthController::class, 'signup'],
         'POST /api/auth/otp-verification' => [AuthController::class , 'otpVerification'],
-        'GET /dashboard' => [DashboardController::class, 'showDashboard']
+        'GET /api/auth/verify-user' => [AuthController::class , 'verifyUser'],
 
     ];
 

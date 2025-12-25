@@ -9,20 +9,20 @@ function Protected({ children }) {
 
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { company, isOtpVerified, isAuthenticated } = useSelector((state) => state.auth);
+  const { company, user, isOtpVerified, isAuthenticated } = useSelector((state) => state.auth);
 
   // TODO: must have send userId to the state, when the user is registered to the database
 
-  useEffect(() => {
+useEffect(() => {
    if (!company.companyId ) {
   navigate("/signup");
 }
 else if (!isOtpVerified) {
   navigate("/signup/email-otp-verification");
 }
-else if (!isAuthenticated) {
+else if (!user.user_id) {
   navigate("/super-admin-verification");
-}else {
+}else if(user.user_id && isAuthenticated) {
   navigate("/dashboard");
 }
     setLoading(false);

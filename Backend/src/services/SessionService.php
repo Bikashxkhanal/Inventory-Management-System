@@ -11,6 +11,8 @@
             $this->session->set('user_id', $user['user_id']);
             $this->session->set('user_role', $user['user_role']);
             $this->session->set('user_name', $user['user_name']);
+            $this->session->set('companyId', $user['companyId'] );
+            
             
         }
 
