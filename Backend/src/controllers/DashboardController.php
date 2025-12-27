@@ -2,7 +2,7 @@
 namespace App\Controllers;
 use App\Services\SessionService;
 use App\Domain\Session\SessionManager;
-
+use Exception;
 
 class DashboardController{
   private  $sessionService;
@@ -10,22 +10,34 @@ class DashboardController{
         $sessionManager = new SessionManager();
         $this->sessionService = new SessionService($sessionManager);
     }
+  public function verifyUser(){
+            try{ 
+               $isUserExist =  $this->sessionService->hasThisKey('user') ;
+                if(!$isUserExist){
+                    throw new Exception('must login first');
+                }
+             $user = $this->sessionService->get('user');
 
-    public function showDashboard(){
-        if(!$this->sessionService->hasThisKey('user_role')){
-            echo "login to system";
-            exit;
-        };
-
-         $user_role =  $this->sessionService->get('user_role');
-        if($user_role !== 'superadmin'){
-             echo "other user";
-             exit;
-
+            if(!in_array($user['identity']['user_role'], ['admin', 'superadmin', 'manager', 'salesperson'], true) ){
+                throw new Exception('unauthorized user');
+            }
+             http_response_code(202);
+            echo json_encode([
+                'success' => true,
+                'message' => 'dashboard access success',
+                'user' => $user,
+                'isUserAuthorized' =>  'authorized',
+                ]);
+            }catch(Exception $e){
+                 http_response_code(404);
+                echo json_encode([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                    'isUserAuthorized' => 'unauthorized',
+                    'isOtpVerified' => $user['isVerified'],
+                   
+                ]);
+            }
         }
 
-        require_once __DIR__ . '/../views/dashboard/SuperAdminDashboard.php';  
-
-    }
-    
 }

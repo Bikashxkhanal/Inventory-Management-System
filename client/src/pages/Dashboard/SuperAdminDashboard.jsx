@@ -2,28 +2,28 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {verifyUserType} from "../../Stores/authThunk.js";
+import { replace, useNavigate } from "react-router-dom";
+import { DashboardLayout, MainContentLayout ,SideBarLayout } from "../../Components/index.js";
 
 
 
 
  const SuperAdminDashboard = () => {
+    const navigate = useNavigate();
+    const {user, authStatus} = useSelector((state) => state.auth );
 
-    const dispatch = useDispatch();
-    const {user, isAuthenticated, permissions} = useSelector((state) => state.auth);
-        useEffect(()=> {
-            console.log("Bikash");
-            dispatch(verifyUserType());
-        }, []);
+   if(authStatus ===  'loading' || authStatus === 'idle'){
+    return <div>Loading...</div>
+   }
 
-
-
+   if(authStatus === 'authenticated'){
     return (
-        <>
-        Bikash khanal
-        {isAuthenticated && <p>this user is authencticated</p>}
-       
-        </>
+        <DashboardLayout>
+            <MainContentLayout />
+            <SideBarLayout />
+        </DashboardLayout>
     )
+   }
  }
-
+ 
  export default SuperAdminDashboard;

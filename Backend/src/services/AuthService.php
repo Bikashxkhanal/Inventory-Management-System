@@ -122,11 +122,9 @@
             //db Call   
           $userInfo = $this->userModel->getByEmail($mail);
 
-               if($userInfo === false){
+               if($userInfo === false || !$userInfo){
                   throw new DomainException('No user of such email');
                }
-                   
-               
         
          if(!password_verify($password, $userInfo['user_password_hash'])){
             throw new DomainException("wrong password");
@@ -136,13 +134,25 @@
          // $user['user_name'] = $userInfo['user_fname']. " " . $userInfo['user_lname'];
          // $user['user_role'] = $userInfo['user_role'];
 
+          if($userInfo['user_role'] === 'superadmin'){
+            $permissions  = ['add admin', 'delete admin'];
+         }
+
          $user = [
+            'identity' => [
             'user_id' => $userInfo['user_id'],
             'user_name' => $userInfo['user_fname'] . " " . $userInfo['user_lname'],
             'user_role' => $userInfo['user_role'],
             'companyId' => 10005,
+            'user_email' => $userInfo['user_email']
+            ],
+            'isVerified' => true,
+            'permissions' => $permissions,
+
 
          ];
+
+        
 
         try {
          $this->sessionService->createUserSession($user);
@@ -194,6 +204,8 @@
 
         }
 
+        $user['isVerified'] = true;
+
                 //hasing password
         $user['hashedPwd'] = password_hash($user['password'], PASSWORD_BCRYPT);
         //geneate otp code and store it in redis (if needed)
@@ -208,7 +220,7 @@
          throw new DomainException($e->getMessage());
       }
      
-      $this->sessionService->createSuperAdminSession($user);
+      $this->sessionService->createUserSession($user);
          
         //mail service 
       //   $mailer = createMailer();
@@ -254,6 +266,20 @@
             }catch(Exception $e){
                throw new Exception($e->getMessage());
             }
+        }
+
+
+        public function logout() {
+          $user =  $this->sessionService->hasThisKey('user');
+           if($user === false){
+            throw new Exception('no user');
+           }
+          $isUserDeleted =  $this->sessionService->delete('user');
+          if($isUserDeleted === false){
+            throw new Exception("Error Processing Request" );
+   
+          }
+          return true;
         }
 
        

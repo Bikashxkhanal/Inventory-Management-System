@@ -17,6 +17,9 @@ import OtpInput from "./OtpVerification/OtpInput";
 import EmailOtpVerification from "./OtpVerification/EmailOtpVerification";
 import Protected from "./protectedRoute/ProtectedRoute";
 import SuperAdminVerification from "./SignUp/SuperAdminVerification";
+import DashboardLayout from "./Dashboard/Layout/DashboardLayout";
+import MainContentLayout from "./Dashboard/Layout/MainContentLayout";
+import SideBarLayout from "./Dashboard/Layout/SideBarLayout";
 export {
     Container, 
     InputBox,
@@ -33,5 +36,10 @@ export {
     EmailOtpVerification,
     Protected,
     SuperAdminVerification,
+
+
+    DashboardLayout,
+    MainContentLayout,
+    SideBarLayout,
     
 };

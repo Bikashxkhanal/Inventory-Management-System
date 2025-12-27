@@ -4,13 +4,11 @@ import { act } from "react";
 //register the business , login into system , OTP verification 
 
 const initialState = {
-    company: {
-        companyId : null,
-        companyName: null,
-        companyEmail: null,
-        companyNumber: null,
-    },
+        authStatus : 'idle', // idle, loading, authenticated , unauthenticated
+  
     user: {
+         companyId : null,
+        companyName: null,
         user_id : null,
         user_name : null,
         user_role : null,
@@ -21,6 +19,9 @@ const initialState = {
     error : null,
     isAuthenticated : false,
     isOtpVerified: false,
+    status : null,
+    isAuthorized: null,
+    message : null,
 }
 
 const authSlice = createSlice({
@@ -50,29 +51,38 @@ const authSlice = createSlice({
             state.loading =false;
             state.user = action.payload;
             state.isAuthenticated = true
+            state.isAuthorized = 'authorized';
+           
         },
 
         registerUserFail : (state, action)=> {
             state.loading = false;
             state.error = action.payload;
+            state.status = 'unauthorized'
+             state.isAuthorized = 'unauthorized';
         },
 
         loginStart: (state)=>{
             state.loading = true;
+            state.authStatus = 'loading'
+           
         },
 
         loginSucess : (state, action)=>{
             state.loading = false;
-            state.user = action.payload.user;
-            // state.token = action.payload.token;
-            state.isAuthenticated = true;
-            state.company = action.payload.company;
-            state.isOtpVerified = true;
+            state.user = action.payload.user.identity;
+            state.isAuthenticated = action.payload.user.isAuthenticated;
+            state.isAuthorized = action.payload.isAuthorized
+            state.isOtpVerified = action.payload.user.isAuthenticated;
+            state.permissions = action.payload.user.permissions
+            state.authStatus = 'authenticated'
         },
 
         loginFail : (state, action)=>{
             state.loading = false;
             state.error = action.payload;
+            state.status = 'unauthorized'
+            state.authStatus = 'unauthenticated'
         },
 
         otpStart : (state)=>{
@@ -88,36 +98,45 @@ const authSlice = createSlice({
             state.error = action.payload;
         },
 
-        dashboardAccessStart: (state) => {
+        getUserMeStart: (state) => {
             state.loading = true;
+            state.authStatus = 'loading';
 
         },
 
-        updateRoleaftDashSuccess : (state, action) => { // update role after success 
+        getUserMeFail : (state , action) => {
+            state.authStatus = 'unauthenticated'
             state.loading = false;
-            state.user.user_role = action.payload;
-           
+            
+            state.isAuthorized  = 'unauthorized'
         },
 
-        updatePrmsaftDashSuccess : (state, action) => { // update permissions after success 
+        getMyInfoSuccess : (state, action )=> {
+            state.authStatus = 'authenticated'  
             state.loading = false;
-            state.permissions = action.payload;
+            state.user = action.payload.user.identity;
+            state.isAuthenticated = action.payload.user.isAuthenticated;
+            state.isAuthorized = action.payload.isAuthorized
+            state.isOtpVerified = action.payload.user.isAuthenticated;
+            state.permissions = action.payload.user.permissions
+            
         },
 
+        logoutSuccess : (state, action) => {
+            state.message = action.payload;
 
-        dashboardAccessFail : (state) => {
-            state.loading = false;
         },
 
-        isUserAuthenticated : (state, action) => {
-            state.isAuthenticated = action.payload;
+        logoutFail : (state, action) => {
+            state.error = action.payload.message;
+            
         }
 
     }
 
 })
 
-export const {registerUserStart, registerUserSuccess, registerUserFail,
-    registerCompanyStart, registerCompanySuccess, registerCompanyFail, loginStart, loginSucess, loginFail, otpStart, otpSuccess, otpFail, dashboardAccessFail, dashboardAccessStart, updatePrmsaftDashSuccess, updateRoleaftDashSuccess, isUserAuthenticated}  = authSlice.actions;
+export const {registerUserStart, registerUserSuccess,isOtpVerified, registerUserFail,
+    registerCompanyStart, registerCompanySuccess, registerCompanyFail, loginStart, loginSucess, loginFail, otpStart, otpSuccess, otpFail, getUserMeFail, getUserMeStart , getMyInfoSuccess ,logoutSuccess, logoutFail}  = authSlice.actions;
 
 export default authSlice.reducer;

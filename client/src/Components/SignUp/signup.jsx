@@ -17,17 +17,17 @@ function SignupComponent(){
 
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-  const {company, loading, error} = useSelector((state) => state.auth);
+  const {user, loading, error} = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   //navigation to OTP-verification Page
 
   useEffect(()=> {
-    if(company.companyId){
+    if(user.companyId && user.user_role === 'superadmin'){
       navigate('/signup/email-otp-verification');
     }
 
-  }, [ company.companyId, navigate]);
+  }, [ user.companyId, navigate]);
 
   const handleChange = (e) => { 
     setFormData({

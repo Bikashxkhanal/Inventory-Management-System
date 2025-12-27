@@ -46,12 +46,11 @@ export const loginAPI = async (loginData) => {
     let data = {};
     try {
       console.log(response);
-
       data = await response.json();
-      console.log(data);
     } catch (e) {
       data = { success: false, message: "Invalid server response " };
     }
+    console.log(data);
     return { response, data };
   } catch (networkError) {
     return {
@@ -88,14 +87,64 @@ export const userVerifyAPI = async () => {
       },
     });
 
+    console.log(response);
+
+    const contentType = response.headers.get("content-type");
+
     let data = {};
 
     try {
-      data = await response.text();
-    } catch (err) {
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        data = await response.text();
+        return {
+          response,
+          data: {
+            success: false,
+            message: "server didnot return json data",
+          },
+        };
+      }
+    } catch (e) {
       return (data = { success: false, message: "invalid server response" });
     }
     console.log(data);
+    return { response, data };
+  } catch (networkError) {
+    return {
+      response: null,
+      data: { success: false, message: networkError.message },
+    };
+  }
+};
+
+export const logoutAPI = async () => {
+  try {
+    const response = await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+
+      headers: {
+        Accept: "application/json",
+      },
+    });
+     console.log(response);
+     let data = {}
+
+
+    try {
+    data = await response.json();
+    console.log(data);
+    } catch (err) {
+      return {
+        response,
+        data: {
+          success: false,
+          message: "failed to return json",
+        },
+      };
+    }
     
     return { response, data };
   } catch (networkError) {

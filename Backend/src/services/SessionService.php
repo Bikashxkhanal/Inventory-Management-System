@@ -8,10 +8,23 @@
         }
          public function createUserSession($user){
             $this->session->start();
-            $this->session->set('user_id', $user['user_id']);
-            $this->session->set('user_role', $user['user_role']);
-            $this->session->set('user_name', $user['user_name']);
-            $this->session->set('companyId', $user['companyId'] );
+            $this->session->set('user', [
+                'identity' => [
+                'user_id' => $user['identity']['user_id'],
+                'user_role' => $user['identity']['user_role'],
+                'user_name' => $user['identity']['user_name'],
+                'companyId' => $user['identity']['companyId'],
+                'user_email' => $user['identity']['user_email'],
+                ], 
+                'permissions' => $user['permissions'],
+                'isAuthenticated' => $user['isVerified'],
+
+            ]);
+
+
+            // $this->session->set('user_role', $user['user_role']);
+            // $this->session->set('user_name', $user['user_name']);
+            // $this->session->set('companyId', $user['companyId'] );
             
             
         }

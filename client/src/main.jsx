@@ -55,9 +55,10 @@ import SuperAdminDashboard from './pages/Dashboard/SuperAdminDashboard.jsx'
         {
           path : '/dashboard',
           element : (
-            <Protected >
+           <Protected >
               <SuperAdminDashboard />
-               </Protected>
+              </Protected>
+             
           )
         }
       ]

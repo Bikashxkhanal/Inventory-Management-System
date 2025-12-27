@@ -11,10 +11,11 @@ import {
   otpStart,
   otpSuccess,
   otpFail,
-  updatePrmsaftDashSuccess,
-  updateRoleaftDashSuccess,
-  dashboardAccessFail,
-  dashboardAccessStart,
+  getUserMeFail,
+  getUserMeStart,
+  getMyInfoSuccess,
+  logoutFail, 
+  logoutSuccess
 } from "./authSlice";
 
 import {
@@ -23,6 +24,7 @@ import {
   EmailOtpVerificationAPI,
   companyregisterAPI,
   userVerifyAPI,
+  logoutAPI,
 } from "../services/api";
 
 const BASE_URL = `http://localhost/PROJECTS/INVENTORY-MANAGEMENT-SYSTEM/backend/public`;
@@ -61,7 +63,6 @@ export const registerUser = (formData) => async (dispatch) => {
       throw new Error(data.message || "Registration Failed");
     }
 
-    window.location.href = "/dashboard";
     dispatch(registerUserSuccess(data.user));
   } catch (error) {
     dispatch(registerUserFail(error.message));
@@ -109,11 +110,11 @@ export const emailOtp = (emailOtp) => async (dispatch) => {
 };
 
 export const verifyUserType = () => async (dispatch) => {
-    console.log("verify-user");
-    
   try {
-    dispatch(dashboardAccessStart());
+    dispatch(getUserMeStart());
     const { response, data } = await userVerifyAPI();
+    console.log(data);
+
     if (!response.ok) {
       throw new Error(data.message || "cannot verify user");
     }
@@ -121,14 +122,28 @@ export const verifyUserType = () => async (dispatch) => {
     if (!data.success) {
       throw new Error(data.message || "cannot verify user");
     }
-    console.log(data);
-    
-    dispatch(updateRoleaftDashSuccess(data.user_role));
-    dispatch(updatePrmsaftDashSuccess(data.authorizedActions));
-    dispatch(isUserAuthenticated(data.isUserAuthenticated));
+    dispatch(getMyInfoSuccess(data));
   } catch (err) {
-   dispatch( dashboardAccessFail());
-   dispatch(isUserAuthenticated(data.isUserAuthenticated));
-    alert(err.message);
+    console.log(err.message);
+
+    dispatch(getUserMeFail());
+  }
+};
+
+export const logout = () => async (dispatch) => {
+  try {
+
+    const { response, data } = await logoutAPI();
+    if (!response.ok) {
+      throw new Error("failed to logout");
+    }
+    if (!data.success) {
+      throw new Error("failed to logout");
+    }
+
+    window.location.href = '/login';
+    dispatch(logoutSuccess(data.message));
+  } catch (err) {
+    dispatch(logoutFail(err.message));
   }
 };

@@ -14,8 +14,8 @@
 
         public function create($user){
             global $pdo;
-            $stmt = $pdo->prepare("INSERT INTO sys_user (user_fname, user_lname, user_role, user_email, user_phoneNo, user_password_hash) VALUES (?, ?, ? ,? , ?, ?)");
-            $stmt->execute([$user['fname'], $user['lname'], $user['role'], $user['email'], $user['phnNbr'], $user['hashedPwd']]);
+            $stmt = $pdo->prepare("INSERT INTO sys_user (user_fname, user_lname, user_role, user_email, user_phoneNo, user_password_hash) VALUES (?, ?, ? ,? , ?,? , ?)");
+            $stmt->execute([$user['fname'], $user['lname'], $user['role'], $user['isVerified'], $user['email'], $user['phnNbr'], $user['hashedPwd']]);
             
         }
 
