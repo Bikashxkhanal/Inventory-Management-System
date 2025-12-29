@@ -2,23 +2,19 @@
 namespace App\Domain\InputValidation;
 
 use App\Contracts\InputValidation;
+use App\Domain\InputValidation\ValidationMethods;
 
 class loginValidation extends InputValidation{
-    public function validate(array $input): array|bool{
-             function validatePassword($password): bool|string{
-            if(!isset($password)) return false;
-           $password =  trim($password);
-            if(strlen($password)< 8 || strlen($password)> 16) return false;
-            if(!preg_match('/[A-Z]/', $password))return false;
-            if(!preg_match('/[a-z]/', $password)) return false;
-            if(!preg_match('/[0-9]/', $password)) return false;
-            if(!preg_match('/[\W]/',$password)) return false;
-            return $password;
-        }
+    private ValidationMethods $validationMethod ;
+    public function __construct(){
+        $this->validationMethod = new ValidationMethods();
 
+    }
+    public function validate(array $input): array|bool{
+         
         $validatedInput = [
-            'email' => filter_var(trim($input['email']) ?? '', FILTER_VALIDATE_EMAIL),
-            'password' => validatePassword($input['password']),
+            'email' => $this->validationMethod->email($input['email']),
+            'password' => $this->validationMethod->password($input['password']),
         ];
     
         if(in_array(false, $validatedInput, true)){

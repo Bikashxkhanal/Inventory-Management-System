@@ -9,6 +9,7 @@
     use App\Services\ValidationService;
     use App\Domain\Policies\UserCreationPolicy;
     use Exception;
+    use App\Domain\InputValidation\UserAccountCreationValidation;
 
     class UserService{
         private $sanitizationService;
@@ -22,13 +23,15 @@
         }
 
         public function userAccountCreationService($input){
+            //TODO add error handling here
             //sanitization 
             $userAccountsanitization = new UserAccountCreationSanitization();
              $sanitizedInput =  $this->sanitizationService->handleSanitization($input, $userAccountsanitization);
 
             //validation
             $userAccountValidation = new UserAccountCreationValidation();
-            $validatedInput = $this->validationService->handleValidation($sanitizedInput, $userAccountValidation); //must return either user values or false condition
+            $validatedInput = $this->validationService->handleValidation($sanitizedInput, $userAccountValidation); 
+            //must return either user values or false condition
 
             //check can user be created
             $userCreationPolicy = new UserCreationPolicy();

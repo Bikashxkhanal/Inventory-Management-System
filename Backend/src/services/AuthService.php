@@ -20,6 +20,9 @@
     use Exception;
     use InvalidArgumentException;
     use App\Services\SessionService;
+    use App\Domain\InputValidation\loginValidation;
+    use App\Domain\InputValidation\SuperAdminSignupValidation;
+    use App\Domain\InputValidation\BusinessAccountCreationValidation;
     
   
     
@@ -38,6 +41,7 @@
        private $companyModel;
        private $superAdminSignupSanitizer;
        private $sanitizationService;
+       private $validationService;
 
         public function __construct(
            
@@ -52,24 +56,20 @@
             $this->sessionService = new SessionService($sessionManager);
             
             $this->sanitizationService = new  SanitizationService();
+            $this->validationService = new ValidationService();
             
         }
         //creating new account for the company
         public function createCompanyAccount($input){
             //sanitization 
 
-            $businessSanitization = new CreateBusinessAccountSanitization();
-          $sanitizeInput =  $this->sanitizationService->handleSanitization($input, $businessSanitization);
-
-
-         //  $rawName =  SanitizationService::string($input['businessName']);
-         //  $rawEmail=   SanitizationService::email($input['businessMail']);
-         // $rawPhnNbr=   SanitizationService::string($input['phoneNumber']);
+         $businessSanitizer = new CreateBusinessAccountSanitization();
+         $sanitizedInput =  $this->sanitizationService->handleSanitization($input, $businessSanitizer);
 
          //validation
-        $company['name']=  ValidationService::name($sanitizeInput['name']);
-        $company['email']=  ValidationService::email($sanitizeInput['email']);
-        $company['phnNbr']= ValidationService::phnNbr($sanitizeInput['phoneNumber']);
+         $businessValidator = new BusinessAccountCreationValidation();
+        $company  = $this->validationService->handleValidation($sanitizedInput, $businessValidator);
+
 
         if($company['name'] === false){
            throw new InvalidArgumentException('Invalid name');
@@ -96,11 +96,6 @@
         //crate verification code store information in redis
         $this->otpService->generateOTP("COMPANY_SIGNUP", $company['email']);
         
-
-        //session for storing the otp type and otp mail
-      //   $this->session->set('otp_context', 'COMPANY_SIGNUP');
-      //   $this->session->set('otp_mail', $company['email']);
-
         $this->sessionService->createOtpTypeSession('COMPANY_SIGNUP', $company['email']);
 
         $mailer = createMailer();
@@ -119,27 +114,28 @@
         public function loginValidate($input){
             //sanitization for input
             $loginSanitization = new LoginSanitization();
-          $sanitizeInput =  $this->sanitizationService->handleSanitization($input, $loginSanitization);
+          $sanitizedInput =  $this->sanitizationService->handleSanitization($input, $loginSanitization);
 
             //validation for input
-            $mail = ValidationService::email($sanitizeInput['email']);
-            $password = ValidationService::password($sanitizeInput['password']);
+            $loginValidator  = new loginValidation();
+           $validatedUser =  $this->validationService->handleValidation($sanitizedInput, $loginValidator);
+            
 
-            if($mail === false) {
+            if($validatedUser['mail'] === false) {
                throw new InvalidArgumentException("Invalid name  format");}
 
-            if($password === false){
+            if($validatedUser['password'] === false){
                throw new InvalidArgumentException('invalid password format ');
             }
             
             //db Call   
-          $userInfo = $this->userModel->getByEmail($mail);
+          $userInfo = $this->userModel->getByEmail($validatedUser['mail']);
 
                if($userInfo === false || !$userInfo){
                   throw new DomainException('No user of such email');
                }
         
-         if(!password_verify($password, $userInfo['user_password_hash'])){
+         if(!password_verify($validatedUser['password'], $userInfo['user_password_hash'])){
             throw new DomainException("wrong password");
          }
 
@@ -157,11 +153,7 @@
             ],
             'isVerified' => true,
             'permissions' => $permissions,
-
-
          ];
-
-        
 
         try {
          $this->sessionService->createUserSession($user);
@@ -172,9 +164,7 @@
          //return the success = true with the role of the user
          return true;
 
-
         }
-
 
         public function superAdminSignup($input){
             //sanitize , validate , store in redis , send mail , then store in db
@@ -183,11 +173,8 @@
          $sanitizedInput= $this->sanitizationService->handleSanitization($input, $superAdminSignupSanitizer);
 
          //validation
-        $user['fname']  = ValidationService::name($sanitizedInput['firstName']);
-        $user['lname']  = ValidationService::name($sanitizedInput['lastName']);
-         $user['email']=  ValidationService::email($sanitizedInput['email']);
-        $user['phnNbr']=  ValidationService::phnNbr($sanitizedInput['phoneNumber']);
-        $user['password'] = ValidationService::password($sanitizedInput['password']);
+         $superAdminValidator = new SuperAdminSignupValidation();
+        $user =  $this->validationService->handleValidation($sanitizedInput, $superAdminValidator);
         
 
         if($user['fname'] === false  || $user['lname'] === false){
@@ -213,31 +200,18 @@
 
                 //hasing password
         $user['hashedPwd'] = password_hash($user['password'], PASSWORD_BCRYPT);
-        //geneate otp code and store it in redis (if needed)
-      //   $this->tempUserInfo->addUserInfo("USER_SIGNUP", $user['email'], $user);
-      //   $this->otpService->generateOTP('USER_SIGNUP', $user['email']);
-
-      //   $this->sessionService->createOtpTypeSession('USER_SIGNUP', $user['email']);
-
+      
       try{
+         //$user['phnNbr'] , but current is $user['phoneNumber']
           $this->userModel->create($user);
       }catch(Exception $e){
          throw new DomainException($e->getMessage());
       }
      
       $this->sessionService->createUserSession($user);
-         
-        //mail service 
-      //   $mailer = createMailer();
-      //   $mailSender = new MailService($mailer);
-      //   $NotificatioinSerive = new NotificationService($mailSender);
-      //   $OtpMail = new OtpMail($user['email'], $this->redisStore->getOtp('USER_SIGNUP', $user['email']));
-      //   $NotificatioinSerive->notify($OtpMail);
-
         return true;
 
         }
-
         //method to validate otp 
         public function OtpValidate($input){ //expect both otp-code and useremail
             //get session otp context
