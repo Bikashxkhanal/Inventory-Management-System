@@ -2,6 +2,9 @@
 
     namespace App\Services;
 
+    use App\Domain\Sanitization\CreateBusinessAccountSanitization;
+    use App\Domain\Sanitization\LoginSanitization;
+    use App\Domain\Sanitization\SuperAdminSignupSanitization;
     use App\Domain\Session\SessionManager;
     use App\Models\CompanyModel;
     use App\Services\SanitizationService;
@@ -17,6 +20,7 @@
     use Exception;
     use InvalidArgumentException;
     use App\Services\SessionService;
+    
   
     
    
@@ -32,6 +36,8 @@
        private $sessionService;
 
        private $companyModel;
+       private $superAdminSignupSanitizer;
+       private $sanitizationService;
 
         public function __construct(
            
@@ -45,18 +51,25 @@
             $sessionManager = new SessionManager(); //that handles session using php 
             $this->sessionService = new SessionService($sessionManager);
             
+            $this->sanitizationService = new  SanitizationService();
+            
         }
         //creating new account for the company
         public function createCompanyAccount($input){
             //sanitization 
-          $rawName =  SanitizationService::string($input['businessName']);
-          $rawEmail=   SanitizationService::email($input['businessMail']);
-         $rawPhnNbr=   SanitizationService::string($input['phoneNumber']);
+
+            $businessSanitization = new CreateBusinessAccountSanitization();
+          $sanitizeInput =  $this->sanitizationService->handleSanitization($input, $businessSanitization);
+
+
+         //  $rawName =  SanitizationService::string($input['businessName']);
+         //  $rawEmail=   SanitizationService::email($input['businessMail']);
+         // $rawPhnNbr=   SanitizationService::string($input['phoneNumber']);
 
          //validation
-        $company['name']=  ValidationService::name($rawName);
-        $company['email']=  ValidationService::email($rawEmail);
-        $company['phnNbr']= ValidationService::phnNbr($rawPhnNbr);
+        $company['name']=  ValidationService::name($sanitizeInput['name']);
+        $company['email']=  ValidationService::email($sanitizeInput['email']);
+        $company['phnNbr']= ValidationService::phnNbr($sanitizeInput['phoneNumber']);
 
         if($company['name'] === false){
            throw new InvalidArgumentException('Invalid name');
@@ -105,12 +118,12 @@
         //login validation for the user
         public function loginValidate($input){
             //sanitization for input
-            $rawEmail = SanitizationService::email($input['username']);
-            $rawPassword = SanitizationService::password($input['password']);
+            $loginSanitization = new LoginSanitization();
+          $sanitizeInput =  $this->sanitizationService->handleSanitization($input, $loginSanitization);
 
             //validation for input
-            $mail = ValidationService::email($rawEmail);
-            $password = ValidationService::password($rawPassword);
+            $mail = ValidationService::email($sanitizeInput['email']);
+            $password = ValidationService::password($sanitizeInput['password']);
 
             if($mail === false) {
                throw new InvalidArgumentException("Invalid name  format");}
@@ -129,10 +142,6 @@
          if(!password_verify($password, $userInfo['user_password_hash'])){
             throw new DomainException("wrong password");
          }
-
-         // $user['user_id'] = $userInfo['user_id'];
-         // $user['user_name'] = $userInfo['user_fname']. " " . $userInfo['user_lname'];
-         // $user['user_role'] = $userInfo['user_role'];
 
           if($userInfo['user_role'] === 'superadmin'){
             $permissions  = ['add admin', 'delete admin'];
@@ -167,22 +176,18 @@
         }
 
 
-        public function signupValidate($input){
+        public function superAdminSignup($input){
             //sanitize , validate , store in redis , send mail , then store in db
             //sanitization
-         $rawfName=   SanitizationService::string($input['firstName']);
-         $rawlName=   SanitizationService::string($input['lastName']);
-         $rawEmail= SanitizationService::email($input['email']);
-         $rawPhnNbr= SanitizationService::string($input['phoneNumber']);
-         $rawPassword = SanitizationService::password($input['password']);
-         $user['role'] = SanitizationService::string($input['role']);
+        $superAdminSignupSanitizer = new SuperAdminSignupSanitization();
+         $sanitizedInput= $this->sanitizationService->handleSanitization($input, $superAdminSignupSanitizer);
 
          //validation
-        $user['fname']  = ValidationService::name($rawfName);
-        $user['lname']  = ValidationService::name($rawlName);
-         $user['email']=  ValidationService::email($rawEmail);
-        $user['phnNbr']=  ValidationService::phnNbr($rawPhnNbr);
-        $user['password'] = ValidationService::password($rawPassword);
+        $user['fname']  = ValidationService::name($sanitizedInput['firstName']);
+        $user['lname']  = ValidationService::name($sanitizedInput['lastName']);
+         $user['email']=  ValidationService::email($sanitizedInput['email']);
+        $user['phnNbr']=  ValidationService::phnNbr($sanitizedInput['phoneNumber']);
+        $user['password'] = ValidationService::password($sanitizedInput['password']);
         
 
         if($user['fname'] === false  || $user['lname'] === false){

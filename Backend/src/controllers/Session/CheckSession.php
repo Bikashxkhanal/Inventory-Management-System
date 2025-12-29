@@ -1,10 +1,10 @@
 <?php 
-namespace App\Controllers;
+namespace App\Controllers\Session;
 use App\Services\SessionService;
 use App\Domain\Session\SessionManager;
 use Exception;
 
-class DashboardController{
+class CheckSession{
   private  $sessionService;
     public function __construct(){
         $sessionManager = new SessionManager();

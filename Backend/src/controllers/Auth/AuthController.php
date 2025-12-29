@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Auth;
 use App\Domain\Session\SessionManager;
 use App\Services\AuthService;
 use App\Services\SessionService;
@@ -97,10 +97,10 @@ class AuthController
 
     }
 
-    public function signup($input)
+    public function superAdminSignup($input)
     {
         try {
-            $this->authenticate->signupValidate($input);
+            $this->authenticate->superAdminSignup($input);
             http_response_code(200);
             echo json_encode([
                 'success' => true,
@@ -109,7 +109,7 @@ class AuthController
                     'userName' => $input['firstName'] . '' . $input['lastName'],
                     'userEmail' => $input['email'],
                 ],
-                // 'message' => 'user registration successful',
+
             ]);
 
         } catch (InvalidArgumentException $e) {
@@ -133,8 +133,6 @@ class AuthController
         }
 
     }
-
-
     //otp validation for creating new bussiness account
     public function otpVerification($input)
     {
