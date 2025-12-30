@@ -10,15 +10,15 @@
         }
 
         public function createUserAccount($input){
-            try{
-                $this->userservice->accountCreationService($input);
+            // try{
+            //     $this->userservice->accountCreationService($input);
 
-                http_response_code(200);
-                echo json_encode([]);
+            //     http_response_code(200);
+            //     echo json_encode([]);
 
-            }catch(){
+            // }catch(){
 
-            }
+            // }
             
 
         }

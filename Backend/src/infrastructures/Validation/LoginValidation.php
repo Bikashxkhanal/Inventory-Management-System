@@ -1,8 +1,8 @@
 <?php 
-namespace App\Domain\InputValidation;
+namespace App\Infrastructures\Validation;
 
 use App\Contracts\InputValidation;
-use App\Domain\InputValidation\ValidationMethods;
+use App\Infrastructures\Validation\ValidationMethods;
 
 class loginValidation extends InputValidation{
     private ValidationMethods $validationMethod ;
@@ -10,17 +10,12 @@ class loginValidation extends InputValidation{
         $this->validationMethod = new ValidationMethods();
 
     }
-    public function validate(array $input): array|bool{
+    public function validate(array $input): array{
          
-        $validatedInput = [
+        return [
             'email' => $this->validationMethod->email($input['email']),
             'password' => $this->validationMethod->password($input['password']),
         ];
     
-        if(in_array(false, $validatedInput, true)){
-            return $validatedInput;  
-        }
-    
-    return false;
     }
 }

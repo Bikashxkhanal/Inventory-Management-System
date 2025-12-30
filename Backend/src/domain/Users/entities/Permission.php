@@ -1,6 +1,6 @@
 <?php 
 
-    namespace App\Domain\Entities;
+    namespace App\Domain\Users\Entities;
     class permission{
         private string $permission;
 

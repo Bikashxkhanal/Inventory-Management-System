@@ -1,7 +1,7 @@
 <?php
-    namespace App\Domain\Policies;
-    use App\Domain\Entities\Role;
-    use App\Domain\Entities\User;
+    namespace App\Domain\Users\Policies;
+    use App\Domain\Users\Entities\Role;
+    use App\Domain\Users\Entities\User;
     class UserCreationPolicy{
 
         //ADD LIMIT TO ADMIN CREATION TO COUNT 3 (LATER)

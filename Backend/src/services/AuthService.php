@@ -2,9 +2,9 @@
 
     namespace App\Services;
 
-    use App\Domain\Sanitization\CreateBusinessAccountSanitization;
-    use App\Domain\Sanitization\LoginSanitization;
-    use App\Domain\Sanitization\SuperAdminSignupSanitization;
+    use App\Infrastructures\Sanitization\CreateBusinessAccountSanitization;
+    use App\Infrastructures\Sanitization\LoginSanitization;
+    use App\Infrastructures\Sanitization\SuperAdminSignupSanitization;
     use App\Domain\Session\SessionManager;
     use App\Models\CompanyModel;
     use App\Services\SanitizationService;
@@ -20,9 +20,10 @@
     use Exception;
     use InvalidArgumentException;
     use App\Services\SessionService;
-    use App\Domain\InputValidation\loginValidation;
-    use App\Domain\InputValidation\SuperAdminSignupValidation;
-    use App\Domain\InputValidation\BusinessAccountCreationValidation;
+    use App\Infrastructures\Validation\loginValidation;
+    use App\Infrastructures\Validation\SuperAdminSignupValidation;
+    use App\Infrastructures\Validation\BusinessAccountCreationValidation;
+    
     
   
     
@@ -85,6 +86,10 @@
            throw new InvalidArgumentException('Invalid phone number');
         }
 
+        if(in_array(false, $company, true)){
+         throw new InvalidArgumentException('Invalid user information');
+        }
+
         //CHECK COMPANY EXISTANCE IN DB
         if($this->companyModel->isCompanyAccountExist($company['email'], $company['phnNbr'])){
          throw new DomainException('Company already exists');
@@ -105,11 +110,8 @@
         $NotificatioinSerive->notify($OtpMail);
 
         return true;
-
-
         }
 
-        
         //login validation for the user
         public function loginValidate($input){
             //sanitization for input
@@ -118,18 +120,21 @@
 
             //validation for input
             $loginValidator  = new loginValidation();
-           $validatedUser =  $this->validationService->handleValidation($sanitizedInput, $loginValidator);
-            
+           $validatedUser =  $this->validationService->handleValidation($sanitizedInput, $loginValidator);        
 
-            if($validatedUser['mail'] === false) {
-               throw new InvalidArgumentException("Invalid name  format");}
+            if($validatedUser['email'] === false) {
+               throw new InvalidArgumentException("Invalid email format");}
 
             if($validatedUser['password'] === false){
                throw new InvalidArgumentException('invalid password format ');
             }
+
+            if(in_array(false, $validatedUser, true)){
+               throw new InvalidArgumentException('invalid username or password');
+            }
             
             //db Call   
-          $userInfo = $this->userModel->getByEmail($validatedUser['mail']);
+          $userInfo = $this->userModel->getByEmail($validatedUser['email']);
 
                if($userInfo === false || !$userInfo){
                   throw new DomainException('No user of such email');
@@ -138,10 +143,15 @@
          if(!password_verify($validatedUser['password'], $userInfo['user_password_hash'])){
             throw new DomainException("wrong password");
          }
+      
+        $rolesWithPermission = require_once __DIR__ . '/../config/rolesandpermissions.php';
+      $roles = array_keys($rolesWithPermission['roles']);
 
-          if($userInfo['user_role'] === 'superadmin'){
-            $permissions  = ['add admin', 'delete admin'];
+          if(!in_array($userInfo['user_role'],$roles)){
+           throw new InvalidArgumentException('invalid role');
          }
+
+         $permissions = $rolesWithPermission['roles'][$userInfo['user_role']];
 
          $user = [
             'identity' => [
@@ -190,6 +200,10 @@
         }
 
         if(!$user['role']) throw new InvalidArgumentException('no role ');
+
+        if(in_array(false, $user, true)){
+         throw new InvalidArgumentException('Invalid user information');
+        }
 
         if($this->userModel->isUserExists($user['email'], $user['phnNbr'])){
          throw new DomainException('User already exists');

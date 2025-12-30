@@ -1,5 +1,5 @@
 <?php 
-namespace App\Domain\InputValidation;
+namespace App\Infrastructures\Validation;
 
 class ValidationMethods{
        public  function email($email){

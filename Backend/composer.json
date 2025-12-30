@@ -3,8 +3,8 @@
     "autoload": {
         "psr-4": {
             "App\\Services\\": "src/services/",
-            "App\\Controllers\\Auth" : "src/controllers/Auth/",
-            "App\\Controllers\\Session" : "src/controllers/Session/",
+            "App\\Controllers\\Auth\\" : "src/controllers/Auth/","App\\Controllers\\User\\" : "src/controllers/User/",
+            "App\\Controllers\\Session\\" : "src/controllers/Session/",
             "App\\Middlewares\\" : "src/middlewares/",
             "App\\Models\\" : "src/models/",
             "App\\Contracts\\" : "src/contracts/",
@@ -12,7 +12,12 @@
             "App\\Domain\\Mail\\": "src/domain/mail/",
             "App\\Infrastructures\\Cache\\" : "src/infrastructures/cache/",
             "App\\Routes\\": "src/routes/",
-            "App\\Domain\\Session\\": "src/domain/session/"
+            "App\\Domain\\Session\\": "src/domain/session/",
+            "App\\Domain\\Users\\Entities\\" : "src/domain/Users/entities/",
+            "App\\Domain\\Users\\Policies\\" : "src/domain/Users/policies/",
+            "App\\Infrastructures\\Validation\\" : "src/infrastructures/Validation/",
+            "App\\Infrastructures\\Sanitization\\" : "src/infrastructures/Sanitization/",
+            "App\\Services\\User\\" : "src/services/User/"
             
         }
     },

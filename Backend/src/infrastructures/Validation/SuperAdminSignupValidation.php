@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\Domain\InputValidation;
+namespace App\Infrastructures\Validation;
 
 use App\Contracts\InputValidation;
 use App\Domain\InputValidation\ValidationMethods;
@@ -10,17 +10,14 @@ class SuperAdminSignupValidation extends InputValidation{
     public function __construct(){
         $this->validate = new ValidationMethods();
     }
-    public function validate(array $input): array|bool{
+    public function validate(array $input): array{
 
-        $validatedInput = [
+        return [
             'firstName' => $this->validate->name($input['firstName']),
             'lastName' => $this->validate->name($input['lastName']),
             'email' => $this->validate->email($input['email']),
-            'phoneNumber' => $this->validate->phnNbr($input['phoneNumber']),
+            'phoneNumber' => $this->validate->phoneNumber($input['phoneNumber']),
             'password' => $this->validate->password($input['password']),
         ];
-        if(!in_array(false, $validatedInput, true))return $validatedInput;
-
-        return false;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 return [
     'roles' => [
-        'SUPER_ADMIN' => [
+        'superadmin' => [
             'CREATE_USER',
             'CREATE_VENDOR',
             'DELETE_USER',
@@ -11,7 +11,7 @@ return [
             'VIEW_STOCK'
     
         ],
-        'ADMIN' => [
+        'admin' => [
              'CREATE_USER',
              'GENERATE_REPORT',
              'VIEW_REPORT',
@@ -19,14 +19,14 @@ return [
             
 
         ],
-        'MANAGER' => [
+        'manager' => [
             'GENERATE_REPORT',
              'VIEW_REPORT',
              'CREATE_PO',
              'REVERSE_SALE',
              'VIEW_STOCK'
         ],
-        'SELLSPERSON' => [
+        'salesperson' => [
             'CREATE_SALE',
             'VIEW_STOCK'
 

@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\Domain\Sanitization;
+namespace App\Infrastructures\Sanitization;
 use App\Contracts\Sanitization;
 class CreateBusinessAccountSanitization extends Sanitization{
     public function sanitize(array $input): array{
@@ -12,4 +12,3 @@ class CreateBusinessAccountSanitization extends Sanitization{
     }
 
 }
-

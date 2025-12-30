@@ -1,6 +1,6 @@
 <?php 
 
-    namespace App\Domain\Sanitization;
+    namespace App\Infrastructures\Sanitization;
     use App\Contracts\Sanitization;
 
     class SuperAdminSignupSanitization extends Sanitization {

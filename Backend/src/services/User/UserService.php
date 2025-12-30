@@ -1,15 +1,15 @@
 <?php
     namespace App\Services\User;
-    use App\Domain\Entities\User;
-    use App\Domain\Sanitization\UserAccountCreationSanitization;
+    use App\Domain\Users\Entities\User;
+    use App\Infrastructures\Sanitization\UserAccountCreationSanitization;
     use App\Domain\Session\SessionManager;
     use App\Models\UserModel;
     use App\Services\SanitizationService;
     use App\Services\SessionService;
     use App\Services\ValidationService;
-    use App\Domain\Policies\UserCreationPolicy;
+    use App\Domain\Users\Policies\UserCreationPolicy;
     use Exception;
-    use App\Domain\InputValidation\UserAccountCreationValidation;
+    use App\Infrastructures\Validation\UserAccountCreationValidation;
 
     class UserService{
         private $sanitizationService;
@@ -59,9 +59,9 @@
 
             //create a log
 
-            $userCreationLogger = new UserCreationLogger();
-            $handleLogging = new LoggingService();
-            $handleLogging->createNewLog($userCreationLogger);
+            // $userCreationLogger = new UserCreationLogger();
+            // $handleLogging = new LoggingService();
+            // $handleLogging->createNewLog($userCreationLogger);
         }
     }
 

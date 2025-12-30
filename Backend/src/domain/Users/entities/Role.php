@@ -6,7 +6,7 @@
         private string $role;
       
 
-        public function __construct($role, $permissions){
+        public function __construct($role, ){
             $this->role = $role;
 
         }

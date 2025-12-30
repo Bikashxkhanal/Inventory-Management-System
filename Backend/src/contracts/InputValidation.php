@@ -3,7 +3,6 @@
 namespace App\Contracts;
 
 abstract class InputValidation{
-    abstract public function validate(array $input):array| bool;
-
+    abstract public function validate(array $input):array;
 
 }
