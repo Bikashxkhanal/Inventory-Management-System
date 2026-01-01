@@ -11,14 +11,19 @@
             $role = $creator->getRole();
             if(!in_array('CREATE_VENDOR', $this->rolesWithPermissions['roles'][$role] )) return false;
             return true;
-
-
         }
 
         public function canDeleteVendor(User $creator) : bool{
             
             $role = $creator->getRole();
             if(!in_array('DELETE_VENDOR', $this->rolesWithPermissions['roles'][$role] )) return false;
+            return true;
+
+        }
+
+        public function canUpdateVendor(User $creator){
+            $role = $creator->getRole();
+            if(!in_array('UPDATE_VENDOR', $this->rolesWithPermissions['roles'][$role] )) return false;
             return true;
 
         }
