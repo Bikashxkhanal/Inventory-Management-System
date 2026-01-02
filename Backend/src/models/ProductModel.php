@@ -36,6 +36,7 @@ class ProductModel{
             $params[] = $product->getStatus();
             $fields[] = "product_status = ?";
         }
+        $params[] = $product->getId();
 
        $stmt= $pdo->prepare("UPDATE product SET" . 
         implode(', ' , $fields). 

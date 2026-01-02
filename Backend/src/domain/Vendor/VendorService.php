@@ -9,7 +9,7 @@
         public function __construct(private VendorModel $model){}
         public function createVendor(Vendor $vendor){
             try{
-               if($this->model->findById($vendor->getId())){
+               if($this->model->isVendorExist($vendor)){
                 throw new DomainException('Vendor already exists');
                } ;
 
@@ -22,7 +22,7 @@
 
         public function deleteVendor(Vendor $vendor){
             try{
-                if(!$this->model->findById($vendor->getId())){
+                if(!$this->model->isVendorExist($vendor)){
                 throw new DomainException('No such vendor to delete');
                } ;
 
@@ -36,7 +36,7 @@
 
         public function updateVendor(Vendor $vendor){
             try{
-                if(!$this->model->findById($vendor->getId())){
+                if(!$this->model->isVendorExist($vendor)){
                     throw new DomainException('cannot find user');
                 }
                 $this->model->update($vendor);

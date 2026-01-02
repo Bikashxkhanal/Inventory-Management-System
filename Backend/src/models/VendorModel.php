@@ -31,14 +31,49 @@
             }
 
             $pdo->commit();
-            return $productId;
-        
-            
+            return $productId;     
         }
         public function update(Vendor $vendor){
             global $pdo;
+            $queries = [];
+            $params = [];
+             $name = $vendor->getName();
+             $email = $vendor->getEmail();
+             $postal = $vendor->getPostalCode();
+             $contact = $vendor->getPhoneNumber();
+
+             if($name){
+                $queries[] = "vendor_name = ?";
+                $params[]= $name;
+             }
+             if($email){
+                $queries = "vendor_email = ?";
+                $params = $email;
+             }
+
+             if($postal){
+                $queries = "vendor_postal_code = ?";
+                $params = $postal;
+             }
+
+             if($contact){
+                $queries = "vendor_contact = ?";
+                $params = $contact;
+             }
+            $params[] =  $vendor->getId();
+
+      
             $pdo->beginTransaction();
-            //FIND OUT THE UPDATABLE VALUE
+           $stmt=  $pdo->prepare("UPDATE vendor SET " . implode(', ', $queries) . "WHERE vendor_id = ?" );
+           $stmt->execute($params);
+
+           if($stmt->rowCount() === 0){
+            $pdo->rollBack();
+            throw new DomainException('couldnot able to update vendor details');
+           }
+
+           $pdo->commit();
+
         }
         public function delete(int $id){
             global $pdo;

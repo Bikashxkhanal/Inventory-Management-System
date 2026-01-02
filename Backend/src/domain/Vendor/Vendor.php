@@ -10,13 +10,13 @@
         private $postalCode;
 
 
-        public function __construct(int $id, string $name, string $address, string $phoneNumber, string $email, string $postalCode){
-            $this->id = $id;
-            $this->name = $name;
-            $this->address = $address;
-            $this->phoneNumber = $phoneNumber;
-            $this->email = $email;
-            $this->postalCode = $postalCode;
+        public function __construct(array $vendorDetails){
+            $this->id = $vendorDetails['id'] ?? null;
+            $this->name = $vendorDetails['name'];
+            $this->address = $vendorDetails['address'];
+            $this->phoneNumber = $vendorDetails['phoneNumber'];
+            $this->email = $vendorDetails['email'];
+            $this->postalCode = $vendorDetails['postalCode'];
         }
 
         public function changeName(string $changeName){$this->name = $changeName;}
