@@ -12,7 +12,7 @@
     use Exception;
 
 
-    class VendorService{
+    class VendorServices{
         private $sanitizer;
         private $validator;
         private $vendorPolicy;

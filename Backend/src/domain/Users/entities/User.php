@@ -2,7 +2,6 @@
 
     namespace App\Domain\Users\Entities;
     use App\Domain\Users\Entities\Role;
-    use App\Domain\Users\Entities\Permission;
 
     class User{
         private string $email;

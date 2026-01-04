@@ -3,79 +3,85 @@
 
     use App\Domain\PurchaseOrder\PurchaseOrder;
     use DomainException;
-    use DOMException;
+    
     class PurchaseOrderModel{
-        public function create(PurchaseOrder $po){
+        public function addPurchaseOrder(array $poDetails){
             global $pdo;
-            $pdo->beginTransaction();
-            $stmt = $pdo->prepare("INSERT INTO purchaseOrder () VALUES ()");
-            $stmt->execute([]);
-           $lastInsertId = $pdo->lastInsertId();
-           if(!$lastInsertId) {
-            $pdo->rollBack();
+            $stmt = $pdo->prepare("INSERT INTO purchaseOrder (po_title, po_discription, vendor_id, created_by) VALUES (?, ?, ? , ?)");
+            $stmt->execute($poDetails);
+           $lastInsertedPoId = $pdo->lastInsertId();
+           if(!$lastInsertedPoId) {
             throw new DomainException('cannot create purchase order');
            }
 
-           $pdo->commit();
-           return $lastInsertId;
+           return $lastInsertedPoId;
 
         }
-        public function delete(int $poId){
-            global $pdo;
-            $pdo->beginTransaction();
-            $stmt =  $pdo->prepare("");
-            $stmt->execute([]);
-           $affectedRow = $stmt->rowCount();
 
-          
+        public function addPoItems(array $poItemDetails){
+            try{
+                global $pdo;
+                $stmt = $pdo->prepare("INSERT INTO purchase_order_items (purchase_order_id, product_id, quantity, proposed_unit_price) VALUES (?,?,?,?)");
+                if(!$stmt->execute($poItemDetails)){
+                    throw new DomainException('failed to add sell items');
+                }
+            }
+        }
+
+        //soft delete
+        public function deletePo(int $poId){
+            global $pdo;
+            $stmt =  $pdo->prepare("UPDATE purchase_order SET is_deleted = ? WHERE po_id = ? ");
+            $stmt->execute([true, $poId]);
+           $affectedRow = $stmt->rowCount();   
             if($affectedRow ===  0 || $affectedRow > 1 ){
-                $pdo->rollBack();
                 throw new DomainException('couldnot delete po');
             }
 
-            $pdo->commit();
         }
-        public function updateTitle(string $title){
+
+        //soft delete for purchase order items
+        public function deletePoItems(int $poId){
             global $pdo;
-            $pdo->beginTransaction();
-           $stmt = $pdo->prepare("");
-           $stmt->execute([]);
-        $affectedRow =   $stmt->rowCount();
+           $stmt =  $pdo->prepare("UPDATE purchase_order_items SET is_deleted = ? WHERE purchase_order_id = ? ");
+         if($stmt->execute([true, $poId ])){
+            throw new DomainException('Failed to delete item');
+         };
+        }
+        public function updateTitle(string $title, int $poId){
+            global $pdo;
+           $stmt = $pdo->prepare("UPDATE purchase_order SET po_title = ? WHERE po_id = ? ");
+           $stmt->execute([$title, $poId]);
+            $affectedRow =   $stmt->rowCount();
 
         if($affectedRow == 0 || $affectedRow > 1){
-            $pdo->rollBack();
             throw new DomainException("couldnot update po");
         }
 
-        $pdo->commit();
 
         }
-           public function updateDiscription(string $discription){
+           public function updateDiscription(string $discription, int $poId){
             global $pdo;
-            $pdo->beginTransaction();
-           $stmt = $pdo->prepare("");
-           $stmt->execute([]);
-        $affectedRow =   $stmt->rowCount();
+           $stmt = $pdo->prepare("UPDATE purchase_order SET po_discription = ? WHERE po_id = ? ");
+           $stmt->execute([$discription, $poId]);
+            $affectedRow =   $stmt->rowCount();
 
         if($affectedRow == 0 || $affectedRow > 1){
-            $pdo->rollBack();
-            throw new DomainException("couldnot update po");
+            throw new DomainException("failed to update po");
         }
 
-        $pdo->commit();
-
         }
-        public function findById(int $id){
+        public function findPoById(int $id){
             global $pdo;
-           $stmt = $pdo->prepare("");
-           $stmt->execute([]);
+           $stmt = $pdo->prepare("SELECT * FROM purchase_order WHERE po_id = ? AND is_deleted = ? ");
+           $stmt->execute([$id, false]);
             return $stmt->fetch(\PDO::FETCH_ASSOC);
 
         }
         public function isPurchaseOrderExist(int $id){
             global $pdo;
-           $stmt =  $pdo->prepare("");
-           $stmt->execute([]);
+           $stmt =  $pdo->prepare("SELECT 1 FROM purchase_order WHERE po_id = ? AND is_deleted = ? LIMIT 1");
+           $stmt->execute([$id, false]);
            return $stmt->fetchColumn() !== false;
             
         }

@@ -2,7 +2,7 @@
 namespace App\Infrastructures\Validation;
 
 use App\Contracts\InputValidation;
-use App\Domain\InputValidation\ValidationMethods;
+use App\Infrastructures\Validation\ValidationMethods;
 
 class UserAccountCreationValidation extends InputValidation{
     private ValidationMethods $validate;
