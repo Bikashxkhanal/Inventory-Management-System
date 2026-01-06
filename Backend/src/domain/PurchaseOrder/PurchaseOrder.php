@@ -1,10 +1,11 @@
-<?php 
+<?php
 namespace App\Domain\PurchaseOrder;
 use App\Domain\Products\Product;
 use App\Domain\Users\Entities\User;
 use Exception;
 
-class PurchaseOrder{
+class PurchaseOrder
+{
     private $purchaseOrderId;
     private $purchaseOrderTitle;
     private $purchaseOrderDiscription;
@@ -12,8 +13,9 @@ class PurchaseOrder{
     private $purchaseOrderUpdatedAt;
     private $vendorId;
     private array $purchaseOrderItems = [];
-   private int $createdBy;
-    public function __construct(array $poDetails){
+    private int $createdBy;
+    public function __construct(array $poDetails)
+    {
         $this->purchaseOrderId = $poDetails['po_id'] ?? null;
         $this->purchaseOrderTitle = $poDetails['po_title'];
         $this->purchaseOrderDiscription = $poDetails['po_discription'];
@@ -23,75 +25,86 @@ class PurchaseOrder{
         $this->createdBy = $poDetails['po_creatorId'];
 
     }
-    public function getPoId(){
+    public function getPoId()
+    {
         return $this->purchaseOrderId;
-
     }
 
-    public function getPoTitle(){
+    public function getPoTitle()
+    {
         return $this->purchaseOrderTitle;
     }
 
-    public function getPoDiscription(){
+    public function getPoDiscription()
+    {
         return $this->purchaseOrderDiscription;
     }
 
-    public function getPoCreatedTime(){
+    public function getPoCreatedTime()
+    {
         return $this->purchaseOrderCreatedAt;
     }
 
-    public function getPoLastUpdatedTime(){
+    public function getPoLastUpdatedTime()
+    {
         return $this->purchaseOrderUpdatedAt;
     }
 
-    public function getVendorId(){
+    public function getVendorId()
+    {
         return $this->vendorId;
     }
 
-    public function getCreatorId(){
+    public function getCreatorId()
+    {
         return $this->createdBy;
-
     }
 
-    public function addItems(PurchaseOrderItems $item){
+    public function addItems(PurchaseOrderItems $item)
+    {
         $this->purchaseOrderItems[] = $item;
     }
 
-    public function updateTitle(string $updatedTitle){
+    public function updateTitle(string $updatedTitle)
+    {
         $this->purchaseOrderTitle = $updatedTitle;
     }
 
-    public function updateDiscription(string $updatedDiscription){
+    public function updateDiscription(string $updatedDiscription)
+    {
         $this->purchaseOrderDiscription = $updatedDiscription;
     }
 
-       public function updateItemQuantity(int $productId, int $quantity){
-       foreach ($this->purchaseOrderItems as $purchaseOrderItem) {
-            if($purchaseOrderItem->getProductId() === $productId){
+    public function updateItemQuantity(int $productId, int $quantity)
+    {
+        foreach ($this->purchaseOrderItems as $purchaseOrderItem) {
+            if ($purchaseOrderItem->getProductId() === $productId) {
                 $purchaseOrderItem->updateQuanity($quantity);
                 return;
             }
 
-       }
-
-       throw new  Exception("product not found");
-       
         }
-        public function updateUnitPrice(int $productId, float $unitPrice){
-           foreach($this->purchaseOrderItems as $item ){
-            if($item->getProductId() === $productId){
+
+        throw new Exception("product not found");
+
+    }
+    public function updateUnitPrice(int $productId, float $unitPrice)
+    {
+        foreach ($this->purchaseOrderItems as $item) {
+            if ($item->getProductId() === $productId) {
                 $item->updateUnitPrice($unitPrice);
                 return;
             }
-           }
-
-           throw new Exception('couldonot found product');
         }
 
-    public function getPurchaseOrderDetails(){
+        throw new Exception('couldonot found product');
+    }
+
+    public function getPurchaseOrderDetails()
+    {
         return [
             'po_id' => $this->purchaseOrderId,
-            'po_title'=>$this->purchaseOrderTitle ,
+            'po_title' => $this->purchaseOrderTitle,
             'po_discription' => $this->purchaseOrderDiscription,
             'po_createdTime' => $this->purchaseOrderCreatedAt,
             'po_lastUpdatedTime' => $this->purchaseOrderUpdatedAt,
@@ -101,9 +114,10 @@ class PurchaseOrder{
         ];
     }
 
-    public function getPoDetailsForDb(): array{
+    public function getPoDetailsForDb(): array
+    {
         return [
-            'po_title'=>$this->purchaseOrderTitle ,
+            'po_title' => $this->purchaseOrderTitle,
             'po_discription' => $this->purchaseOrderDiscription,
             'po_vendorId' => $this->vendorId,
             'po_creator' => $this->createdBy,
@@ -111,9 +125,10 @@ class PurchaseOrder{
 
     }
 
-    public function getPoItemsList(): array{
+    public function getPoItemsList(): array
+    {
         return $this->purchaseOrderItems;
     }
 
-    
+
 }

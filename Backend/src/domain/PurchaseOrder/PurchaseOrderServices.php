@@ -15,7 +15,7 @@ class PurchaseOrderServices
         try {
             $pdo->beginTransaction();
             if ($this->model->isPurchaseOrderExist($this->po->getPoId())) {
-                throw new DomainException('purchase order exists');
+                throw new DomainException('purchase order already exists');
             }
             $poId = $this->model->addPurchaseOrder($this->po->getPoDetailsForDb());
 

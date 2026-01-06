@@ -23,7 +23,7 @@ class ProductServices{
         $this->model->updateProduct($product);
     }
     public function createProduct(Product $product){
-         if(!$this->model->getById($product->getId())){
+         if(!$this->model->isProductExistByName($product->getName())){ //use get by name fuction
             throw new DomainException('cannot find product');
         }
         

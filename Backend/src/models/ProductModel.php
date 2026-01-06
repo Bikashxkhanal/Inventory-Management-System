@@ -4,6 +4,7 @@ namespace App\Models;
 use App\Domain\Products\Product;
 use DomainException;
 use Exception;
+use RuntimeException;
 
 class ProductModel{
     public function getById(int $id): Product{
@@ -54,5 +55,18 @@ class ProductModel{
         throw new DomainException('product not found');
     }
     $pdo->commit(); 
+    }
+
+    public function isProductExistByName(string $name){
+        global $pdo;
+        try{
+            $stmt = $pdo->prepare("SELECT 1 FROM product WHERE product_name = :productName LIMIT 1");
+            $stmt->execute(['productName' => $name]);
+            return $stmt->fetchColumn() !== false;
+
+        }catch(RuntimeException $e){
+            throw $e;
+        }
+
     }
 }
