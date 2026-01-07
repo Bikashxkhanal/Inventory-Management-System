@@ -4,7 +4,7 @@ const DashboardLayout = ({
     children
 }) => {
 
-    return <div className='w-full' >
+    return <div className='w-full h-screen' >
       {children}
     </div>;
 

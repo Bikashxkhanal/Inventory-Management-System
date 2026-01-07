@@ -13,9 +13,6 @@
                 throw new RuntimeException('failed to create category');
                }
              return $pdo->lastInsertId();
-
-            
-
         }
         public function findOneById(int $id){
             global $pdo;
@@ -43,7 +40,7 @@
           global $pdo;
            $categories = [];
           $stmt = $pdo->prepare("SELECT * FROM category");
-          $stmt->execute();
+          if(!$stmt->execute())throw new RuntimeException('failed to fetch categroy details');
         while ($category = $stmt->fetchObject(Category::class)){
           $categories[] = $category;
         }
