@@ -8,5 +8,11 @@ export {default as UpScalling} from './up.png';
 export {default as Slider2} from './Slider2.jpg';
 export {default as Slider3} from './Slider3.jpg';
 export {default as Circle} from './oval.png';
+export { default as userImg} from './DashboardAssets/user.png';
+export {default as logoutImg} from  './DashboardAssets/logout.png'
+export {default as purchaseImg } from './DashboardAssets/purchase.png';
+export {default as stockImg} from './DashboardAssets/stock.png';
+export {default as revenueImg} from './DashboardAssets/revenue.png';
+export {default as salesImg} from './DashboardAssets/sales.png';
 
 

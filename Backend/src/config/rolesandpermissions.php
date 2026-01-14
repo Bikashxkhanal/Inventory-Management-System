@@ -1,7 +1,9 @@
 <?php
 return [
     'roles' => [
-        'superadmin' => [
+        'superadmin' => 
+            [
+            'VIEW_USER',
             'CREATE_USER',
             'CREATE_VENDOR',
             'DELETE_USER',

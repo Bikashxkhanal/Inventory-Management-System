@@ -5,7 +5,7 @@ function UserCard({
 }){
     return(
     <>
-        <div className= "flex flex-col justify-center items-center bg-darkblue text-white w-full">
+        <div className= "flex flex-col justify-center items-center text-white w-[97%]">
             {/* user name */}
             <p className="font-bold font-sans"> 
                     {name}

@@ -13,7 +13,7 @@ function AboutUs() {
         
     }, 2000);
 
-    return ()=> clearInterval();
+    return ()=> interval.clearInterval();
 
     }, [])
     

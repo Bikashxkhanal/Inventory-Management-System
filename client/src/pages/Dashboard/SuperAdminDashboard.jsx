@@ -19,8 +19,8 @@ import { DashboardLayout, MainContentLayout ,SideBarLayout } from "../../Compone
    if(authStatus === 'authenticated'){
     return (
         <DashboardLayout>
-            <MainContentLayout />
             <SideBarLayout />
+            <MainContentLayout /> 
         </DashboardLayout>
     )
    }

@@ -24,6 +24,8 @@ import LogoutButton from "./Dashboard/Layout/LogoutButton";
 import NavbarLink from "./Dashboard/SideBarComponent/NavLink";
 import OrganizationCard from "./Dashboard/SideBarComponent/OrganizationCard";
 import UserCard from "./Dashboard/SideBarComponent/UserCard";
+import InfoContainer from "./Dashboard/MainContentComponent/InfoContainer";
+
 export {
     Container, 
     InputBox,
@@ -50,5 +52,10 @@ export {
     UserCard, 
     LogoutButton,
     NavbarLink,
+
+    InfoContainer, 
+ 
+
+
     
 };
