@@ -27,6 +27,7 @@ import UserCard from "./Dashboard/SideBarComponent/UserCard";
 import InfoContainer from "./Dashboard/DashboardPageComponent/InfoContainer";
 import Stock from "./NavComponents/Stock";
 import SearchBar from "./SearchBox/SearchBar";
+import FilterComponent from "./FilterComponents/FilterComponent";
 
 export {
     Container, 
@@ -59,6 +60,7 @@ export {
 
     Stock,
     SearchBar,
+    FilterComponent ,
  
 
 
