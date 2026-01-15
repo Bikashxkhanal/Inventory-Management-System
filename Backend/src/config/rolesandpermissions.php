@@ -3,6 +3,7 @@ return [
     'roles' => [
         'superadmin' => 
             [
+            'DASHBOARD',
             'VIEW_USER',
             'CREATE_USER',
             'CREATE_VENDOR',
@@ -14,6 +15,7 @@ return [
     
         ],
         'admin' => [
+            'DASHBOARD',
              'CREATE_USER',
              'GENERATE_REPORT',
              'VIEW_REPORT',
@@ -22,6 +24,7 @@ return [
 
         ],
         'manager' => [
+            'DASHBOARD',
             'GENERATE_REPORT',
              'VIEW_REPORT',
              'CREATE_PO',
@@ -29,6 +32,7 @@ return [
              'VIEW_STOCK'
         ],
         'salesperson' => [
+            'DASHBOARD',
             'CREATE_SALE',
             'VIEW_STOCK'
 

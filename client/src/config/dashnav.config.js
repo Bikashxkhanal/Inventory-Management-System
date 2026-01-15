@@ -1,4 +1,5 @@
 export const DASH_NAV = {
+     'dashboard' : ['dashboard'],
      'stock' : ['view_stock', 'update_stock', 'create_stock'],
      'staff' : ['view_user', 'delete_user', 'create_user'],
      'report' : ['view_report', 'generate_report'],

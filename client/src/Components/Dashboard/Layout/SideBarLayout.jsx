@@ -37,9 +37,8 @@ const SideBarLayout = () => {
     });
   });
 
-  const handleSubLinks = (key ) => {
-    setActiveId(activeId === key ? null : key)
-    
+  const handleSubLinks = (key) => {
+    setActiveId(activeId === key ? null : key);
   };
 
   return (
@@ -58,51 +57,48 @@ const SideBarLayout = () => {
       {/* <!-- Sidebar --> */}
       <aside
         id="sidebar"
-        className="hidden md:w-64 md:bg-darkblue md:flex md:flex-col md:h-full md:justify-start md:items-center text-white rounded-r-3xl"
+        className="hidden md:w-64 md:bg-darkblue md:flex md:flex-col md:h-full md:justify-start md:gap-8 md:items-center text-white rounded-r-3xl"
       >
         <OrganizationCard name={user.companyName ?? "Khanal Dhuwani Sewa"} />
 
-        <nav className="gap-0 text-center">
+        <nav className="gap-0 w-full ">
           {Object.entries(navItems).map(([key, value]) => {
             return value.length < 2 ? (
-              <NavbarLink name={key.toUpperCase()} key={key} path={`/${key}`} />
+              <NavbarLink name={key.toUpperCase()} key={key} path={`/web/${key}`} />
             ) : (
-             <div > 
-              <Button
-                key={key}
-                borderShape="rounded-md"
-                btnName={key.toUpperCase()}
-                className="w-[99%] border-0 font-medium"
-                hoverColor="hover:bg-blue-950 hover:w-[98%]"
-                onClick={() => handleSubLinks(key)}
-                
-              />
-              {
-                activeId === key && <div className="w-[98%] ">
-                  {
-
-                    value?.map((subNav, idx) => (
-                      <NavbarLink 
-                      key={subNav}
-                      name={subNav.charAt(0).toUpperCase() + subNav.slice(1).replaceAll('_', ' ')}
-                      path={`/${key}/${subNav}`}
-                      icon={icons[idx]}
+              <div>
+                <Button
+                  key={key}
+                  borderShape="rounded-md"
+                  btnName={key.toUpperCase()}
+                  className="w-[99%] border-0 text-sm font-normal"
+                  textColor={key === activeId ? "text-white" : " text-gray-400"}
+                  hoverColor="hover:bg-blue-950 hover:w-[98%]"
+                  onClick={() => handleSubLinks(key)}
+                />
+                {activeId === key && (
+                  <div className="w-[98%] ">
+                    {value?.map((subNav, idx) => (
+                      <NavbarLink
+                        key={subNav}
+                        name={
+                          subNav.charAt(0).toUpperCase() +
+                          subNav.slice(1).replaceAll("_", " ")
+                        }
+                        path={`/web/${key}/${subNav.replaceAll("_", "-")}`}
+                        icon={null}
+                        className="text-sm"
                       />
-                    ))
-                  }
-                   </div>
-              }
-
+                    ))}
+                  </div>
+                )}
               </div>
-              
             );
           })}
-
-
         </nav>
 
         <div className="flex flex-col justify-center fixed bottom-5">
-          <LogoutButton  />
+          <LogoutButton />
           <UserCard
             name={user.name ?? "Bikash khanal"}
             role={user.role ?? "super admin"}

@@ -9,16 +9,16 @@ function Button({
     isIcon = false,
     borderShape = "rounded-full",
     onClick,
-    className = ""
+    className = ' font-semibold '
 
 
 }){
     return(
         <>
-        <button className={`${className} px-9 py-3 ${backgroundColor }  ${textColor} border ${borderColor} ${hoverColor} transition ${borderShape} font-semibold  ${
+        <button className={`px-9 py-3 ${backgroundColor }  ${textColor} border ${borderColor} ${hoverColor} transition ${borderShape} ${className}  ${
             isIcon? "flex items-center gap-2":""
         }
-          cursor-pointer`} onClick={onClick}>
+          cursor-pointer `} onClick={onClick}>
             {btnName}
             
                {isIcon &&

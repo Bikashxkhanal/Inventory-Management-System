@@ -9,9 +9,10 @@ import SignupPage from './pages/SignupPage.jsx'
 import { Provider } from 'react-redux';
 import store from './Stores/Store.js'
 import OtpVerificationPage from './pages/EmailOtpVerificationPage.jsx'
-import { Protected } from './Components/index.js'
+import { DashboardLayout, Protected, SideBarLayout, Stock } from './Components/index.js'
 import SuperAdminVerificationPage from './pages/SuperAdminVerificationPage.jsx'
-import SuperAdminDashboard from './pages/Dashboard/SuperAdminDashboard.jsx'
+import Dashboard from './pages/Dashboard/Dashboard.jsx'
+import DashboardComp from './Components/Dashboard/DashboardPageComponent/Dashboard.jsx'
 
 
  const router = createBrowserRouter([
@@ -53,14 +54,25 @@ import SuperAdminDashboard from './pages/Dashboard/SuperAdminDashboard.jsx'
           )
         },
         {
-          path : '/dashboard',
+          path : '/web',
           element : (
            <Protected >
-              <SuperAdminDashboard />
-              </Protected>
+           <Dashboard  />
+            </Protected>
              
-          )
-        }
+          ), 
+          children : [
+            {
+              path : '/web/dashboard', 
+              element : <DashboardComp />
+            }, 
+            {
+              path : '/web/stock', 
+              element : <Stock />
+            },
+            
+          ]
+        },
       ]
       
     }

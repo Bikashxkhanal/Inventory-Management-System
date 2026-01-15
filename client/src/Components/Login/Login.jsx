@@ -72,7 +72,7 @@ function LoginComponent(){
 
   useEffect(()=>{
     if(isAuthenticated && user.user_id){
-      navigate('/dashboard');
+      navigate('/web/dashboard');
     }
   }, [isAuthenticated,user.user_id, navigate])
 
