@@ -46,10 +46,10 @@ const DashboardComp = ( ) => {
         <InfoContainer color="text-green-700" img={revenueImg}  amount="12000" title="Total Revenue" percent="+12%"  />
         </div>
         <div className='flex flex-row flex-start gap-20 flex-wrap'>
-        <div className="w-90 md:w-120 ml-8 mt-10">
+        <div className="w-90 md:w-110 ml-8 mt-10">
         <CustomChart  type="bar" data={data} options={getChartFor("bar", "Sales and Purchases")} />
         </div>
-        <div className="w-90  md:w-120 ml-8 mt-10">
+        <div className="w-90  md:w-110 ml-8 mt-10">
         <CustomChart  type="line" data={data2} options={getChartFor("line", "Sales")} />
         </div>
         </div>

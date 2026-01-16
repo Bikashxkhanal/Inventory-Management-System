@@ -10,10 +10,11 @@ function AboutUs() {
     useEffect(()=>{
         const interval = setInterval(() => {
        setImgIndex((prev)=>( prev+1)%Images.length);
-        
-    }, 2000);
 
-    return ()=> interval.clearInterval();
+        
+    }, 1000);
+
+    return ()=> clearInterval(interval);
 
     }, [])
     

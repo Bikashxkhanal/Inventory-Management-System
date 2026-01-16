@@ -25,13 +25,27 @@ import NavbarLink from "./Dashboard/SideBarComponent/NavLink";
 import OrganizationCard from "./Dashboard/SideBarComponent/OrganizationCard";
 import UserCard from "./Dashboard/SideBarComponent/UserCard";
 import InfoContainer from "./Dashboard/DashboardPageComponent/InfoContainer";
-import Stock from "./NavComponents/Stock";
+import Title from "./Title/Title";
 import SearchBar from "./SearchBox/SearchBar";
 import FilterComponent from "./FilterComponents/FilterComponent";
 import SegmentedProgressBar from "./Chart/SegmentedProgressBar";
 import TableBody from "./DataTable/TableBody/TableBody";
 import TableHead from "./DataTable/TableHead/TableHead";
 import DataTable from "./DataTable/DataTable";
+import StockFilterBar from "./Stock/FilterBar";
+import StockGeneralInfoBar from "./Stock/StockGeneralInfoBar";
+import StockInformationTable from "./Stock/StockInformationTable";
+import StockLayout from "./Stock/StockLayout";
+import Stock from "../pages/Stock/Stock";
+import StockTitle from "./Stock/StockTitle";
+import StaffCountBar from "./Staff/StaffCountBar";
+import StaffFilterBar from "./Staff/StaffFilterBar";
+import StaffInfoTable from "./Staff/StaffInfoTable";
+import StaffTitle from "./Staff/StaffTitle";
+import StaffLayout from "./Staff/StaffLayout";
+import Staff from "../pages/Staff/Staff";
+
+
 
 export {
     Container, 
@@ -62,7 +76,7 @@ export {
 
     InfoContainer, 
 
-    Stock,
+   
     SearchBar,
     FilterComponent ,
     SegmentedProgressBar,
@@ -70,9 +84,31 @@ export {
     //Table Main Componets
     DataTable,
     TableHead,
-    TableBody
- 
+    TableBody,
 
+    //Componet for adding title for pages
+    Title,
 
+    //stock page components 
+    StockLayout,
+    StockFilterBar,
+    StockInformationTable,
+    StockGeneralInfoBar,
+    StockTitle,
+
+    //Staff Page componets 
+    StaffCountBar,
+    StaffFilterBar,
+    StaffTitle,
+    StaffLayout,
+    StaffInfoTable,
     
+
+    //pages
+    Stock,
+    Staff,
+
+
+
+ 
 };

@@ -5,6 +5,7 @@ const FilterComponent = ({
      onChange,
     dateValue = [null, null],
     catValue,
+    className = ""
 
 }) => {
     const [start, end] = dateValue;
@@ -18,8 +19,13 @@ const FilterComponent = ({
             onChange={onChange}
             placeholderText={label}
             isClearable
-            className=' px-2 py-1 pr-5 border-2 border-blue-900 
-             rounded-sm text-lg text-center caret-transparent cursor-pointer'
+            className={` py-1 border-2 border-blue-900 
+             text-sm text-center caret-transparent cursor-pointer
+              rounded-3xl px-0 w-20 md:w-35 md:text-lg md:px-2 text-black
+             ${
+                 className 
+             }
+             `}
              onChangeRaw = {(e)=> e.preventDefault()}
 
             />
@@ -32,9 +38,10 @@ const FilterComponent = ({
             <select value={catValue || ''} 
             onChange={(e) => onChange(e.target.value)
             }
-            className='h-10 w-50 box-border px-4  text-center outline-none cursor-pointer border-2 border-gray-600 rounded-sm text-lg'
+            className={`py-1 text-center outline-none cursor-pointer border-2 border-blue-900  text-[14px] rounded-3xl px-0 w-20 md:w-35 md:text-lg md:px-2 md:py-1
+               ${className} `}
             >
-               <option value="">--Select {label}--</option>
+               <option value="">{label}</option>
                {
                 options?.map((opt) => {
                     return <option  key={opt} value={opt}>
