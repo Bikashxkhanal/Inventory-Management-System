@@ -28,6 +28,10 @@ import InfoContainer from "./Dashboard/DashboardPageComponent/InfoContainer";
 import Stock from "./NavComponents/Stock";
 import SearchBar from "./SearchBox/SearchBar";
 import FilterComponent from "./FilterComponents/FilterComponent";
+import SegmentedProgressBar from "./Chart/SegmentedProgressBar";
+import TableBody from "./DataTable/TableBody/TableBody";
+import TableHead from "./DataTable/TableHead/TableHead";
+import DataTable from "./DataTable/DataTable";
 
 export {
     Container, 
@@ -61,6 +65,12 @@ export {
     Stock,
     SearchBar,
     FilterComponent ,
+    SegmentedProgressBar,
+
+    //Table Main Componets
+    DataTable,
+    TableHead,
+    TableBody
  
 
 

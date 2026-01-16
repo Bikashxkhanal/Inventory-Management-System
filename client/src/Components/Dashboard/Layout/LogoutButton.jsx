@@ -2,8 +2,6 @@ import { useSelector , useDispatch } from "react-redux";
 import { logout } from "../../../Stores/authThunk";
 import {logoutImg } from '../../../assets/Imagesender';
 
-
-
 function LogoutButton(){
     const dispatch = useDispatch();
 

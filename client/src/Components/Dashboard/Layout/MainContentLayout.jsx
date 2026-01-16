@@ -1,6 +1,6 @@
 
 const MainContentLayout = ({children}) => {
-    return <div className=' h-screen overflow-x-scroll flex-1 '>
+    return <div className=' h-screen overflow-x-scroll flex-1 bg-gray-50 mt-5 md:mt-0 mx-2 md:mx-6'>
         {children}
          </div>
 

@@ -4,7 +4,7 @@ import { Container, HomePage, AboutUs, Services, Footer, NavBar } from "../Compo
 function LandingPage(){
     return(
         <Container >
-          <NavBar />
+                <NavBar />
               <HomePage />
               <Services />
               <AboutUs />
