@@ -1,15 +1,33 @@
-import {DataTable} from './../index';
+import {
+  ActionComponents,
+  DataTable,
+  DotsHortlIcon,
+  NewButton,
+} from "./../index";
+import { useState } from "react";
 
 const StockInformationTable = () => {
-      const tableData = {
-        'headers' : ['product Id', 'product name', 'category', 'Quantity', 'status'],
-        'bodyData' : [
-            [1001, 'Shoes', 'Fashion', 2000, 'in stock'],
-            [1002, 'T-shirt', 'Fashion', 10, 'low stock'],
-        ]
-    }
-    return  <DataTable tableData={tableData} />
+  const [disabled, setDisabled] = useState(false);
 
-}
+  const tableData = [
+    {
+      "product Id": 1001,
+      "product name": "Shoes",
+      category: "Fashion",
+      Quantity: 2000,
+      status: "in stock",
+    },
+
+    {
+      "product Id": 1002,
+      "product name": "Tshirt",
+      category: "Fashion",
+      Quantity: 50,
+      status: "out of stock",
+    },
+  ];
+
+  return <DataTable tableData={tableData} />;
+};
 
 export default StockInformationTable;

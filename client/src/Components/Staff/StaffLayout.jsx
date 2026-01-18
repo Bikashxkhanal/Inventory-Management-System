@@ -1,8 +1,13 @@
-import {StaffCountBar, StaffInfoTable, StaffTitle, StaffFilterBar} from './../index'
+import {StaffCountBar, StaffInfoTable, StaffTitle, StaffFilterBar, NewButton, IconImage} from './../index'
+import { Add } from '../../assets/Imagesender';
 
 const StaffLayout = () => {
     return <div className='flex-1 mx-4 mt-8 ' >
-        <StaffTitle />
+        <div className='w-full flex flex-row justify-between mt-15 md:mt-5 mb-4'>
+                <StaffTitle />
+                <NewButton  as='a' href='/web/staff/create-staff' children='New' className='bg-green-600 hover:bg-green-800' iconStart={<IconImage src={Add} />}/>
+        </div>
+        
         <StaffCountBar />
         <StaffFilterBar />
         <StaffInfoTable />

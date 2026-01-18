@@ -71,7 +71,7 @@ import DashboardComp from './Components/Dashboard/DashboardPageComponent/Dashboa
               element : <Stock />
             },
             {
-              path : '/web/staff/view-user',
+              path : '/web/staff',
               element : <Staff />
             }
             

@@ -6,9 +6,9 @@ const TableHead = ({
     return <thead >
         <tr className="w-full ">
         {
-            headers?.map((header) => {
+            headers?.map((header, idx) => {
                 console.log(header);
-            return <TableHeaderCell header={header} />
+            return <TableHeaderCell key={idx} header={header} />
 
 }) }
         </tr>

@@ -44,6 +44,13 @@ import StaffInfoTable from "./Staff/StaffInfoTable";
 import StaffTitle from "./Staff/StaffTitle";
 import StaffLayout from "./Staff/StaffLayout";
 import Staff from "../pages/Staff/Staff";
+import NewButton from "./Button/Button";
+import IconImage from "./Icons/ImageIcon";
+import { DotsVerticalIcon } from "./Icons/DotsVerficalIcon";
+import { DotsHortlIcon } from "./Icons/DotsHortlIcon";
+import ActionComponents from "./Actions/ActionComponet";
+import Update from "./Actions/Update";
+import Delete from "./Actions/Delete";
 
 
 
@@ -107,6 +114,15 @@ export {
     //pages
     Stock,
     Staff,
+
+
+    NewButton,
+    IconImage, 
+    DotsVerticalIcon,
+    DotsHortlIcon,
+
+    //Action button
+    Update, Delete, ActionComponents,
 
 
 

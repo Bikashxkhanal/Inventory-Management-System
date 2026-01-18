@@ -63,37 +63,9 @@ const SideBarLayout = () => {
 
         <nav className="gap-0 w-full ">
           {Object.entries(navItems).map(([key, value]) => {
-            return value.length < 2 ? (
+            return (
               <NavbarLink name={key.toUpperCase()} key={key} path={`/web/${key}`} />
-            ) : (
-              <div>
-                <Button
-                  key={key}
-                  borderShape="rounded-md"
-                  btnName={key.toUpperCase()}
-                  className="w-[99%] border-0 text-sm font-normal"
-                  textColor={key === activeId ? "text-white" : " text-gray-400"}
-                  hoverColor="hover:bg-blue-950 hover:w-[98%]"
-                  onClick={() => handleSubLinks(key)}
-                />
-                {activeId === key && (
-                  <div className="w-[98%] ">
-                    {value?.map((subNav, idx) => (
-                      <NavbarLink
-                        key={subNav}
-                        name={
-                          subNav.charAt(0).toUpperCase() +
-                          subNav.slice(1).replaceAll("_", " ")
-                        }
-                        path={`/web/${key}/${subNav.replaceAll("_", "-")}`}
-                        icon={null}
-                        className="text-sm"
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
+            )
           })}
         </nav>
 

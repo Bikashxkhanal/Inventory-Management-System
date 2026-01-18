@@ -1,18 +1,46 @@
-import {DataTable} from './../index'
+import {DataTable, DotsHortlIcon, NewButton} from './../index'
+import { useState, useEffect } from 'react'
+import ActionComponet from '../Actions/ActionComponet';
 
 const StaffInfoTable = () => {
-    const staffData = {
-        headers : ["staff Id", "Full Name", "Address", "Joined Date", "Role", "Email"],
-        bodyData : [[
-            80001, "Bikash Khanal", "Kathmandu", "2025-11-10", "Super Admin", "bikash@gmail.com"
-        ],
-    [
-            80002, "Diya Acharya", "Bhaktapur", "2025-12-10", "Admin", "diya@gmail.com"
-        ]]
-        
-    }
+    const [disabled, setDisabled] = useState(false);
+    const [openMenuId, setOpenMenuId] = useState(null);
+   
 
-    return <DataTable tableData={staffData} />
+    const staffData = [
+      {
+        Staffid : 800001, 
+        FullName : "Bikash khanal",
+        Address : "Kathmandu",
+        JoinedDate : "2025-11-10",
+        Role : "Super Admin",
+        Email : "khanalbikash007@gmail.com",
+
+      },
+      {
+        Staffid : 800002, 
+        FullName : "Diya khanal",
+        Address : "Kathmandu",
+        JoinedDate : "2025-12-10",
+        Role : "Admin",
+        Email : "diya@gmail.com",
+
+      }
+    ]
+
+
+ 
+
+const staffDataWithActionsBar = staffData.map((staff) => ({
+  ...staff, 
+  Action : (
+    <ActionComponet id={staff.Staffid} />
+          
+  )
+}));
+
+    return <DataTable tableData={staffDataWithActionsBar} />
+            
 }
 
 export default StaffInfoTable;
