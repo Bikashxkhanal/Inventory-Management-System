@@ -1,3 +1,4 @@
+import ActionComponet from "../Actions/ActionComponet";
 import {
   ActionComponents,
   DataTable,
@@ -11,7 +12,7 @@ const StockInformationTable = () => {
 
   const tableData = [
     {
-      "product Id": 1001,
+      "productId": 1001,
       "product name": "Shoes",
       category: "Fashion",
       Quantity: 2000,
@@ -19,7 +20,7 @@ const StockInformationTable = () => {
     },
 
     {
-      "product Id": 1002,
+      "productId": 1002,
       "product name": "Tshirt",
       category: "Fashion",
       Quantity: 50,
@@ -27,7 +28,14 @@ const StockInformationTable = () => {
     },
   ];
 
-  return <DataTable tableData={tableData} />;
+  const tableWithActionBtn = ({
+    ...tableData, 
+    Action : (tableData.map(table => <ActionComponet id={table.productId} />)
+        
+    )
+  })
+
+  return <DataTable tableData={tableWithActionBtn} />;
 };
 
 export default StockInformationTable;

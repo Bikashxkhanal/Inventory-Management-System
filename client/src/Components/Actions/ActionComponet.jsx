@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { NewButton , DotsHortlIcon} from "./../index";
+import { useNavigation } from "react-router-dom";
 
 const ActionComponet = ({
     id
 }) => {
+  const navigate = useNavigation();
 
     const [openMenuId, setOpenMenuId] = useState(null);
    
@@ -12,6 +14,18 @@ const ActionComponet = ({
         setOpenMenuId(openMenuId === id ? null : id);
         
       };
+
+      const handleEdit = (id) =>{
+        navigate(`update/${id}`)
+        
+
+      }
+
+      const handleDelete = (id) => {
+        alert("Are you sure you want to delete.");
+        //call api to delete the user/stock/vendor with the id
+
+      }
     
       // Close menu on outside click
       useEffect(() => {
@@ -41,7 +55,7 @@ const ActionComponet = ({
               className="w-full border-lg text-gray-500 cursor-pointer hover:text-red-500 hover:bg-red-300"
                noBg
               noBorder
-              onClick={() => handleEdit(id)}
+              onClick={() => handleDelete(id)}
               children="Delete"
             />
             </div>
