@@ -9,7 +9,7 @@ import SignupPage from './pages/SignupPage.jsx'
 import { Provider } from 'react-redux';
 import store from './Stores/Store.js'
 import OtpVerificationPage from './pages/EmailOtpVerificationPage.jsx'
-import { DashboardLayout, Protected, SideBarLayout, Stock, Staff } from './Components/index.js'
+import { DashboardLayout, Protected, SideBarLayout, Stock, Staff, CreateStaff, UpdateStaff } from './Components/index.js'
 import SuperAdminVerificationPage from './pages/SuperAdminVerificationPage.jsx'
 import Dashboard from './pages/Dashboard/Dashboard.jsx'
 import DashboardComp from './Components/Dashboard/DashboardPageComponent/Dashboard.jsx'
@@ -72,8 +72,17 @@ import DashboardComp from './Components/Dashboard/DashboardPageComponent/Dashboa
             },
             {
               path : '/web/staff',
-              element : <Staff />
-            }
+              element : <Staff />,
+            },
+             
+                {
+                  path : '/web/staff/create-staff',
+                  element : <CreateStaff />
+                },
+                {
+                  path : '/web/staff/update',
+                  element : <UpdateStaff />
+                }
             
           ]
         },

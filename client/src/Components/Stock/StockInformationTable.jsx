@@ -1,14 +1,11 @@
-import ActionComponet from "../Actions/ActionComponet";
+
 import {
-  ActionComponents,
   DataTable,
-  DotsHortlIcon,
   NewButton,
+  ActionComponent
 } from "./../index";
-import { useState } from "react";
 
 const StockInformationTable = () => {
-  const [disabled, setDisabled] = useState(false);
 
   const tableData = [
     {
@@ -28,13 +25,13 @@ const StockInformationTable = () => {
     },
   ];
 
-  const tableWithActionBtn = ({
-    ...tableData, 
-    Action : (tableData.map(table => <ActionComponet id={table.productId} />)
-        
+  const tableWithActionBtn = tableData.map((stock) => ({
+    ...stock, 
+    Action : (
+      <ActionComponent id={stock.productId} />
     )
-  })
-
+  }))
+  
   return <DataTable tableData={tableWithActionBtn} />;
 };
 

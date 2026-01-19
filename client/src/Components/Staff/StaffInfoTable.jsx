@@ -1,12 +1,7 @@
-import {DataTable, DotsHortlIcon, NewButton} from './../index'
-import { useState, useEffect } from 'react'
-import ActionComponet from '../Actions/ActionComponet';
+import {DataTable, ActionComponent} from './../index'
 
 const StaffInfoTable = () => {
-    const [disabled, setDisabled] = useState(false);
-    const [openMenuId, setOpenMenuId] = useState(null);
-   
-
+    /// these are samplas datas , must be fetched from the db
     const staffData = [
       {
         Staffid : 800001, 
@@ -27,14 +22,10 @@ const StaffInfoTable = () => {
 
       }
     ]
-
-
- 
-
 const staffDataWithActionsBar = staffData.map((staff) => ({
   ...staff, 
   Action : (
-    <ActionComponet id={staff.Staffid} />
+    <ActionComponent id={staff.Staffid}  />
           
   )
 }));

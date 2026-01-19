@@ -48,9 +48,11 @@ import NewButton from "./Button/Button";
 import IconImage from "./Icons/ImageIcon";
 import { DotsVerticalIcon } from "./Icons/DotsVerficalIcon";
 import { DotsHortlIcon } from "./Icons/DotsHortlIcon";
-import ActionComponents from "./Actions/ActionComponet";
-import Update from "./Actions/Update";
-import Delete from "./Actions/Delete";
+import ActionComponent from "./Actions/ActionComponent";
+import AdvForm from "./AdvanceForm/AdvForm";
+import CreateStaff from "./Staff/Create/CreateStaff";
+import UpdateStaff from "./Staff/Edit/UdpateStaff";
+
 
 
 
@@ -122,7 +124,16 @@ export {
     DotsHortlIcon,
 
     //Action button
-    Update, Delete, ActionComponents,
+    ActionComponent,
+
+    //advance form for creation , updation of staff, vendor, stock(if needed) , product, categroy everything else (sells) which need much more advace form which should work also as filter to find the product easliy
+
+    AdvForm,
+    
+    //Form for creating staff
+    CreateStaff ,
+    UpdateStaff,
+    
 
 
 

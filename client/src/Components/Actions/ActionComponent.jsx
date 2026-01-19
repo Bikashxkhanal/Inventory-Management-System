@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { NewButton , DotsHortlIcon} from "./../index";
-import { useNavigation } from "react-router-dom";
+import { NewButton , DotsHortlIcon} from "../index";
+import { useNavigate } from "react-router-dom";
 
-const ActionComponet = ({
+const ActionComponent = ({
     id
 }) => {
-  const navigate = useNavigation();
+  const navigate = useNavigate();
 
     const [openMenuId, setOpenMenuId] = useState(null);
    
@@ -16,9 +16,7 @@ const ActionComponet = ({
       };
 
       const handleEdit = (id) =>{
-        navigate(`update/${id}`)
-        
-
+        navigate(`update`)
       }
 
       const handleDelete = (id) => {
@@ -65,4 +63,4 @@ const ActionComponet = ({
 
 }
 
-export default ActionComponet;
+export default ActionComponent;
