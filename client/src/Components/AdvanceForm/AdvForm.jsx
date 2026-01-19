@@ -25,7 +25,7 @@ const handleSubmission = (e) => {
         <p className='text-xl bg-transparent md:text-3xl font-semibold md:font-bold '>{title}</p>
         <div className='flex flex-col md:grid md:grid-cols-2 gap-4 w-full '>
         {
-            datas?.map(input => <InputBox name={input?.name} type={input?.type} placeholder={input?.placeholder} value={input?.value} disabled= {input?.prop} onChange={handleChange}  />)
+            datas?.map(input => <InputBox name={input?.name} type={input?.type} placeholder={input?.placeholder} value={input?.value}  onChange={handleChange}  />)
         }
         </div>
 

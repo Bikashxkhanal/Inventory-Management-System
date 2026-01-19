@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { NewButton , DotsHortlIcon} from "../index";
+import { NewButton , DotsHortlIcon, IconImage} from "../index";
 import { useNavigate } from "react-router-dom";
+import { Edit, Delete } from "../../assets/Imagesender";
 
 const ActionComponent = ({
     id
@@ -16,7 +17,7 @@ const ActionComponent = ({
       };
 
       const handleEdit = (id) =>{
-        navigate(`update`)
+        navigate(`update/${id}`)
       }
 
       const handleDelete = (id) => {
@@ -41,13 +42,14 @@ const ActionComponent = ({
 
              {
               openMenuId === id && (
-          <div className="absolute right-0 top-full mt-2 w-42 py-1 px-1 bg-gray-300 shadow-xl border border-gray-300 rounded-xl  opacity-80 z-50">
+          <div className="absolute right-0 top-full mt-2 w-42 py-1 px-1 bg-[#c7c9c7] shadow-4xl border border-white rounded-xl opacity-80  z-50">
             <NewButton
-              className="w-full border-lg text-gray-500 hover:text-gray-800 cursor-pointer hover:bg-gray-400"
+              className="w-full border-lg text-gray-500 hover:text-gray-800 cursor-pointer hover:bg-gray-400 "
               noBg
               noBorder
               onClick={() => handleEdit(id)}
               children="Edit"
+              iconStart={<IconImage src={Edit} />}
             />       
             <NewButton
               className="w-full border-lg text-gray-500 cursor-pointer hover:text-red-500 hover:bg-red-300"
@@ -55,6 +57,7 @@ const ActionComponent = ({
               noBorder
               onClick={() => handleDelete(id)}
               children="Delete"
+              iconStart={<IconImage src={Delete} />}
             />
             </div>
 

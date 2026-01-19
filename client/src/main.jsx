@@ -80,7 +80,7 @@ import DashboardComp from './Components/Dashboard/DashboardPageComponent/Dashboa
                   element : <CreateStaff />
                 },
                 {
-                  path : '/web/staff/update',
+                  path : '/web/staff/update/:id',
                   element : <UpdateStaff />
                 }
             

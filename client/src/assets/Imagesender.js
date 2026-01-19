@@ -16,4 +16,6 @@ export {default as revenueImg} from './DashboardAssets/revenue.png';
 export {default as salesImg} from './DashboardAssets/sales.png';
 export {default as searchImg} from './search.png'
 export {default as Add} from './addIcon.png'
+export {default as Delete} from './delete.png'
+export {default as Edit} from './edit.png'
 

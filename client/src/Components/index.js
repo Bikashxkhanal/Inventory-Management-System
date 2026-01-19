@@ -53,6 +53,9 @@ import AdvForm from "./AdvanceForm/AdvForm";
 import CreateStaff from "./Staff/Create/CreateStaff";
 import UpdateStaff from "./Staff/Edit/UdpateStaff";
 
+//Staff Data 
+import { staffData } from "./Staff/StaffData";
+
 
 
 
@@ -133,6 +136,9 @@ export {
     //Form for creating staff
     CreateStaff ,
     UpdateStaff,
+
+    //Data 
+    staffData,
     
 
 

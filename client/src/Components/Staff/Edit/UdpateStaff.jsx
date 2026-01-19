@@ -1,51 +1,59 @@
-import AdvForm from "../../AdvanceForm/AdvForm"
+import { useEffect, useState } from "react";
+import { staffData, AdvForm } from "./../../index"
+import { useParams } from "react-router-dom"
 
+const  UpdateStaff = () => {
+    const {id} = useParams();
 
-const  UpdateStaff = ({
-    id
-}) => {
+   const staffDetail =  staffData.find(stf =>  stf.staffId === Number(id) )
+   const [staff, setStaff] = useState({});
+   
     //Get all the detail of the user or something that matches the id and put to the form 
-    const staff = {
-        id : null, 
-        name : null,
-        email : null , 
-        address : null, 
-        contact : null,
-    }
+
+    useEffect(()=> {
+       if(staffDetail) setStaff(staffDetail);
+    } , [staffDetail])
 
     const InputBoxs = [{
     name : "id",
     type : "number",
-    value : staff.id ? staff.id : "",
-    prop : 'disabled',
+    value : staff.staffId? staff.staffId :"",
 },
         {
     name : "name",
     type : "text",
     placeholder : "Enter Name",
-    value : staff.name ? staff.name : ""
+    value : staff.FullName ? staff.FullName :""
 },
 {
     name : "email",
     type : "email",
     placeholder : "Enter Email",
-    value : staff.email ? staff.id : ""
+    value : staff.Email ? staff.Email:""
 },
 {
     name : "address",
     type : "text",
     placeholder : "Enter Address",
-    value : staff.address ? staff.address : ""
+    value : staff.Address ? staff.Address :""
 },
 {
     name : "contact",
     type : "tel",
     placeholder : "Enter phnone number",
-    value : staff.contact ? staff.contact : ""
+    value : staff.Contact ? staff.Contact :""
 },
+
+    {
+    name : "role",
+    type : "text",
+    placeholder : "Enter Role",
+    value : staff.Role ? staff.Role :""
+},
+
 ]
 
-    return <AdvForm  detail = {InputBoxs} />
+    return <AdvForm  datas={InputBoxs} title="Update Staff Detail" children="Update" />
 }
 
 
