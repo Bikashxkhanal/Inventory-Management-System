@@ -62,6 +62,20 @@ import VendorInfoTable from "./Vendor/VendorInfoTable";
 import VendorLayout from "./Vendor/VendorLayout";
 import VendorTitle from "./Vendor/VendorTitle";
 
+//Purchase Components 
+import PurchaseFilterBar from "./Purchase/PurchaseFilterBar";
+import PurchaseInfoTable from "./Purchase/PurchaseInfoTable";
+import PurchaseLayout from "./Purchase/PurchaseLayout";
+import PurchaseTitle from "./Purchase/PurchaseTitle";
+
+//vendor page
+import Vendor from "../pages/Vendor/Vendor";
+
+///purchase page
+import Purchase from "../pages/Purchase/purchase";
+
+
+
 export {
     Container, 
     InputBox,
@@ -122,6 +136,8 @@ export {
     //pages
     Stock,
     Staff,
+    Vendor, Purchase,
+    
 
 
     NewButton,
@@ -149,6 +165,12 @@ export {
     VendorInfoTable, 
     VendorLayout, 
     VendorTitle,
+
+    //Purchase components 
+    PurchaseFilterBar,
+    PurchaseInfoTable,
+    PurchaseLayout, 
+    PurchaseTitle,
     
 
 
