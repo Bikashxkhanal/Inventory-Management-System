@@ -56,8 +56,11 @@ import UpdateStaff from "./Staff/Edit/UdpateStaff";
 //Staff Data 
 import { staffData } from "./Staff/StaffData";
 
-
-
+import VendorFilterBar from "./Vendor/VendorFilterBar";
+import VendorGeneralInfoBar from "./Vendor/VendorGeneralInfoBar";
+import VendorInfoTable from "./Vendor/VendorInfoTable";
+import VendorLayout from "./Vendor/VendorLayout";
+import VendorTitle from "./Vendor/VendorTitle";
 
 export {
     Container, 
@@ -139,6 +142,13 @@ export {
 
     //Data 
     staffData,
+
+    //Vendor components 
+    VendorFilterBar, 
+    VendorGeneralInfoBar, 
+    VendorInfoTable, 
+    VendorLayout, 
+    VendorTitle,
     
 
 
