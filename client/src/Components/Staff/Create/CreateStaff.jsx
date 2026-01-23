@@ -1,9 +1,9 @@
 import {AdvForm} from './../../index'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 const CreateStaff = () => {
-    console.log("Staff Creation");
-    
-
+    const queryClient = new useQueryClient();
+    const {} = useMutation({})
 const InputBoxs = [{
     name : "name",
     type : "text",

@@ -3,11 +3,13 @@ import { useState, useEffect } from 'react';
 
 const AdvForm = ({
     
-    datas = [],
+    fields = [],
     title = '',
     children,
+    onSubmit,
 }) => {
     const [form, setForm] = useState({});
+    const [error, setError] = useState({})
 
 const handleChange = () => {
     setForm({
@@ -16,6 +18,10 @@ const handleChange = () => {
         })
 }
 
+const handleValidation = () => {
+
+
+}
 const handleSubmission = (e) => {
     e.preventDefault();
     if(!handleValidation()) return;
@@ -25,7 +31,7 @@ const handleSubmission = (e) => {
         <p className='text-xl bg-transparent md:text-3xl font-semibold md:font-bold '>{title}</p>
         <div className='flex flex-col md:grid md:grid-cols-2 gap-4 w-full '>
         {
-            datas?.map(input => <InputBox name={input?.name} type={input?.type} placeholder={input?.placeholder} value={input?.value}  onChange={handleChange}  />)
+            fields?.map(input => <InputBox name={input?.name} type={input?.type} placeholder={input?.placeholder} value={input?.value}  onChange={handleChange}  />)
         }
         </div>
 

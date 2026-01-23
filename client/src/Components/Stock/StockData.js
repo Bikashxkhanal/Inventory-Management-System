@@ -151,7 +151,9 @@ export const conditionalData = [
         }else{
           const offSet = (page -1 ) * limit;
           const paginatedData =  dbData.slice(offSet, offSet+limit);
-          resolve( {
+           console.log("Biksh kahanal")
+          resolve(  
+            {
             page, limit, total: dbData.length, totalPages : Math.ceil(dbData.length/limit),
             data : paginatedData
           } )

@@ -20,5 +20,138 @@
         Email : "diya@gmail.com",
         Contact: "9812345677",
 
-      }
+      },
+      {
+        staffId : 800001, 
+        FullName : "Bikash khanal",
+        Address : "Kathmandu",
+        JoinedDate : "2025-11-10",
+        Role : "Super Admin",
+        Email : "khanalbikash007@gmail.com",
+        Contact: "9812345678",
+
+      },
+      
+      {
+        staffId : 800001, 
+        FullName : "Bikash khanal",
+        Address : "Kathmandu",
+        JoinedDate : "2025-11-10",
+        Role : "Super Admin",
+        Email : "khanalbikash007@gmail.com",
+        Contact: "9812345678",
+
+      },
+      
+      {
+        staffId : 800001, 
+        FullName : "Bikash khanal",
+        Address : "Kathmandu",
+        JoinedDate : "2025-11-10",
+        Role : "Super Admin",
+        Email : "khanalbikash007@gmail.com",
+        Contact: "9812345678",
+
+      },
+      
+      {
+        staffId : 800001, 
+        FullName : "Bikash khanal",
+        Address : "Kathmandu",
+        JoinedDate : "2025-11-10",
+        Role : "Super Admin",
+        Email : "khanalbikash007@gmail.com",
+        Contact: "9812345678",
+
+      },
+      
+      {
+        staffId : 800001, 
+        FullName : "Bikash khanal",
+        Address : "Kathmandu",
+        JoinedDate : "2025-11-10",
+        Role : "Super Admin",
+        Email : "khanalbikash007@gmail.com",
+        Contact: "9812345678",
+
+      },
+      
+      {
+        staffId : 800001, 
+        FullName : "Bikash khanal",
+        Address : "Kathmandu",
+        JoinedDate : "2025-11-10",
+        Role : "Super Admin",
+        Email : "khanalbikash007@gmail.com",
+        Contact: "9812345678",
+
+      },
+      
+      {
+        staffId : 800001, 
+        FullName : "Bikash khanal",
+        Address : "Kathmandu",
+        JoinedDate : "2025-11-10",
+        Role : "Super Admin",
+        Email : "khanalbikash007@gmail.com",
+        Contact: "9812345678",
+
+      },
+      
+      {
+        staffId : 800001, 
+        FullName : "Bikash khanal",
+        Address : "Kathmandu",
+        JoinedDate : "2025-11-10",
+        Role : "Super Admin",
+        Email : "khanalbikash007@gmail.com",
+        Contact: "9812345678",
+
+      },
+      
+      {
+        staffId : 800001, 
+        FullName : "Bikash khanal",
+        Address : "Kathmandu",
+        JoinedDate : "2025-11-10",
+        Role : "Super Admin",
+        Email : "khanalbikash007@gmail.com",
+        Contact: "9812345678",
+
+      },
+      
+      {
+        staffId : 800001, 
+        FullName : "Bikash khanal",
+        Address : "Kathmandu",
+        JoinedDate : "2025-11-10",
+        Role : "Super Admin",
+        Email : "khanalbikash007@gmail.com",
+        Contact: "9812345678",
+
+      },
+
     ]
+
+  
+function getStaff (status = false, {page = 1, limit = 10}) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+       if(status ){
+      reject(new Error("cannot sent data"))
+    }else{
+      const offset =(page -1 ) * limit ;
+      const staff =  staffData.slice(offset, offset + limit)
+      resolve({
+        data : staff, 
+        total : staffData.length, 
+        totalPages : staffData.length / limit 
+      })
+
+    }
+    }, 1000)
+  
+  })
+}
+
+export default getStaff;
