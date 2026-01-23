@@ -9,7 +9,7 @@ const SegmentedProgressBar = ({ label = "", datas = [] }) => {
     <div className="w-full flex flex-row flex-1 bg-white  border-r-2 border-white rounded-r-xl shadow-sm">
       <div className=" md:2/5 px-2 py-4 mx-5 flex flex-col justify-center items-start  gap-4">
         <div className="flex flex-row justify-start gap-4 ">
-          <p className="text-2xl font-semibold">{datas[0].total}</p>
+          <p className="text-2xl font-semibold">{datas[0]?.total || ''}</p>
           <p className="text-gray-600 font-medium text-xl">{label}</p>
         </div>
         <div className="w-full h-2.5  flex flex-row justify-start gap-1 relative">

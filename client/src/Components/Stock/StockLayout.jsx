@@ -1,6 +1,7 @@
 import {Container, StockFilterBar, StockInformationTable, StockGeneralInfoBar, StockTitle, NewButton, IconImage} from './../index'
 import { Add} from './../../assets/Imagesender'
 
+
 const StockLayout = () =>{
     return <div className='flex-1 mx-4 mt-8 ' >
         <div className='w-full flex flex-row justify-between mt-15 md:mt-5 mb-4'>
@@ -10,6 +11,7 @@ const StockLayout = () =>{
             <StockGeneralInfoBar />
             <StockFilterBar />
             <StockInformationTable />
+            
              </div>
 }
 
