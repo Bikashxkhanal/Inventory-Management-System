@@ -1,42 +1,28 @@
-import {AdvForm, DynamicForm} from './../../index'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { DynamicForm} from './../../index'
+import { useMutation } from '@tanstack/react-query'
+import { useNavigation } from 'react-router-dom'
+import { createStaffAPI } from '../../../services/api'
+
 
 
 const CreateStaff = () => {
+    const navigate = useNavigation();
+    const mutation = useMutation({
+        mutationFn : createStaffAPI,
+        onSuccess : () => {
+            navigate('/staff')
+        }
+    })
+
     const handleSubmission = (data) =>{
         console.log(data);
+        mutation.mutate(data);   
         
     }
-const InputBoxs = [{
-    name : "name",
-    type : "text",
-    placeholder : "Enter Name",
-},
-{
-    name : "email",
-    type : "email",
-    placeholder : "Enter Email",
-},
-{
-    name : "role",
-    type : "dropdown",
-    placeholder : "Enter Role",
-},
-{
-    name : "address",
-    type : "text",
-    placeholder : "Enter Address",
-},
-{
-    name : "contact",
-    type : "tel",
-    placeholder : "Enter phnone number",
-},
-]
-    return <div>
-        <AdvForm fields={InputBoxs} children="Create" title='Staff Creation' />
-        <DynamicForm useCase='createStaff' onSubmit={(data) => handleSubmission(data)} />
-    </div> 
+
+
+    return  <DynamicForm useCase='createStaff' status={mutation.isPending} title= 'Staff Creation' onSubmit={(data) => handleSubmission(data)}  />
+   
     
 }
 

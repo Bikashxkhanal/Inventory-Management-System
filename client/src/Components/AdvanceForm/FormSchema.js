@@ -14,16 +14,18 @@ export const buildSchema = (fields = [], isUpdate) => {
 
 
         case "email" : 
-            rule = z.email("Invalid email")
-            if(!isUpdate && field.required) rule = rule.min(1, "Required")
+            rule = z.string()
+            if(!isUpdate && field.required) rule = rule.email(1, "Email is required")
             break;
 
         case "select" : 
-            rule = z.enum(field.options)
+            rule = z.string().min(1, `${field.name} is required`).refine(
+                val => field.options.includes(val)
+            )
             break;
         
         case "tel" : 
-            rule = z.number().positive().min(10).max(10)
+            rule = z.string().length(10, 'Phone number must be 10 digit')
             break;
         
         default : 

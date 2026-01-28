@@ -7,7 +7,7 @@ const DataTable = ({
 
 }) => {
   const keys =  tableData.length ? Object.keys(tableData[0]) : []
-  console.table(tableData)
+ 
 
   return (
     <table className='w-full'>

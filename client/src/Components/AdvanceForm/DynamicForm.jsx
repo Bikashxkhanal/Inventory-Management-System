@@ -5,19 +5,25 @@ import {zodResolver } from '@hookform/resolvers/zod'
 import {InputBox, NewButton} from './../index'
 
 
-const DynamicForm = ({useCase, onSubmit}) => {
+const DynamicForm = ({useCase, title = '',status, onSubmit}) => {
     const fields = formConfig[useCase] || []
+    
     const schema = buildSchema(fields)
     const {register, handleSubmit, formState: {errors}} = useForm({resolver : zodResolver(schema)})
 
-    return (
-        <form  onSubmit={handleSubmit(onSubmit)} className=" mx-5 my-20 grid grid-cols-2 gap-4">
+
+    return (   
+        <form  onSubmit={handleSubmit(onSubmit)} className= "mt-15 md:mt-5 flex flex-col justify-start gap-4 mx-5 items-start relative">
+            <p className='text-xl bg-transparent md:text-3xl font-semibold md:font-bold '>{title}</p>
+             <div className='flex flex-col md:grid md:grid-cols-2 gap-4 w-full '>
             {
                 fields?.map((field) => (
                     <div key={field.name}>
                         {
                             field.type === 'text' &&
                              <InputBox placeholder={`Enter ${field.name}`} {...register(field.name)} />
+
+                             
                         }
                         {
                             field.type === 'email' && 
@@ -34,10 +40,11 @@ const DynamicForm = ({useCase, onSubmit}) => {
                         }
                         {
                             field.type === 'select' && 
-                            <select {...register(field.name)}  className="px-15 py-1 border border-black  " >
+                            <select {...register(field.name)}  className="w-full cursor-pointer text-center border-2 border-gray-300 rounded-sm py-2  " >
+                                <option value="">Select a {field.name}</option>
                                 {
-                                    field.otions?.map((opt) => (
-                                        <option value={opt} key={opt}>
+                                    field.options?.map((opt) => (
+                                        <option key={opt} value={opt}>
                                             {opt}
                                         </option>
                                     ))
@@ -54,7 +61,7 @@ const DynamicForm = ({useCase, onSubmit}) => {
 
                         {
                             errors[field.name] && (
-                                <p>{ errors[field.name].message}</p>
+                                <p className="text-red-600">{ errors[field.name].message}</p>
                             )
                         }
                        
@@ -64,8 +71,10 @@ const DynamicForm = ({useCase, onSubmit}) => {
 
             }
 
-            <NewButton children="Create" size="md" className="bg-green-600 cursor-pointer  hover:bg-green-900" />
+              <NewButton  className='md:w-50 bg-green-500 hover:bg-green-800 cursor-pointer w-full md:absolute md:right-0 md:top-[110%]' children='Create' loading= {status} />
+                </div>
         </form>
+      
     )
 }
 

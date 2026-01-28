@@ -1,5 +1,7 @@
 // const BASE_URL = `http://localhost/PROJECTS/INVENTORY-MANAGEMENT-SYSTEM/backend/public`;
 
+import axios from 'axios'
+
 export const userregisterAPI = async (formData) => {
   const response = await fetch(`/api/auth/user-register`, {
     method: "POST",
@@ -9,8 +11,6 @@ export const userregisterAPI = async (formData) => {
     },
     body: JSON.stringify(formData),
   });
-
-  console.log(response);
   const data = await response.json();
 
   return { response, data };
@@ -45,7 +45,7 @@ export const loginAPI = async (loginData) => {
 
     let data = {};
     try {
-      console.log(response);
+
       data = await response.json();
     } catch (e) {
       data = { success: false, message: "Invalid server response " };
@@ -87,7 +87,6 @@ export const userVerifyAPI = async () => {
       },
     });
 
-    console.log(response);
 
     const contentType = response.headers.get("content-type");
 
@@ -129,7 +128,6 @@ export const logoutAPI = async () => {
         Accept: "application/json",
       },
     });
-     console.log(response);
      let data = {}
 
 
@@ -157,3 +155,11 @@ export const logoutAPI = async () => {
     };
   }
 };
+
+export const createStaffAPI = async (data) => {
+    const response = await axios.post('/api/create-staff', data)
+    console.log(response.data);
+    
+    return response.data;
+  
+}
