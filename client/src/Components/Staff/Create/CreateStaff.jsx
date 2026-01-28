@@ -1,9 +1,12 @@
-import {AdvForm} from './../../index'
+import {AdvForm, DynamicForm} from './../../index'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
+
 const CreateStaff = () => {
-    const queryClient = new useQueryClient();
-    const {} = useMutation({})
+    const handleSubmission = (data) =>{
+        console.log(data);
+        
+    }
 const InputBoxs = [{
     name : "name",
     type : "text",
@@ -30,7 +33,11 @@ const InputBoxs = [{
     placeholder : "Enter phnone number",
 },
 ]
-    return <AdvForm datas={InputBoxs} children="Create" title='Staff Creation' />
+    return <div>
+        <AdvForm fields={InputBoxs} children="Create" title='Staff Creation' />
+        <DynamicForm useCase='createStaff' onSubmit={(data) => handleSubmission(data)} />
+    </div> 
+    
 }
 
 

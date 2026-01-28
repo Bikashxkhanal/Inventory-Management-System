@@ -74,6 +74,9 @@ import Vendor from "../pages/Vendor/Vendor";
 ///purchase page
 import Purchase from "../pages/Purchase/purchase";
 
+//dynammic form
+import DynamicForm from "./AdvanceForm/DynamicForm";
+
 
 
 export {
@@ -171,9 +174,11 @@ export {
     PurchaseInfoTable,
     PurchaseLayout, 
     PurchaseTitle,
+
+    //dynamic form
+    DynamicForm,
     
 
 
 
- 
 };

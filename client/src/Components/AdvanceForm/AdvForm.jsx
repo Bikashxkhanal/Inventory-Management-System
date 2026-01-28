@@ -6,7 +6,7 @@ const AdvForm = ({
     fields = [],
     title = '',
     children,
-    onSubmit,
+   
 }) => {
     const [form, setForm] = useState({});
     const [error, setError] = useState({})
@@ -18,13 +18,13 @@ const handleChange = () => {
         })
 }
 
-const handleValidation = () => {
-
+const handleValidation = (form) => {
+    let errors = {}
 
 }
 const handleSubmission = (e) => {
     e.preventDefault();
-    if(!handleValidation()) return;
+    if(!handleValidation(form)) return;
     //send the form to the backend
 }
     return <form action="" method="POST" className= "mt-15 md:mt-5 flex flex-col justify-start gap-4 mx-5 items-start relative" onSubmit={handleSubmission}>
