@@ -2,7 +2,14 @@
 namespace App\Infrastructures\Validation;
 
 class ValidationMethods{
-       public  function email($email){
+    private array $roles = [
+        'superadmin',
+        'admin', 
+        'salesperson',
+        'storemanager',
+    ];
+
+        public function email($email){
             if(!isset($email)) return false;
             return filter_var(trim($email), FILTER_VALIDATE_EMAIL);
         }
@@ -32,6 +39,15 @@ class ValidationMethods{
                 if(!preg_match('/^(98|97)[0-9]{8}$/', $number)) return false;
                 return $number;
 
+        }
+
+        public function role(string $role) {
+            if(in_array($role, $this->roles )){
+                    return $role;
+            }
+
+            return false;
+                
         }
     
 }

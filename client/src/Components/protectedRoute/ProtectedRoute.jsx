@@ -9,12 +9,14 @@ function Protected({ children }) {
 
   //the parameter authentication is for page routing ,is the userAuthenticated to brwose to that page or not, false means can navigate eg. to login/signup page true means requrire authentication like otpVerificationPage, Dashboard etc.
   const navigate = useNavigate();
-  const { user, authStatus, isOtpVerified, isAuthenticated ,isAuthorized ,company } = useSelector((state) => state.auth);
+  const { user, authStatus, isOtpVerified, company } = useSelector((state) => state.auth);
 
   const dispatch  = useDispatch();
 
 
   // TODO: must have send userId to the state, when the user is registered to the database
+
+  //if the authStatus = idle
 
   useEffect (()=>{
     console.log(authStatus);
@@ -33,28 +35,25 @@ useEffect(() => {
     return;
   }
 
+
+if (!company?.companyId ) {
+  navigate("/signup");
+}
+
+if(authStatus === 'signup_in_progress'){
+  navigate('/signup/email-otp-verification')
+ }
+
   if (authStatus !== "authenticated"){
     return;
   } ;
 
-   if (!user?.companyId ) {
-  navigate("/signup");
-}
-else if (!isOtpVerified) {
-  navigate("/signup/email-otp-verification");
-}
-else if (!user.user_id && user.user_role === 'superadmin') {
-  navigate("/super-admin-verification");
-}else if(isAuthorized === 'unauthorized') {
-  navigate("/login");
-}else if(isAuthorized === null){
-  navigate('/signup');
-}else if(isAuthorized === 'authorized'){
-  navigate('/dashboard');
-}
+  if(authStatus === 'authenticated' && user?.isAuthenticated){
+    navigate('/web/dashboard');
+  }
 
- 
-  }, [ isAuthenticated,user, isOtpVerified , authStatus, isAuthorized, navigate]);
+
+  }, [ user,company,  isOtpVerified , authStatus, navigate]);
 
   if(authStatus === 'loading' || authStatus === 'idle'){
     return <div>loading...</div>

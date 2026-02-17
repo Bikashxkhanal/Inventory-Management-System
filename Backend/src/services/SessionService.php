@@ -7,18 +7,24 @@
             $this->session = $session;
         }
          public function createUserSession($user){
+            $rolesWithPermissions = require_once __DIR__ . '/../config/rolesandpermissions.php';
             $this->session->start();
             $this->session->set('user', [
-                'identity' => [
-                'user_id' => $user['identity']['user_id'],
-                'user_role' => $user['identity']['user_role'],
-                'user_name' => $user['identity']['user_name'],
-                'companyId' => $user['identity']['companyId'],
-                'user_email' => $user['identity']['user_email'],
-                ], 
-                'permissions' => $user['permissions'],
+                'user' => [
+                'id' => $user['id'],
+                'role' => $user['role'],
+                'email' => $user['email'],
+                'name' => $user['firstName'] .  " " . $user['lastName'],
                 'isAuthenticated' => $user['isVerified'],
-
+                'isAuthorized' => $user['isVerified'],
+                ],
+                'company' => 
+                [
+                'companyId' => $user['company_id'],
+                'companyName' => $user['company_name']
+                ],
+              'permissions' =>  $rolesWithPermissions['roles'][$user['role']],
+               
             ]);
 
 
@@ -34,9 +40,9 @@
             $this->session->set('otp_context', $otp_context );
             $this->session->set('otp_email', $otp_email);
         }
-        public function get( string $key){ //get the contextkey or any userinformation
+        public function get( string $key) { //get the contextkey or any userinformation
             $this->session->start();
-           return  $this->session->get($key);
+           return  $this->session->get($key) ?? null ;
         }
         public function delete($key){ //delete the context key
             $this->session->start();

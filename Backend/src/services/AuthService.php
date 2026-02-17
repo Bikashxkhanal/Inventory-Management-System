@@ -82,7 +82,7 @@
 
         }
 
-        if($company['phnNbr'] === false){
+        if($company['phoneNumber'] === false){
            throw new InvalidArgumentException('Invalid phone number');
         }
 
@@ -91,16 +91,17 @@
         }
 
         //CHECK COMPANY EXISTANCE IN DB
-        if($this->companyModel->isCompanyAccountExist($company['email'], $company['phnNbr'])){
+        if($this->companyModel->isCompanyAccountExist($company['email'], $company['phoneNumber'])){
          throw new DomainException('Company already exists');
         }
 
-        //store information in redis 
+        //store company information in redis with key company-email
         $this->tempUserInfo->addUserInfo("COMPANY_SIGNUP", $company['email'], $company);
 
-        //crate verification code store information in redis
+        //crate verification code store information in redis 
         $this->otpService->generateOTP("COMPANY_SIGNUP", $company['email']);
         
+        //creating otp type session to story the type of otp (like singup verification , login verification)
         $this->sessionService->createOtpTypeSession('COMPANY_SIGNUP', $company['email']);
 
         $mailer = createMailer();
@@ -133,37 +134,19 @@
                throw new InvalidArgumentException('invalid username or password');
             }
             
-            //db Call   
+            //db Call to get password email and id to verify the user
           $userInfo = $this->userModel->getByEmail($validatedUser['email']);
 
                if($userInfo === false || !$userInfo){
                   throw new DomainException('No user of such email');
                }
-        
-         if(!password_verify($validatedUser['password'], $userInfo['user_password_hash'])){
+        //password verifing
+         if(!password_verify($validatedUser['password'], $userInfo['password_hash'])){
             throw new DomainException("wrong password");
          }
       
-        $rolesWithPermission = require_once __DIR__ . '/../config/rolesandpermissions.php';
-      $roles = array_keys($rolesWithPermission['roles']);
-
-          if(!in_array($userInfo['user_role'],$roles)){
-           throw new InvalidArgumentException('invalid role');
-         }
-
-         $permissions = $rolesWithPermission['roles'][$userInfo['user_role']];
-
-         $user = [
-            'identity' => [
-            'user_id' => $userInfo['user_id'],
-            'user_name' => $userInfo['user_fname'] . " " . $userInfo['user_lname'],
-            'user_role' => $userInfo['user_role'],
-            'companyId' => 10005,
-            'user_email' => $userInfo['user_email']
-            ],
-            'isVerified' => true,
-            'permissions' => $permissions,
-         ];
+         $user = $this->userModel->getById($userInfo['id']);
+      
 
         try {
          $this->sessionService->createUserSession($user);
@@ -176,68 +159,58 @@
 
         }
 
-        public function superAdminSignup($input){
-            //sanitize , validate , store in redis , send mail , then store in db
-            //sanitization
-        $superAdminSignupSanitizer = new SuperAdminSignupSanitization();
-         $sanitizedInput= $this->sanitizationService->handleSanitization($input, $superAdminSignupSanitizer);
+   public function superAdminSignup(array $input): bool
+{
+    //  Sanitization
+    $sanitizedInput = $this->sanitizationService
+        ->handleSanitization($input, new SuperAdminSignupSanitization());
 
-         //validation
-         $superAdminValidator = new SuperAdminSignupValidation();
-        $user =  $this->validationService->handleValidation($sanitizedInput, $superAdminValidator);
-        
+    // Validation 
+    $user = $this->validationService
+        ->handleValidation($sanitizedInput, new SuperAdminSignupValidation());
 
-        if($user['fname'] === false  || $user['lname'] === false){
-        throw new Exception("Invalid Name");
-        }
+    if (in_array(false, $user, true)) {
+        throw new InvalidArgumentException("Invalid user input");
+    }
 
-        if($user['email'] === false){
-            throw new InvalidArgumentException("Invalid email");
+  
+   //  if (!$this->companyModel->isAccountExist($user['companyId'])) {
+   //      throw new DomainException("No such company found");
+   //  }
 
-        }
-        if($user['phnNbr'] === false){
-            throw new InvalidArgumentException("Invalid phone number");
-        }
+    $user['role'] = 'superadmin';
+    $user['isVerified'] = true; // TODO: change to false when email verification added
+    $user['password_hash'] = password_hash($user['password'], PASSWORD_BCRYPT);
 
-        if(!$user['role']) throw new InvalidArgumentException('no role ');
+    unset($user['password']);
 
-        if(in_array(false, $user, true)){
-         throw new InvalidArgumentException('Invalid user information');
-        }
+   $this->userModel->createUser($user);
 
-        if($this->userModel->isUserExists($user['email'], $user['phnNbr'])){
-         throw new DomainException('User already exists');
+    return true;
+}
 
-        }
-
-        $user['isVerified'] = true;
-
-                //hasing password
-        $user['hashedPwd'] = password_hash($user['password'], PASSWORD_BCRYPT);
-      
-      try{
-         //$user['phnNbr'] , but current is $user['phoneNumber']
-          $this->userModel->create($user);
-      }catch(Exception $e){
-         throw new DomainException($e->getMessage());
-      }
-     
-      $this->sessionService->createUserSession($user);
-        return true;
-
-        }
         //method to validate otp 
-        public function OtpValidate($input){ //expect both otp-code and useremail
-            //get session otp context
+public function OtpValidate($input){ 
+   //expect both otp-code and useremail
+   //get session otp context
             try{
+               //get the opt type from session 
             $type =  $this->sessionService->get('otp_context');
             $otp_email = $this->sessionService->get('otp_email');
-            $userOrCompanyInfo = $this->tempUserInfo->getUserInfo($type, $input['companyEmail']);
 
-            if(!$type || !$userOrCompanyInfo){
-               throw new Exception('otp setup key not found');
+            if(!$type || !$otp_email){
+               throw new Exception('OTP setup key not found');
             }
-           $this->otpService->verifyOtp($type, $otp_email, $input['otp']); 
+
+            //verify signup
+             $this->otpService->verifyOtp($type, $otp_email, $input['otp']); 
+
+             //retrieve company or user information 
+            $userOrCompanyInfo = $this->tempUserInfo->getUserInfo($type, $input['companyEmail']);
+            //if no infromation found , that might be ttl expired, so thrwoing an error
+            if(!$userOrCompanyInfo){
+               throw new Exception("Signup session expired");
+            }
 
            switch($type){
             case 'COMPANY_SIGNUP' : 
@@ -251,10 +224,9 @@
             default : throw new Exception('wrong otp context type');
            }
 
-         
-           
-
-         return true;
+            return [
+               'message' => 'Otp validated successfully!'
+            ];
 
             }catch(Exception $e){
                throw new Exception($e->getMessage());
@@ -274,9 +246,6 @@
           }
           return true;
         }
-
-       
-
         }
 
 ?>

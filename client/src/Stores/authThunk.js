@@ -34,7 +34,9 @@ export const registerCompany = (formData) => async (dispatch) => {
   try {
     dispatch(registerCompanyStart());
     const { response, data } = await companyregisterAPI(formData);
-
+      console.log(data);
+      console.log(response);
+      
     if (!response.ok) {
       throw new Error(data.message || "Registration failed");
     }
@@ -43,7 +45,9 @@ export const registerCompany = (formData) => async (dispatch) => {
       throw new Error(data.message || "Registration Failed");
     }
 
-    dispatch(registerCompanySuccess(data.company));
+    dispatch(registerCompanySuccess(data.data?.company));
+    console.log(data?.data?.company);
+    
   } catch (error) {
     dispatch(registerCompanyFail(error.message));
   }
@@ -73,19 +77,25 @@ export const registerUser = (formData) => async (dispatch) => {
 export const loginUser = (loginData) => async (dispatch) => {
   try {
     dispatch(loginStart());
+    console.log(loginData);
+    
 
     const { response, data } = await loginAPI(loginData);
 
-    if (!response.ok) {
+    console.log(data?.success);
+    console.log(data?.data);
+
+    if (!response?.ok) {
       throw new Error(data.message || "Failed to login");
     }
 
-    if (!data.success) {
+    if (!data?.success) {
       throw new Error(data.message || "Login failed");
     }
-
-    dispatch(loginSucess(data));
+    dispatch(loginSucess(data?.data));
   } catch (error) {
+    console.log("Error" , error);
+    
     dispatch(loginFail(error.message));
   }
 };

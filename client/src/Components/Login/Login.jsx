@@ -16,8 +16,9 @@ function LoginComponent(){
   const navigate = useNavigate();
   
 
-  const {loading, user, isAuthenticated, error} = useSelector((state)=> state.auth);
-  
+  const {loading, user, error} = useSelector((state)=> state.auth);
+ 
+
 
   const handleChange = (e) => {
     setLoginDetail({
@@ -26,12 +27,7 @@ function LoginComponent(){
     })
   }
 
-  // useEffect(()=> {
-  //   if(user.userId){
-  //     navigate('/dashbaord');  
-  //   }
-   
-  // }, [user.userId, navigate]);
+  
 
   const validateForm = () => {
 
@@ -66,15 +62,17 @@ function LoginComponent(){
     if(!validateForm()){
       return;
     }
+    console.log(loginDetail);
+    
      dispatch(loginUser(loginDetail));
       
   }
 
   useEffect(()=>{
-    if(isAuthenticated && user.user_id){
+    if(user?.isAuthenticated && user?.id){
       navigate('/web/dashboard');
     }
-  }, [isAuthenticated,user.user_id, navigate])
+  }, [user.isAuthenticated,user.id, navigate])
 
   //Redirect the user to their dashboard if exist
 

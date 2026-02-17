@@ -4,6 +4,7 @@ namespace App\Infrastructures\Validation;
 
 use App\Contracts\InputValidation;
 use App\Infrastructures\Validation\ValidationMethods;
+
 class SuperAdminSignupValidation extends InputValidation{
     private ValidationMethods $validate;
 
@@ -18,6 +19,8 @@ class SuperAdminSignupValidation extends InputValidation{
             'email' => $this->validate->email($input['email']),
             'phoneNumber' => $this->validate->phoneNumber($input['phoneNumber']),
             'password' => $this->validate->password($input['password']),
+            'role' => $this->validate->role($input['role']),
+            'companyId' => $input['companyId'],
         ];
     }
 }

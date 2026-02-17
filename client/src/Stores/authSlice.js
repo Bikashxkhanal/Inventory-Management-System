@@ -4,23 +4,28 @@ import { act } from "react";
 //register the business , login into system , OTP verification 
 
 const initialState = {
-        authStatus : 'idle', // idle, loading, authenticated , unauthenticated
-  
+        authStatus : 'idle', // idle, loading, authenticated , unauthenticated , signup_in_progress , user_verification_in_progress, 
+        //  opt_verifying , user_verified
+  company : {
+    companyId : null,
+    companyName: null,
+    companyEmail : null,
+    companyNumber : null,
+  }, 
     user: {
-         companyId : null,
-        companyName: null,
-        user_id : null,
-        user_name : null,
-        user_role : null,
+        id : null,
+        name : null,
+        role : null,
+        email : null, 
+        isAuthenticated : false,
+        isAuthorized : false,
     },
     permissions : [],
     token : null,
     loading: false,
     error : null,
-    isAuthenticated : false,
     isOtpVerified: false,
     status : null,
-    isAuthorized: null,
     message : null,
 }
 
@@ -37,6 +42,7 @@ const authSlice = createSlice({
         registerCompanySuccess : (state, action) => {
             state.loading = false;
             state.company = action.payload;
+            state.authStatus = 'signup_in_progress'
         },
         
         registerCompanyFail : (state, action) => {
@@ -50,8 +56,7 @@ const authSlice = createSlice({
         registerUserSuccess : (state, action) => {
             state.loading =false;
             state.user = action.payload;
-            state.isAuthenticated = true
-            state.isAuthorized = 'authorized';
+            state.user.isAuthorized = 'authorized';
            
         },
 
@@ -59,7 +64,7 @@ const authSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
             state.status = 'unauthorized'
-             state.isAuthorized = 'unauthorized';
+             state.user.isAuthorized = 'unauthorized';
         },
 
         loginStart: (state)=>{
@@ -70,17 +75,17 @@ const authSlice = createSlice({
 
         loginSucess : (state, action)=>{
             state.loading = false;
-            state.user = action.payload.user.identity;
-            state.isAuthenticated = action.payload.user.isAuthenticated;
-            state.isAuthorized = action.payload.isAuthorized
-            state.isOtpVerified = action.payload.user.isAuthenticated;
-            state.permissions = action.payload.user.permissions
+            state.user = action.payload?.[0]?.user;
+            state.company = action.payload?.[0]?.company;
+            state.isOtpVerified = action.payload?.[0]?.user.isAuthenticated;
+            state.permissions = action.payload?.[0]?.permissions
             state.authStatus = 'authenticated'
         },
 
         loginFail : (state, action)=>{
             state.loading = false;
             state.error = action.payload;
+            console.log(action.payload);
             state.status = 'unauthorized'
             state.authStatus = 'unauthenticated'
         },
@@ -108,15 +113,15 @@ const authSlice = createSlice({
             state.authStatus = 'unauthenticated'
             state.loading = false;
             
-            state.isAuthorized  = 'unauthorized'
+            state.user.isAuthorized  = 'unauthorized'
         },
 
         getMyInfoSuccess : (state, action )=> {
             state.authStatus = 'authenticated'  
             state.loading = false;
             state.user = action.payload.user.identity;
-            state.isAuthenticated = action.payload.user.isAuthenticated;
-            state.isAuthorized = action.payload.isAuthorized
+            state.user.isAuthenticated = action.payload.user.isAuthenticated;
+            state.user.isAuthorized = action.payload.isAuthorized
             state.isOtpVerified = action.payload.user.isAuthenticated;
             state.permissions = action.payload.user.permissions
             

@@ -33,7 +33,6 @@
        if($otp !== $userOTP) throw new Exception('otp didont matched') ;
        $this->store->deleteOtp($type, $userId);
        $this->session->delete('otp_context'); // $type key must be otp_content
-       $this->session->delete('otp_email'); //$email key must be otp_email
 
        return true;
 

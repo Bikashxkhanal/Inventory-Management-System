@@ -32,12 +32,16 @@ class AuthController
             http_response_code(201);
             echo json_encode([
                 'success' => true,
-                'company' => [
+                'data' => [
+                     'company' => [
                     'companyId' => random_int(1000, 9999),
                     "companyEmail" => $input['businessMail'],
                     "companyName" => $input['businessName'],
                     "companyNumber" => $input['phoneNumber'],
-                ],
+                          ],
+
+                ]
+               
 
             ]);
 
@@ -67,10 +71,11 @@ class AuthController
             //get user role and information(store in session do it in either authservice)
 
             //show dashboard as the user role , with the information required for the dashborad(dbCall)
+            http_response_code(200);
             echo json_encode([
                 'success' => true,
                 'message' => 'login successful',
-                'user' => $this->sessionService->get('user'),
+                'data' => [$this->sessionService->get('user')],
                 'isUserAuthorized' => 'authorized',
             ]);
 
@@ -101,16 +106,15 @@ class AuthController
     {
         try {
             $this->authenticate->superAdminSignup($input);
-            http_response_code(200);
+            http_response_code(201);
             echo json_encode([
                 'success' => true,
-                'user' => [
-                    'userId' => random_int(1000, 3000),
-                    'userName' => $input['firstName'] . '' . $input['lastName'],
-                    'userEmail' => $input['email'],
+                'data' => [
+                    $this->sessionService->get('user')
+                ],
                 ],
 
-            ]);
+            );
 
         } catch (InvalidArgumentException $e) {
             http_response_code(400);
@@ -128,7 +132,7 @@ class AuthController
             http_response_code(500);
             echo json_encode([
                 'success' => false,
-                'message' => 'Internal server error',
+                'message' => $e->getMessage(),
             ]);
         }
 
@@ -138,15 +142,15 @@ class AuthController
     {
         try {
             $this->authenticate->OtpValidate($input);
-            http_response_code(204);
+            http_response_code(200);
             echo json_encode([
                 'success' => true,
-                'message' => 'opt verified',
+                'message' => 'Otp verified',
             ]);
 
 
         } catch (Exception $e) {
-            http_response_code(500);
+            http_response_code(400);
             echo json_encode([
                 'success' => false,
                 'message' => $e->getMessage(),

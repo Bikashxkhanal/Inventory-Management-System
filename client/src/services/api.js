@@ -12,6 +12,8 @@ export const userregisterAPI = async (formData) => {
     body: JSON.stringify(formData),
   });
   const data = await response.json();
+  console.log(data);
+  
 
   return { response, data };
 };
@@ -42,7 +44,8 @@ export const loginAPI = async (loginData) => {
       },
       body: JSON.stringify(loginData),
     });
-
+    console.log(response || "Invalid response");
+    
     let data = {};
     try {
 
@@ -74,6 +77,8 @@ export const EmailOtpVerificationAPI = async (emailOtp) => {
   });
 
   const data = await response.json();
+  console.log(data);
+  
   return { response, data };
 };
 
