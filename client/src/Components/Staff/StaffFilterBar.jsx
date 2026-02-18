@@ -11,7 +11,7 @@ const StaffFilterBar = () => {
         <SearchBar />
         <div  className='flex flex-row justify-start items-center gap-2'>
             <p className='text-[16px] font-medium text-center '>Filter By</p>
-        <FilterComponent type='date-range' label="Joined Date" dateValue={date} onChange={setDate} />
+        {/* <FilterComponent type='date-range' label="Joined Date" dateValue={date} onChange={setDate} /> */}
         <FilterComponent type='category' label="Role" options={roles}  catValue={role} onChange={setRole} />
         </div>
     </div>

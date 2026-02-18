@@ -7,6 +7,8 @@ const useMutate = (mutateFn, options= {}) => {
         mutationFn : mutateFn,
         ...options, 
         onSuccess : (data) => {
+            console.log(data);
+            
             if(options.invalidateQueryKey) {
                 queryClient.invalidateQueries([options.invalidateQueries])
             }

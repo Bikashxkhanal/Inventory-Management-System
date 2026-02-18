@@ -4,7 +4,7 @@ export const formConfig  = {
          {name : 'lastName' , type : 'text' , required : true},
         { name : 'email', type : 'email', required : true},
         {name : 'phoneNumber', type : 'tel' , reqired : true}, 
-        {name : 'role', type : 'select' , options : ['admin', 'manager', 'sales person'] , required : true},
+        {name : 'role', type : 'select' , options : ['admin', 'manager', 'salesperson'] , required : true},
         {name : 'password', type : 'text' , required : true}, 
     ],
     createVendor : [
@@ -14,15 +14,13 @@ export const formConfig  = {
         {name : 'contact', type : 'tel' , reqired : true}, 
     ], 
     createPurchase : [
-        {name : 'poId', type : 'text', required : true},
-        {name : 'title', type : 'text' , required : true, min : 5},
-        {name : 'discription' , type : 'text', required : true, min : 5 , max : 50}, 
         {name : 'vendor' , type : 'select' , options : [], required : true}, 
         {name : 'totalValue' , type : 'text' , required : true}, 
-        {name : 'receivedDate', type : 'date' , required : true}
+        {name : 'date', type : 'date' , required : true}
     ], 
 
     addPurchaseItems : [
+        {name : 'category' , type : 'select' , options : [], required : true},
         {name : 'product' , type : 'select' , options : [], required : true},
         {name : 'quantity', type : 'text', required : true, min : 1},
         {name : 'price' , type : 'text', required : true, min : 1}

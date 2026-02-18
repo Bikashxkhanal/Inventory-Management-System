@@ -10,10 +10,12 @@ import SignupPage from './pages/SignupPage.jsx'
 import { Provider } from 'react-redux';
 import store from './Stores/Store.js'
 import OtpVerificationPage from './pages/EmailOtpVerificationPage.jsx'
-import { DashboardLayout, Protected, SideBarLayout, Stock, Staff, CreateStaff, UpdateStaff } from './Components/index.js'
+import { DashboardLayout, Protected, SideBarLayout, Stock, Staff, CreateStaff, UpdateStaff, Purchase } from './Components/index.js'
 import SuperAdminVerificationPage from './pages/SuperAdminVerificationPage.jsx'
 import Dashboard from './pages/Dashboard/Dashboard.jsx'
 import DashboardComp from './Components/Dashboard/DashboardPageComponent/Dashboard.jsx'
+import CreatePurchase from './Components/Purchase/CreatePurchase.jsx'
+import AddPurchaseItems from './Components/Purchase/AddPurchaseItems.jsx'
 
 const queryClient = new QueryClient();
 
@@ -85,6 +87,18 @@ const queryClient = new QueryClient();
                 {
                   path : '/web/staff/update/:id',
                   element : <UpdateStaff />
+                },
+                {
+                  path : 'purchase',
+                  element : <Purchase />
+                }, 
+                {
+                  path : 'purchase/create', 
+                  element : <CreatePurchase />
+                },
+                {
+                  path : "purchase/:purchaseId/items",
+                   element : <AddPurchaseItems />
                 }
             
           ]

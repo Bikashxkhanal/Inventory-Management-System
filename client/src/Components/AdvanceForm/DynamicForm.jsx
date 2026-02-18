@@ -5,7 +5,12 @@ import {zodResolver } from '@hookform/resolvers/zod'
 import {InputBox, NewButton} from './../index'
 
 
-const DynamicForm = ({useCase, title = '',status, onSubmit}) => {
+const DynamicForm = ({ useCase,
+  title = '',
+  status,
+  onSubmit,
+  dynamicOptions = {},
+  onFieldChange}) => {
     const fields = formConfig[useCase] || []
     
     const schema = buildSchema(fields)
@@ -38,21 +43,38 @@ const DynamicForm = ({useCase, title = '',status, onSubmit}) => {
                             field.type === 'tel' && 
                             <InputBox placeholder={`Enter ${field.name}`} {...register(field.name)} />      
                         }
+                       {
+  field.type === 'date' && (
+    <InputBox
+      type="date" // important for HTML5 date picker
+      placeholder={`Enter ${field.name}`}
+      {...register(field.name)}
+    />
+  )
+}
                         {
-                            field.type === 'select' && 
-                            <select {...register(field.name)}  className="w-full cursor-pointer text-center border-2 border-gray-300 rounded-sm py-2  " >
-                                <option value="">Select a {field.name}</option>
-                                {
-                                    field.options?.map((opt) => (
-                                        <option key={opt} value={opt}>
-                                            {opt}
-                                        </option>
-                                    ))
-                                }
+  field.type === 'select' && 
+  <select
+    {...register(field.name)}
+     onChange={(e) => {
+      register(field.name).onChange(e); // call react-hook-form handler
+      if(onFieldChange) onFieldChange(field.name, e.target.value); // notify parent
+    }}
+    className="w-full cursor-pointer text-center border-2 border-gray-300 rounded-sm py-2"
+  >
+    <option value="">Select a {field.name}</option>
+    {
+      // Use dynamic options if provided, otherwise fallback to field.options
+      (dynamicOptions?.[field.name] || field.options)?.map(opt => (
+        <option key={opt.value || opt} value={opt.value || opt}>
+          {opt.label || opt}
+        </option>
+      ))
+    }
+  </select>
+}
 
-                            </select>
 
-                        }
 
                         {
                             field.type === 'checkbox' && 

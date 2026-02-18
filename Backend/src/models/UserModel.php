@@ -96,6 +96,81 @@ try {
 }
 
         }
+public function fetchStaff(int $page, int $limit): array
+{
+    global $pdo;
+    $offset = ($page - 1) * $limit;
+
+    $countStmt = $pdo->prepare("
+        SELECT COUNT(*) as total
+        FROM sys_user 
+        WHERE role IN ('admin', 'manager' , 'salesperson')
+    ");
+
+    $countStmt->execute();
+    $total = (int) $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+    // 2️⃣ Get paginated data
+    $stmt = $pdo->prepare("
+        SELECT id, firstName, lastName, email, role, status, phoneNumber
+        FROM sys_user
+        WHERE role IN ('admin', 'manager' , 'salesperson')
+        ORDER BY id DESC
+        LIMIT :limit OFFSET :offset
+    ");
+
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+
+    $stmt->execute();
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return [
+        "data" => $data,
+        "meta" => [
+            "page" => $page,
+            "limit" => $limit,
+            "total" => $total,
+            "totalPages" => $limit > 0 ? ceil($total / $limit) : 1
+        ]
+    ];
+}
+
+
+public function fetchStaffStats(): array
+{
+    global $pdo;
+    // Get total staff count
+    $stmtTotal = $pdo->prepare("SELECT COUNT(*) as total FROM sys_user WHERE role IN ('admin', 'manager' , 'salesperson')");
+    $stmtTotal->execute();
+    $total = (int) $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'];
+
+    // Get count by role
+    $stmtRoles = $pdo->prepare("
+        SELECT role, COUNT(*) as count
+        FROM sys_user WHERE role IN ('admin', 'manager' , 'salesperson')
+        GROUP BY role
+
+    ");
+    $stmtRoles->execute();
+    $roles = $stmtRoles->fetchAll(PDO::FETCH_ASSOC);
+
+    $stats = [
+        "total" => $total,
+        "admin" => 0,
+        "salesperson" => 0,
+        "manager" => 0
+    ];
+
+    foreach ($roles as $role) {
+        if ($role['role'] === 'admin') $stats['admin'] = (int)$role['count'];
+        elseif ($role['role'] === 'salesperson') $stats['sales'] = (int)$role['count'];
+        elseif ($role['role'] === 'manager') $stats['manager'] = (int)$role['count'];
+    }
+
+    return $stats;
+}
+
 
         
     }

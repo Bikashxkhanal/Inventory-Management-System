@@ -29,7 +29,8 @@ return [
              'VIEW_REPORT',
              'CREATE_PO',
              'REVERSE_SALE',
-             'VIEW_STOCK'
+             'VIEW_STOCK',
+             'CREATE_PURCHASE',
         ],
         'salesperson' => [
             'DASHBOARD',

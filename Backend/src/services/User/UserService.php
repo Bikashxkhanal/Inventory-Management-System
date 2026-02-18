@@ -14,11 +14,13 @@
     class UserService{
         private $sanitizationService;
         private $validationService;
+        private $userModel;
         
 
         public function __construct(){
             $this->sanitizationService = new SanitizationService();
             $this->validationService = new ValidationService();
+            $this->userModel = new UserModel();
               
         }
 
@@ -69,7 +71,6 @@
              $validatedInput['isVerified'] = 1;
              $validatedInput['status'] = 'active';
 
-
             // $creator = new User();
             // $creator->addUserDetails($currentUser);
 
@@ -83,10 +84,26 @@
             };  
             
             //add user to db
-            $db = new UserModel();
-            $db->create($staff->getUserDetails());
+           
+            $this->userModel->create($staff->getUserDetails());
             return true;
         }
+
+
+        public function fetchStaffService(int $page, int $limit): array
+{
+          return  $this->userModel->fetchStaff($page, $limit);
+        // $staffDetails['fullName'] = $staffDetails['firstName'] . " " . $staffDetails['lastName'];
+       
+
+ }
+
+ public function fetchStaffStatsService(): array
+{
+    return $this->userModel->fetchStaffStats();
+}
+
+
     }
 
 ?>
