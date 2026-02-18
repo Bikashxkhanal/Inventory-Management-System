@@ -132,7 +132,7 @@ export const verifyUserType = () => async (dispatch) => {
     if (!data.success) {
       throw new Error(data.message || "cannot verify user");
     }
-    dispatch(getMyInfoSuccess(data));
+    dispatch(getMyInfoSuccess(data?.data));
   } catch (err) {
     console.log(err.message);
 

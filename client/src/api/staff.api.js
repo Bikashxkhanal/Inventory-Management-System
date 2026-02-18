@@ -5,11 +5,11 @@ const createStaff = async (payload) => {
     return data;
 }
 
-const getStaff = async () => {
+const fetchStaff = async ({page =1, limit = 10}) => {
 
     const {data} = await api.get('/api/staff')
     return data;
 }
 
 
-export {createStaff, getStaff}
+export {createStaff, fetchStaff}

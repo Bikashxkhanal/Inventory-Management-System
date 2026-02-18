@@ -1,7 +1,7 @@
 import {DataTable, ActionComponent} from './../index'
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import getStaff from './StaffData';
+import { fetchStaff } from '../../api/staff.api';
 import PaginationController from '../Pagination Controls/PaginationController';
 
 const StaffInfoTable = () => {
@@ -10,7 +10,7 @@ const StaffInfoTable = () => {
   const limit = 5;
   const {data, isLoading, isError}  = useQuery({
     queryKey : ['staff' , {page, limit }],
-    queryFn : () => getStaff(false, {page, limit}).then(res => {
+    queryFn : () => fetchStaff(false, {page, limit}).then(res => {
       setTotalPage(res.totalPages)
       return res.data
       

@@ -28,37 +28,36 @@ function Protected({ children }) {
   }, [dispatch, authStatus])
 
 useEffect(() => {
-  console.log(authStatus);
+  if (authStatus === 'loading' || authStatus === 'idle') return;
 
-  if(authStatus === 'unauthenticated'){
+  if (authStatus === 'unauthenticated') {
     navigate('/login');
     return;
   }
 
+  if (authStatus === 'authenticated') {
+    if (!company?.companyId) return; // wait until company info is loaded
 
-if (!company?.companyId ) {
-  navigate("/signup");
-}
+    if (!user?.isAuthenticated) {
+      navigate('/signup/email-otp-verification');
+      return;
+    }
 
-if(authStatus === 'signup_in_progress'){
-  navigate('/signup/email-otp-verification')
- }
-
-  if (authStatus !== "authenticated"){
-    return;
-  } ;
-
-  if(authStatus === 'authenticated' && user?.isAuthenticated){
-    navigate('/web/dashboard');
+     if (location.pathname === '/login' || location.pathname === '/signup') {
+      navigate('/web/dashboard');
+    }
+  
   }
 
+}, [authStatus, user, company, navigate]);
 
-  }, [ user,company,  isOtpVerified , authStatus, navigate]);
 
   if(authStatus === 'loading' || authStatus === 'idle'){
     return <div>loading...</div>
 
   }
+  
+
 
   return  <>{children}</>;
 }

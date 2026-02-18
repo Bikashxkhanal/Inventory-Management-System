@@ -119,11 +119,11 @@ const authSlice = createSlice({
         getMyInfoSuccess : (state, action )=> {
             state.authStatus = 'authenticated'  
             state.loading = false;
-            state.user = action.payload.user.identity;
-            state.user.isAuthenticated = action.payload.user.isAuthenticated;
-            state.user.isAuthorized = action.payload.isAuthorized
-            state.isOtpVerified = action.payload.user.isAuthenticated;
-            state.permissions = action.payload.user.permissions
+            state.user = action.payload?.[0]?.user;
+            state.company = action.payload?.[0]?.company;
+            state.isOtpVerified = action.payload?.[0]?.user.isAuthenticated;
+             state.permissions = action.payload?.[0]?.permissions
+            console.log(action.payload);
             
         },
 

@@ -19,15 +19,18 @@ import { DASH_NAV } from "../../../config/dashnav.config";
 
 const SideBarLayout = () => {
   const [activeId, setActiveId] = useState(false);
-  const { permissions, user } = useSelector((state) => state.auth);
+  const {authStatus,  permissions, user , company} = useSelector((state) => state.auth);
+  
+  console.log(permissions);
+  
   const icons = [userImg, stockImg, purchaseImg, salesImg, revenueImg];
   let navItems = {};
   const buttonRef = useRef(null);
 
   Object.keys(DASH_NAV).forEach((key) => {
-    DASH_NAV[key].map((permission) => {
-      permissions.map((per) => {
-        per = per.toLowerCase();
+    DASH_NAV[key]?.map((permission) => {
+      permissions?.map((per) => {
+        per = per?.toLowerCase();
         if (per.includes(permission)) {
           Object.hasOwn(navItems, key)
             ? navItems[key].push(permission)
@@ -40,6 +43,10 @@ const SideBarLayout = () => {
   const handleSubLinks = (key) => {
     setActiveId(activeId === key ? null : key);
   };
+
+  if(authStatus === 'idle' || authStatus ===  'loading'){
+    return;
+  }
 
   return (
     <>
@@ -59,7 +66,7 @@ const SideBarLayout = () => {
         id="sidebar"
         className="hidden md:w-64 md:bg-darkblue md:flex md:flex-col md:h-full md:justify-start md:gap-8 md:items-center text-white rounded-r-3xl"
       >
-        <OrganizationCard name={user.companyName ?? "Khanal Dhuwani Sewa"} />
+        <OrganizationCard name={company?.companyName ?? "Khanal Dhuwani Sewa"} />
 
         <nav className="gap-0 w-full ">
           {Object.entries(navItems).map(([key, value]) => {
@@ -72,8 +79,8 @@ const SideBarLayout = () => {
         <div className="flex flex-col justify-center fixed bottom-5">
           <LogoutButton />
           <UserCard
-            name={user.name ?? "Bikash khanal"}
-            role={user.role ?? "super admin"}
+            name={user?.name ?? "Bikash khanal"}
+            role={user?.role ?? "super admin"}
           />
         </div>
       </aside>

@@ -18,14 +18,14 @@ class CheckSession{
                 }
              $user = $this->sessionService->get('user');
 
-            if(!in_array($user['identity']['user_role'], ['admin', 'superadmin', 'manager', 'salesperson'], true) ){
+            if(!in_array($user['user']['role'], ['admin', 'superadmin', 'manager', 'salesperson'], true) ){
                 throw new Exception('unauthorized user');
             }
-             http_response_code(202);
+             http_response_code(200);
             echo json_encode([
                 'success' => true,
                 'message' => 'dashboard access success',
-                'user' => $user,
+                'data' => [$user],
                 'isUserAuthorized' =>  'authorized',
                 ]);
             }catch(Exception $e){

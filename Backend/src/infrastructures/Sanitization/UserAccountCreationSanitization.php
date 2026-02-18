@@ -12,9 +12,8 @@ class UserAccountCreationSanitization extends Sanitization{
              'email' => filter_var(trim($input['email'] ?? ''), FILTER_SANITIZE_EMAIL),
              'phoneNumber' => trim($input['phoneNumber'] ?? ''),
             'role' => trim($input['role'] ?? ''),
+            'password' => trim($input['password']?? ''),
             
-        
-
         ];
     }
 

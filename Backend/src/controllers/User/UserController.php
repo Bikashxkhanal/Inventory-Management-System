@@ -1,8 +1,8 @@
 <?php
-    namespace App\Controllers;
+    namespace App\Controllers\User;
     use App\Services\User\UserService;
 
-    class UserController { 
+    class UserController{ 
         private UserService $userservice;
 
         public function __construct(){
@@ -10,15 +10,23 @@
         }
 
         public function createUserAccount($input){
-            // try{
-            //     $this->userservice->accountCreationService($input);
+            try{
+                $this->userservice->userAccountCreationService($input);
 
-            //     http_response_code(200);
-            //     echo json_encode([]);
+                http_response_code(200);
+                echo json_encode([
+                    'success' => true,
+                    'message' => "User Created Successfully!"
+                ]);
 
-            // }catch(){
+            }catch(Exception $e){
+                http_response_code(400);
+                echo json_encode([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ]);
 
-            // }
+            }
             
 
         }

@@ -72,6 +72,7 @@ const queryClient = new QueryClient();
               path : '/web/stock', 
               element : <Stock />
             },
+            
             {
               path : '/web/staff',
               element : <Staff />,

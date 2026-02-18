@@ -1,10 +1,11 @@
 export const formConfig  = {
     createStaff : [
-        {name : 'name' , type : 'text' , required : true},
+        {name : 'firstName' , type : 'text' , required : true},
+         {name : 'lastName' , type : 'text' , required : true},
         { name : 'email', type : 'email', required : true},
-        {name : 'address', type : 'text' , required : true}, 
-        {name : 'contact', type : 'tel' , reqired : true}, 
+        {name : 'phoneNumber', type : 'tel' , reqired : true}, 
         {name : 'role', type : 'select' , options : ['admin', 'manager', 'sales person'] , required : true},
+        {name : 'password', type : 'text' , required : true}, 
     ],
     createVendor : [
         {name : 'name' , type : 'text' , required : true},

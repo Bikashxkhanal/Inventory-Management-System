@@ -35,6 +35,7 @@ export default function Button({
   return (
     <Component
       {...(isButton && { disabled: disabled || loading })}
+
       onClick={handleClick}
       className={`
         inline-flex items-center justify-center gap-2

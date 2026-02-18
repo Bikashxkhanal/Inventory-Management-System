@@ -43,25 +43,49 @@
             throw new Exception('invalid action');
            };
 
-            $currentUser = $sessionService->get('user');
-           //actual checking of user creation 
-            if(!$userCreationPolicy->canCreateUser($currentUser['identity']['user_role'], $validatedInput['role'])){
-                throw new Exception('Cannot be created');
-            };
-            
-            //if so create user 
-            $user = new User();
-            $user->addUserDetails($validatedInput);
 
+            //same company Id
+
+        $validatedInput['password_hash'] =   password_hash($validatedInput['password'], PASSWORD_BCRYPT);
+
+        //firstName, lastName, email , phoneNumber, isVerified, role, companyId, password_hash
+        //hashing password 
+
+            $currentUser = $sessionService->get('user');
+            // $currentDetails = [
+            //         'id' => 1000,
+            //         'firstName' => "Bikash",
+            //         'lastName' => "khanal",
+            //         'role' => 'superadmin',
+            //         'companyId' => 8010
+                
+            // ];
+
+            if(!$currentUser){
+                throw new Exception("No logged in user found");
+            }
+
+             $validatedInput['companyId'] = $currentUser['company']['companyId'];
+             $validatedInput['isVerified'] = 1;
+             $validatedInput['status'] = 'active';
+
+
+            // $creator = new User();
+            // $creator->addUserDetails($currentUser);
+
+            $staff = new User();
+            $staff->addUserDetails($validatedInput);
+
+            
+           //actual checking of user creation 
+            if(!$userCreationPolicy->canCreateUser($currentUser['user'], $staff)){
+                throw new Exception('Cannot be created');
+            };  
+            
             //add user to db
             $db = new UserModel();
-            $db->create($user->getUserDetails());
-
-            //create a log
-
-            // $userCreationLogger = new UserCreationLogger();
-            // $handleLogging = new LoggingService();
-            // $handleLogging->createNewLog($userCreationLogger);
+            $db->create($staff->getUserDetails());
+            return true;
         }
     }
 

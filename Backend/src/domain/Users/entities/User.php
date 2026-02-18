@@ -4,23 +4,28 @@
     use App\Domain\Users\Entities\Role;
 
     class User{
+        //firstName, lastName, email , phoneNumber, isVerified, role, companyId, password_hash
         private string $email;
         private string $firstName;
         private string $lastName;
-        private Role $role;
-        private string $address;
-        private bool $isActive;
-
+        private string $role;
+        private int $isVerified;
+        private int $companyId;
+        private string $password_hash;
         private string $phoneNumber;
+        private string $status; //active and inactive
 
         public function addUserDetails( array $user){
-            $this->firstName = $user['firstName'];
-             $this->lastName = $user['lastName'];
-            $this->email = $user['email'];
-            $this->role = $user['role'];
-            $this->address = $user['address'] ?? null;
-            $this->isActive = $user['isActive'] ?? true;
-            $this->phoneNumber = $user['phoneNumber'];
+            $this->firstName = $user['firstName'] ?? "";
+             $this->lastName = $user['lastName'] ?? "";
+            $this->email = $user['email'] ?? "";
+            $this->role = strtolower($user['role']) ?? "";
+            $this->isVerified = $user['isVerified'] ?? 1;
+            $this->phoneNumber = $user['phoneNumber'] ?? "";
+            $this->companyId = $user['companyId'] ?? null;
+            $this->password_hash = $user['password_hash'] ?? ""; 
+            $this->status = $user['status'] ?? 'active';
+
         }
 
 
@@ -29,7 +34,7 @@
         }
 
         public function deactivate(){
-            $this->isActive = false;
+            $this->status = 'inactive';
         }
 
         public function getUserDetails(){
@@ -39,8 +44,10 @@
                 'email' => $this->email,
                 'phoneNumber' => $this->phoneNumber,
                 'role' =>$this->role,
-                'address' => $this->address ?? null,
-                'isActive' => $this->isActive,
+                'isVerified' => $this->isVerified,
+                'password_hash' => $this->password_hash,
+                'companyId' => $this->companyId,
+                'status' => $this->status,
             ];
         }
     }

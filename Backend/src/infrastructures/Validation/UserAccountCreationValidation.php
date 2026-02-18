@@ -16,7 +16,7 @@ class UserAccountCreationValidation extends InputValidation{
             'email' => $this->validate->email($input['email']),
             'phoneNumber' => $this->validate->phoneNumber($input['phoneNumber']),
             'role' => $this->validate->name($input['role']),
-            
+            'password' => $this->validate->password($input['password']),
         ];
 
 

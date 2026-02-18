@@ -72,7 +72,7 @@ function LoginComponent(){
     if(user?.isAuthenticated && user?.id){
       navigate('/web/dashboard');
     }
-  }, [user.isAuthenticated,user.id, navigate])
+  }, [user?.isAuthenticated,user?.id, navigate])
 
   //Redirect the user to their dashboard if exist
 
