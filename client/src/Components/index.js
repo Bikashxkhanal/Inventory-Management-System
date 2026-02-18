@@ -77,6 +77,12 @@ import Purchase from "../pages/Purchase/purchase";
 //dynammic form
 import DynamicForm from "./AdvanceForm/DynamicForm";
 
+//sales
+import SalesTable from "./Sales/SalesTable";
+import SalesTitle from "./Sales/SalesTitle";
+import CreateSale from "./Sales/CreateSale";
+import UpdateSale from "./Sales/UpdateSale";
+import SalesLayout from './Sales/SalesLayout';
 
 
 export {
@@ -177,6 +183,13 @@ export {
 
     //dynamic form
     DynamicForm,
+
+    CreateSale,
+    UpdateSale,
+    SalesTable,
+    SalesTitle,
+    SalesLayout,
+    
     
 
 

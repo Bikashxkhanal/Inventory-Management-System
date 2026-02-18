@@ -16,6 +16,7 @@ import Dashboard from './pages/Dashboard/Dashboard.jsx'
 import DashboardComp from './Components/Dashboard/DashboardPageComponent/Dashboard.jsx'
 import CreatePurchase from './Components/Purchase/CreatePurchase.jsx'
 import AddPurchaseItems from './Components/Purchase/AddPurchaseItems.jsx'
+import Sales from './pages/Sales/Sales.jsx'
 
 const queryClient = new QueryClient();
 
@@ -99,6 +100,10 @@ const queryClient = new QueryClient();
                 {
                   path : "purchase/:purchaseId/items",
                    element : <AddPurchaseItems />
+                },
+                {
+                  path : "sale" , 
+                  element : <Sales />
                 }
             
           ]

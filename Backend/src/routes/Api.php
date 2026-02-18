@@ -5,6 +5,8 @@
     use App\Controllers\Purchase\PurchaseController;
     use App\Controllers\Vendor\VendorController;
     use App\Controllers\Stock\StockController;
+    use App\Controllers\Sales\SalesController;
+
 
 
     return [
@@ -33,6 +35,9 @@
   //stock
   'GET /api/stocks' => [StockController::class, 'fetchStocks'],
   'GET /api/stocks/stats' => [StockController::class, 'fetchStockStats'],
+
+  //sales
+   'GET /api/sales' => [SalesController::class, 'fetchSales'],
 
 
     ];
