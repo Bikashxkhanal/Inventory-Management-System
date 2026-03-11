@@ -2,6 +2,8 @@ import { InfoContainer} from './../../index';
 import CustomChart from "../../Chart/CustomChart";
 import getChartFor from "../../Chart/CreateOptions";
 import { Arrow, purchaseImg, revenueImg, salesImg, userImg } from '../../../assets/Imagesender';
+import {getSellsAmountByDateRange} from '../../../api/sales.api'
+import useFetch from '../../../hooks/useFetch';
 
 export const data = {
     labels : ["01-20" , "01-22", "01-24"],
@@ -18,6 +20,10 @@ export const data = {
     ],
     
 }
+
+
+
+
 
 export const data2 = {
     labels : ["Sun", "Mon", "Tues", "Wed", "Thus", "Fri", "Sat"],
@@ -37,6 +43,11 @@ export const data2 = {
 
 
 const DashboardComp = ( ) => {
+    //call the api to get the sells details 
+    const {datas, isLoading, error}= useFetch(
+    "sales", 
+    getSellsAmountByDateRange
+);
     return <div className='inline-block h-screen overflow-hidden '>
         <p className='ml-8 mt-4 text-3xl font-semi-bold font-mono'>Dashboard</p>
         <div className='flex flex-row flex-start flex-wrap mx-2  md:mx-5 '>

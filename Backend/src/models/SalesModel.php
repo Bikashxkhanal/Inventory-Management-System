@@ -77,4 +77,39 @@ class SalesModel {
 
         return ['success' => true];
     }
+
+    //get total sells amout of this month/week or date range  
+    public function getSellsAmountByDate(string $startDate, string $endDate) {
+    global $pdo;
+
+    $stmt = $pdo->prepare("
+        SELECT SUM(total_amount) AS TotalSalesAmount 
+        FROM sales 
+        WHERE status = 'completed' 
+        AND created_at BETWEEN ? AND ?
+    ");
+
+    $stmt->execute([$startDate, $endDate]);
+
+    
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $result['TotalSalesAmount'] ?? 0;
+}
+    //get total sales count for the date raange 
+    public function getSalesCountByDate(string $startDate, string $endDate){
+        global $pdo;
+        $stmt = $pdo->prepare("
+        SELECT COUNT(*) as TotalSalesCount 
+        FROM sales
+        WHERE status='completed' AND created_at
+        BETWEEN ? AND ? ");
+
+
+        $stmt->execute([$startDate, $endDate]);
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['TotalSalesCount'] ?? 0;
+
+        }
 }

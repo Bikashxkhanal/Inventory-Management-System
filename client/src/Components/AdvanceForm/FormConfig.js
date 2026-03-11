@@ -36,12 +36,14 @@ export const formConfig  = {
           {name : 'quantity', type : 'text', required : true, min : 1},
     ],
 
-    createSell : [
+    createSale : [
         {name : 'customerId' , type : 'text' , required : false}, 
 
     ], 
     addSellsItems : [
+         {name : 'category' , type : 'select', options : [], required : true}, 
         {name : 'product' , type : 'select', options : [], required : true}, 
+        {name : 'customerName' , type : 'text' , required : false}, 
         {name : 'quantity', type : 'text', required : true}, 
         {name : 'unitPrice', type : 'text', required : true},
         {name : 'subTotal', type : 'text' , required : true},

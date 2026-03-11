@@ -16,7 +16,7 @@ const SalesLayout = () => {
         {role === 'salesperson' && (
           <NewButton
             as='a'
-            href='/web/sales/create-sale'
+            href='/web/sales/create'
             children='New Sale'
             className='bg-green-600 hover:bg-green-800'
             iconStart={<IconImage src={Add} />}
