@@ -48,6 +48,22 @@ class PurchaseModel {
         $stmt = $pdo->prepare("UPDATE purchase SET total_amount = total_amount + ? WHERE id = ?");
         $stmt->execute([$amount, $purchaseId]);
     }
+
+
+    public function getPurchaseAmountByDateRange(string $startDate, string $endDate){
+     global $pdo;
+     $stmt =   $pdo->prepare("
+            SELECT SUM(total_amount) AS totalAmount
+             FROM purchase
+             WHERE status = 'completed'
+             AND created_at BETWEEN ? AND ?
+        ");
+
+    $stmt->execute([$startDate, $endDate]);
+    
+    $result =  $stmt->fetch(PDO::FETCH_ASSOC) ;
+    return $result['totalAmount'] ?? 0;
+    }
 }
 
 

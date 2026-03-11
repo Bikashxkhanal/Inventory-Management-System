@@ -59,7 +59,6 @@ class SalesController {
     //get all the sells count (numer of sells done) from date range selected
     public function getSellsCountByDateRange($requestData){
         try {
-         
         $result = $this->salesService->getSellsCountByDateRange($requestData);
         http_response_code(200);
         echo json_encode([

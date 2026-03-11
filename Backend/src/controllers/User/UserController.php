@@ -1,6 +1,7 @@
 <?php
     namespace App\Controllers\User;
     use App\Services\User\UserService;
+    use Exception;
 
     class UserController{ 
         private UserService $userservice;

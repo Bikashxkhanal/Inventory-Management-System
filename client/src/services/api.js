@@ -168,3 +168,34 @@ export const createStaffAPI = async (data) => {
     return response.data;
   
 }
+
+export const getSellsCountByDateRange = async() => {
+  const res = await axios.post('/api/sales/count', {
+      "startDate" : "2026-02-14", 
+      "endDate" : "2026-03-12"
+  });
+  console.log(res.data);
+  return res?.data;
+}
+
+
+export const getSellsAmountByDateRange = async() => {
+ const res = await axios.post('/api/sales/amount', {
+      "startDate" : "2026-02-14", 
+      "endDate" : "2026-03-12"
+  });
+
+  console.log(res.data);
+  return res.data;
+  
+}
+
+export const getPurchaseAmountByDateRange = async() => {
+  const res = await axios.post('/api/purchase/amount', {
+    "startDate" : "2026-02-14", 
+      "endDate" : "2026-03-12"
+  });
+  console.log(res.data);
+  
+  return res.data;
+}

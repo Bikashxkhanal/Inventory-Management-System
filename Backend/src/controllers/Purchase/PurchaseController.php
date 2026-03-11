@@ -6,6 +6,7 @@ use App\Models\PurchaseItemsModel;
 use App\Models\ProductModel;
 use App\Models\CategoryModel;
 use App\Services\PurchaseService;
+use Exception;
 
 class PurchaseController {
     private PurchaseService $purchaseService;
@@ -79,4 +80,29 @@ class PurchaseController {
         $categories = $this->categoryModel->fetchAll();
         echo json_encode(['data' => $categories]);
     }
+
+    //get purchase amount by Date Range 
+    public function getPurchaseAmountByDateRange($requestData){
+        try{
+            $result = $this->purchaseService->getPurchaseAmountByDateRange($requestData);
+            http_response_code(200);
+            echo json_encode([
+                'success' => true,
+                'message' => 'Purchase Amount fetched Successfully!', 
+                'data' => [
+                    'totalPurchaseAmount' => $result
+                ]
+            ]);
+        }catch(Exception $e){
+         http_response_code(400);
+            echo json_encode([
+                'success' => true,
+                'message' => $e->getMessage() . $requestData['endDate'], 
+                'data' => [
+                    
+                ]
+            ]);
+
+    } 
+ }
 }

@@ -23,6 +23,7 @@
     use App\Infrastructures\Validation\SuperAdminSignupValidation;
     use App\Infrastructures\Validation\BusinessAccountCreationValidation;
     use PDO;
+    use DateTime;
 class PurchaseService {
     private $purchaseModel;
     private $purchaseItemModel;
@@ -65,5 +66,33 @@ class PurchaseService {
 
     public function fetchStats() {
         return $this->purchaseModel->fetchStats();
+    }
+
+    public function getPurchaseAmountByDateRange($requestedData){
+        // Validate required fields
+    if (empty($requestedData['startDate']) || empty($requestedData['endDate'])) {
+        throw new InvalidArgumentException('Start Date and End Date are required.' );
+    }
+
+    $startDate = $requestedData['startDate'];
+    $endDate = $requestedData['endDate'];
+    
+    // Validate format (yyyy-mm-dd)
+    $dateFormat  = 'Y-m-d';
+    $parsedStart = DateTime::createFromFormat($dateFormat, $startDate);
+    $parsedEnd   = DateTime::createFromFormat($dateFormat, $endDate);
+
+    if (!$parsedStart || $parsedStart->format($dateFormat) !== $startDate) {
+        throw new InvalidArgumentException('Start Date must be in yyyy-mm-dd format.');
+    }
+    if (!$parsedEnd || $parsedEnd->format($dateFormat) !== $endDate) {
+        throw new InvalidArgumentException('End Date must be in yyyy-mm-dd format.');
+    }
+
+    if ($parsedStart > $parsedEnd) {
+        throw new InvalidArgumentException('Start Date must not be after endDate.');
+    }
+
+   return $this->purchaseModel->getPurchaseAmountByDateRange($startDate, $endDate);
     }
 }

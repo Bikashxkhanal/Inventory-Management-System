@@ -22,9 +22,9 @@ const InfoContainer = ({
           {
             amount && 'Rs.'
           }
-          <span className={`text-lg md:text-4xl ${color} font-semi font-mono`}>{/* amount */}
+          <span className={`text-lg md:text-2xl ${color} font-semi font-mono`}>{/* amount */}
             {
-              amount ?? count ?? <p>Bikash</p>
+              amount ?? count ?? <p>Unknown</p>
             }
           </span>
         </p>

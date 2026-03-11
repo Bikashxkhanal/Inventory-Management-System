@@ -24,6 +24,7 @@
     'GET /api/purchase' => [PurchaseController::class, 'fetchPurchase'],
     'GET /api/purchase/stats' => [PurchaseController::class, 'fetchPurchaseStats'],
     'POST /api/purchase/items' => [PurchaseController::class, 'addPurchaseItem'],
+    'POST /api/purchase/amount' => [PurchaseController::class, 'getPurchaseAmountByDateRange'],
 
     // Product / Category Endpoints
     'GET /api/products' => [PurchaseController::class, 'fetchProductsByCategory'],
@@ -39,8 +40,8 @@
   //sales
    'GET /api/sales' => [SalesController::class, 'fetchSales'],
    'POST /api/sales' => [SalesController::class, 'createSale'],
-   'GET /api/sales/amount' => [SalesController::class, 'getSellsAmountByDateRange'],
-    'GET /api/sales/count' => [SalesController::class, 'getSellsCountByDateRange'],
+   'POST /api/sales/amount' => [SalesController::class, 'getSellsAmountByDateRange'],
+    'POST /api/sales/count' => [SalesController::class, 'getSellsCountByDateRange'],
 
     ];
 
