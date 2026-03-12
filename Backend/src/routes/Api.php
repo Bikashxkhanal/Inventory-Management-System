@@ -40,8 +40,9 @@
   //sales
    'GET /api/sales' => [SalesController::class, 'fetchSales'],
    'POST /api/sales' => [SalesController::class, 'createSale'],
-   'POST /api/sales/amount' => [SalesController::class, 'getSellsAmountByDateRange'],
-    'POST /api/sales/count' => [SalesController::class, 'getSellsCountByDateRange'],
+   'POST /api/sales/amount' => [SalesController::class, 'getTotalSalesAmountByDateRange'],
+    'POST /api/sales/count' => [SalesController::class, 'getSalesCountByDateRange'],
+    'POST /api/sales/getAmountOfDateRange' => [SalesController::class , 'getSalesAmountOfDateRange'], 
 
     ];
 

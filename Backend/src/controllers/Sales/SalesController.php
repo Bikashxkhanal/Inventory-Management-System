@@ -34,9 +34,9 @@ class SalesController {
     }
 
     //get sales information(amount) by date range
-    public function getSellsAmountByDateRange($requestData){
+    public function getTotalSalesAmountByDateRange($requestData){
         try{
-      $result =   $this->salesService->getSellsAmountByDateRange($requestData);
+      $result =   $this->salesService->getTotalSalesAmountByDateRange($requestData);
       http_response_code(200);
       echo json_encode([
         'success' => true,
@@ -57,9 +57,9 @@ class SalesController {
     }
 
     //get all the sells count (numer of sells done) from date range selected
-    public function getSellsCountByDateRange($requestData){
+    public function getSalesCountByDateRange($requestData){
         try {
-        $result = $this->salesService->getSellsCountByDateRange($requestData);
+        $result = $this->salesService->getSalesCountByDateRange($requestData);
         http_response_code(200);
         echo json_encode([
             'success' => true,
@@ -72,10 +72,36 @@ class SalesController {
       echo json_encode([
         'success' => false,
         'message' => $e->getMessage(), 
-        'data' => [   
+        'data' => [
+             
         ]
       ]);
     }
+    }
+
+
+    public function getSalesAmountOfDateRange($requestData){
+      try {
+      $result = $this->salesService->getSalesAmountOfDateRange($requestData);
+
+      http_response_code(200);
+      echo json_encode([
+        'success' => true,
+        'message' => 'Sales Amount of date range fetched successfully!',
+        'data' => $result
+      ]);
+
+      } catch (Exception $e) {
+        http_response_code(400);
+        echo json_encode([
+          'success' => true, 
+          'message' => $e.getMessage(), 
+          data => []
+        ]);
+        
+      }
+         
+
     }
     
 }

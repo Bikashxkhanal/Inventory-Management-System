@@ -179,7 +179,7 @@ export const getSellsCountByDateRange = async() => {
 }
 
 
-export const getSellsAmountByDateRange = async() => {
+export const getTotalSalesAmountByDateRange = async() => {
  const res = await axios.post('/api/sales/amount', {
       "startDate" : "2026-02-14", 
       "endDate" : "2026-03-12"
@@ -196,6 +196,5 @@ export const getPurchaseAmountByDateRange = async() => {
       "endDate" : "2026-03-12"
   });
   console.log(res.data);
-  
   return res.data;
 }

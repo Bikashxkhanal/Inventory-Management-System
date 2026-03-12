@@ -3,23 +3,33 @@ import CustomChart from "../../Chart/CustomChart";
 import getChartFor from "../../Chart/CreateOptions";
 import { Arrow, purchaseImg, revenueImg, salesImg, userImg } from '../../../assets/Imagesender';
 import useFetch from '../../../hooks/useFetch';
-import { getSellsAmountByDateRange, getSellsCountByDateRange, getPurchaseAmountByDateRange } from '../../../services/api.js';
+import { getTotalSalesAmountByDateRange, getPurchaseAmountByDateRange } from '../../../services/api.js';
 import { fetchStaffStats } from '../../../api/staff.api.js';
+
+
 export const data1 = {
     labels : ["01-20" , "01-22", "01-24"],
     datasets : [
         {
-            label : "title 1",
+            label : "Sale",
+            //data is amount
             data : [44, 99, 80],
             backgroundColor : "rgba(244, 90, 150)"
         }, 
         {
-            label : "title 2",
-            data : [88, 98, 70]
+            label : "Purchase",
+            data :[88, 98, 70]
         }
     ],
     
 }
+
+
+//data must be fetched as getSalesAmountByDateRange(startDate, endDate) AND PurchaseAmountByDateRange(startDate, endDate) OR , where both start and 
+//end date are included
+//data should be in this format :: dataSales = { time : Amount , ... } , purchaseData = {time : Amount} this is
+//  the format of data obtained from the backend, then time need to be used as labels , 
+// and amount as data , the amount of sale and purchase should be reduced to two diffrent part of datasets 
 
 
 export const data2 = {
@@ -43,7 +53,7 @@ const DashboardComp = ( ) => {
     //call the api to get the sells details 
     const {data : salesData, isLoading, error}= useFetch(
     "salesAmount", 
-    getSellsAmountByDateRange
+    getTotalSalesAmountByDateRange
 );
 
     const {data : purcahseData} = useFetch(
@@ -64,7 +74,9 @@ if(isLoading) return <div>please wait...</div>
         <InfoContainer color="text-green-700" img={revenueImg}  amount={salesData?.data?.totalSalesAmount} title="Total Sales"  />
         <InfoContainer color="text-green-700" img={purchaseImg}  amount={purcahseData?.data?.totalPurchaseAmount} title="Total Purchases"   />
         <InfoContainer color="text-green-700" img={userImg}  count={staffData?.total} title="Total Staff"  />
-        <InfoContainer color="text-green-700" img={revenueImg}  amount="12000" title="Total Revenue"  />
+
+        {/* <InfoContainer color="text-green-700" img={revenueImg}  amount="12000" title="Total Revenue"  /> */}
+        
         </div>
         <div className='flex flex-row flex-start gap-20 flex-wrap'>
         <div className="w-90 md:w-110 ml-8 mt-10">
@@ -78,4 +90,4 @@ if(isLoading) return <div>please wait...</div>
 }
 
 
-export default DashboardComp;
+ export default DashboardComp;

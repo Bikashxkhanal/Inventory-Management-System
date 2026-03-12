@@ -1,4 +1,5 @@
 
+import axios from "axios";
 import api from "./axios";
 export const updateSale = async () => {
   const response = await api.put('/api/sales');
@@ -15,7 +16,7 @@ export const fetchSales = async () => {
 };
 
 //get the sells amount by month  or date range, the serch query must provide with full date for start and end as quuery
-export const getSellsAmountByDateRange = async ( startDate , endDate ) => { // must be in year-month-day format in numeric
+export const getTotalSellsAmountByDateRange = async ( startDate , endDate ) => { // must be in year-month-day format in numeric
  //if the start date or end date is not provided use current one 
   if(startDate?.trim() === "" || endDate?.trim() === ""){
   const now = new Date();
@@ -42,4 +43,8 @@ export const getSellsAmountByDateRange = async ( startDate , endDate ) => { // m
     }
   })
   return response;
+}
+
+export const getSellsAmountByDateRange = async() => {
+  const response = await axios.get('' , {})
 }
