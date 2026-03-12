@@ -82,9 +82,9 @@ class PurchaseController {
     }
 
     //get purchase amount by Date Range 
-    public function getPurchaseAmountByDateRange($requestData){
+    public function getTotalPurchaseAmountByDateRange($requestData){
         try{
-            $result = $this->purchaseService->getPurchaseAmountByDateRange($requestData);
+            $result = $this->purchaseService->getTotalPurchaseAmountByDateRange($requestData);
             http_response_code(200);
             echo json_encode([
                 'success' => true,
@@ -104,5 +104,26 @@ class PurchaseController {
             ]);
 
     } 
+ }
+
+ public function getPurchaseAmountOfDateRange($requestData){
+    try {
+        $result = $this->purchaseService->getPurchaseAmountOfDateRange($requestData);
+
+        http_response_code(200);
+        echo json_encode([
+            'success' => true, 
+            'message' => 'Purchase Amount of each date of date range fetched successfully!', 
+            'data' => $result,
+        ]);
+    } catch (Exception $e) {
+        http_response_code(400);
+        echo json_encode([
+            'success' => true, 
+            'message' => $e->getMessage(), 
+            'data' => [],
+        ]);
+    }
+
  }
 }

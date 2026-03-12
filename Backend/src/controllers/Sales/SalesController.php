@@ -53,7 +53,7 @@ class SalesController {
         'message' => $e->getMessage(), 
         'data' => []
       ]);
-        }
+      }
     }
 
     //get all the sells count (numer of sells done) from date range selected
@@ -79,7 +79,7 @@ class SalesController {
     }
     }
 
-
+    // return the sales amount of of each date of the requested date range including both start and end date
     public function getSalesAmountOfDateRange($requestData){
       try {
       $result = $this->salesService->getSalesAmountOfDateRange($requestData);

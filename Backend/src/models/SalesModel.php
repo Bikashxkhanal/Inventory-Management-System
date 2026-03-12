@@ -96,6 +96,8 @@ class SalesModel {
 
     return $result['TotalSalesAmount'] ?? 0;
 }
+
+
     //get total sales count for the date raange 
     public function getSalesCountByDate(string $startDate, string $endDate){
         global $pdo;

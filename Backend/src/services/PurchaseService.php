@@ -68,7 +68,7 @@ class PurchaseService {
         return $this->purchaseModel->fetchStats();
     }
 
-    public function getPurchaseAmountByDateRange($requestedData){
+    public function getTotalPurchaseAmountByDateRange($requestedData){
         // Validate required fields
     if (empty($requestedData['startDate']) || empty($requestedData['endDate'])) {
         throw new InvalidArgumentException('Start Date and End Date are required.' );
@@ -93,6 +93,39 @@ class PurchaseService {
         throw new InvalidArgumentException('Start Date must not be after endDate.');
     }
 
-   return $this->purchaseModel->getPurchaseAmountByDateRange($startDate, $endDate);
+   return $this->purchaseModel->getTotalPurchaseAmountByDateRange($startDate, $endDate);
+    }
+
+
+    public function getPurchaseAmountOfDateRange(array $requestedData){
+        //validating
+    if (empty($requestedData['startDate']) || empty($requestedData['endDate'])) {
+        throw new InvalidArgumentException('Start Date and End Date are required.' );
+    }
+
+    //sanitizing
+    $startDate = $requestedData['startDate'];
+    $endDate = $requestedData['endDate'];
+    
+    // Validate format (yyyy-mm-dd)
+    $dateFormat  = 'Y-m-d';
+    $parsedStart = DateTime::createFromFormat($dateFormat, $startDate);
+    $parsedEnd   = DateTime::createFromFormat($dateFormat, $endDate);
+
+    //checking the date format
+    if (!$parsedStart || $parsedStart->format($dateFormat) !== $startDate) {
+        throw new InvalidArgumentException('Start Date must be in yyyy-mm-dd format.');
+    }
+    if (!$parsedEnd || $parsedEnd->format($dateFormat) !== $endDate) {
+        throw new InvalidArgumentException('End Date must be in yyyy-mm-dd format.');
+    }
+    //checking if the start date is upper then end date
+    if ($parsedStart > $parsedEnd) {
+        throw new InvalidArgumentException('Start Date must not be after endDate.');
+    }
+
+    //calling db 
+    return $this->purchaseModel->getPurchaseAmountOfDateRange($startDate, $endDate);
+
     }
 }

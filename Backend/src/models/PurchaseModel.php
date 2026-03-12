@@ -50,7 +50,7 @@ class PurchaseModel {
     }
 
 
-    public function getPurchaseAmountByDateRange(string $startDate, string $endDate){
+    public function getTotalPurchaseAmountByDateRange(string $startDate, string $endDate){
      global $pdo;
      $stmt =   $pdo->prepare("
             SELECT SUM(total_amount) AS totalAmount
@@ -63,6 +63,23 @@ class PurchaseModel {
     
     $result =  $stmt->fetch(PDO::FETCH_ASSOC) ;
     return $result['totalAmount'] ?? 0;
+    }
+
+
+    public function getPurchaseAmountOfDateRange(string $startDate, string $endDate){
+         global $pdo;
+        $stmt = $pdo->prepare("
+        SELECT created_at As purchaseCreatedDate , total_amount As amount
+         FROM  purchase 
+        WHERE status = 'completed' AND 
+        created_at BETWEEN ? AND ? 
+        ");
+
+        $stmt->execute([$startDate, $endDate]);
+
+        $result =  $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $result ?? 0;
     }
 }
 
