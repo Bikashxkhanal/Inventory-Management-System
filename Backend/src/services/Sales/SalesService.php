@@ -113,21 +113,21 @@ public function getSalesAmountOfDateRange(array $requestedData){
 
     //checking date format
     if (!$parsedStart || $parsedStart->format($dateFormat) !== $startDate) {
-        throw new InvalidArgumentException('startDate must be in yyyy-mm-dd format.');
+        throw new InvalidArgumentException('Start Date must be in yyyy-mm-dd format.');
     }
     if (!$parsedEnd || $parsedEnd->format($dateFormat) !== $endDate) {
-        throw new InvalidArgumentException('endDate must be in yyyy-mm-dd format.');
+        throw new InvalidArgumentException('End Date must be in yyyy-mm-dd format.');
     }
 
     // ensuring startdate is not over the end date
     if ($parsedStart > $parsedEnd) {
-        throw new InvalidArgumentException('startDate must be before endDate.');
+        throw new InvalidArgumentException('Start Date must be before End Date.');
     }
 
     //calling sales model and returning data 
     $result =  $this->salesModel->getSalesAmountOfDateRange($startDate, $endDate);
 
-  if($result == null){
+  if($result === null){
     throw new Exception("Failed to get sales data");
   }
 

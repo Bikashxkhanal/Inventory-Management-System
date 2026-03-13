@@ -119,10 +119,11 @@ class SalesModel {
     public function getSalesAmountOfDateRange(string $startDate, string $endDate){
         global $pdo;
         $stmt = $pdo->prepare("
-        SELECT created_at As saleCreatedDate , total_amount As amount
+        SELECT DATE(created_at) As saleCreatedDate , SUM(total_amount) As amount
          FROM  sales 
         WHERE status = 'completed' AND 
-        created_at BETWEEN ? AND ? 
+        DATE(created_at) BETWEEN ? AND ? 
+        GROUP BY DATE(created_at)
         ");
 
         $stmt->execute([$startDate, $endDate]);

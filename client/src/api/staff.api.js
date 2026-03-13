@@ -10,7 +10,7 @@ const fetchStaff = async ({page =1, limit = 10}) => {
     params: { page, limit }
 })
 
-console.log(data);
+// console.log(data);
 
 
     return data;

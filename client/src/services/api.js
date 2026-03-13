@@ -1,6 +1,5 @@
 // const BASE_URL = `http://localhost/PROJECTS/INVENTORY-MANAGEMENT-SYSTEM/backend/public`;
 
-import axios from 'axios'
 
 export const userregisterAPI = async (formData) => {
   const response = await fetch(`/api/auth/user-register`, {
@@ -12,7 +11,7 @@ export const userregisterAPI = async (formData) => {
     body: JSON.stringify(formData),
   });
   const data = await response.json();
-  console.log(data);
+  // console.log(data);
   
 
   return { response, data };
@@ -29,7 +28,7 @@ export const companyregisterAPI = async (formData) => {
   });
 
   const data = await response.json();
-  console.log(data);
+  // console.log(data);
 
   return { response, data };
 };
@@ -44,7 +43,7 @@ export const loginAPI = async (loginData) => {
       },
       body: JSON.stringify(loginData),
     });
-    console.log(response || "Invalid response");
+    // console.log(response || "Invalid response");
     
     let data = {};
     try {
@@ -53,7 +52,7 @@ export const loginAPI = async (loginData) => {
     } catch (e) {
       data = { success: false, message: "Invalid server response " };
     }
-    console.log(data);
+    // console.log(data);
     return { response, data };
   } catch (networkError) {
     return {
@@ -77,7 +76,7 @@ export const EmailOtpVerificationAPI = async (emailOtp) => {
   });
 
   const data = await response.json();
-  console.log(data);
+  // console.log(data);
   
   return { response, data };
 };
@@ -113,7 +112,7 @@ export const userVerifyAPI = async () => {
     } catch (e) {
       return (data = { success: false, message: "invalid server response" });
     }
-    console.log(data);
+    // console.log(data);
     return { response, data };
   } catch (networkError) {
     return {
@@ -138,7 +137,7 @@ export const logoutAPI = async () => {
 
     try {
     data = await response.json();
-    console.log(data);
+    // console.log(data);
     } catch (err) {
       return {
         response,
@@ -163,38 +162,9 @@ export const logoutAPI = async () => {
 
 export const createStaffAPI = async (data) => {
     const response = await axios.post('/api/create-staff', data)
-    console.log(response.data);
+    // console.log(response.data);
     
     return response.data;
   
 }
 
-export const getSellsCountByDateRange = async() => {
-  const res = await axios.post('/api/sales/count', {
-      "startDate" : "2026-02-14", 
-      "endDate" : "2026-03-12"
-  });
-  console.log(res.data);
-  return res?.data;
-}
-
-
-export const getTotalSalesAmountByDateRange = async() => {
- const res = await axios.post('/api/sales/amount', {
-      "startDate" : "2026-02-14", 
-      "endDate" : "2026-03-12"
-  });
-
-  console.log(res.data);
-  return res.data;
-  
-}
-
-export const getPurchaseAmountByDateRange = async() => {
-  const res = await axios.post('/api/purchase/amount', {
-    "startDate" : "2026-02-14", 
-      "endDate" : "2026-03-12"
-  });
-  console.log(res.data);
-  return res.data;
-}

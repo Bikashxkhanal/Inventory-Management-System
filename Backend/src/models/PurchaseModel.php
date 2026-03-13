@@ -69,11 +69,14 @@ class PurchaseModel {
     public function getPurchaseAmountOfDateRange(string $startDate, string $endDate){
          global $pdo;
         $stmt = $pdo->prepare("
-        SELECT created_at As purchaseCreatedDate , total_amount As amount
+        SELECT DATE(created_at) As purchaseCreatedDate , SUM(total_amount) As amount
          FROM  purchase 
         WHERE status = 'completed' AND 
-        created_at BETWEEN ? AND ? 
+        DATE(created_at) BETWEEN DATE(?) AND DATE(?) 
+        GROUP BY DATE(created_at)
         ");
+
+        //date range : purchase , 
 
         $stmt->execute([$startDate, $endDate]);
 

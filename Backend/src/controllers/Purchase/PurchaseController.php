@@ -82,9 +82,21 @@ class PurchaseController {
     }
 
     //get purchase amount by Date Range 
-    public function getTotalPurchaseAmountByDateRange($requestData){
+    public function getTotalPurchaseAmountByDateRange(){
         try{
-            $result = $this->purchaseService->getTotalPurchaseAmountByDateRange($requestData);
+
+        if(!isset($_GET['startDate'])){
+            throw new Exception("Start Date is required");
+        } 
+        $requestData['startDate']  =   (string)$_GET['startDate'] ;
+        
+
+        if(!isset($_GET['endDate'])){
+            throw new Exception("End Date is required");
+        } 
+        $requestData['endDate']  =  (string)$_GET['endDate'] ;
+
+        $result = $this->purchaseService->getTotalPurchaseAmountByDateRange($requestData);
             http_response_code(200);
             echo json_encode([
                 'success' => true,
@@ -97,7 +109,7 @@ class PurchaseController {
          http_response_code(400);
             echo json_encode([
                 'success' => true,
-                'message' => $e->getMessage() . $requestData['endDate'], 
+                'message' => $e->getMessage(), 
                 'data' => [
                     
                 ]
@@ -106,8 +118,20 @@ class PurchaseController {
     } 
  }
 
- public function getPurchaseAmountOfDateRange($requestData){
+ public function getPurchaseAmountOfDateRange(){
     try {
+
+         if(!isset($_GET['startDate'])){
+            throw new Exception("Start Date is required");
+        } 
+        $requestData['startDate']  =  (string)$_GET['startDate'] ;
+        
+        if(!isset($_GET['endDate'])){
+            throw new Exception("End Date is required");
+        } 
+        $requestData['endDate']  =  (string)$_GET['endDate'] ;
+
+        
         $result = $this->purchaseService->getPurchaseAmountOfDateRange($requestData);
 
         http_response_code(200);

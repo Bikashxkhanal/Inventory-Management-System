@@ -36,15 +36,51 @@ export const getTotalSellsAmountByDateRange = async ( startDate , endDate ) => {
 
  }
 
-  const response = await api.get('/api/sales/amount', {
+  const response = await api.get('/api/sales/totalAmount', {
     params : {
-     start :  startDate,
-      end :  endDate
+      startDate,
+      endDate
     }
   })
   return response;
 }
 
-export const getSellsAmountByDateRange = async() => {
-  const response = await axios.get('' , {})
+export const getSalesAmountOfDateRange = async(startDate, endDate) => {
+  const response = await api.get('/api/sales/amount' , {
+   params :  { 
+    startDate , 
+    endDate
+     }
+  });
+
+  return response.data;
+  // console.log(response?.data);
 }
+
+
+
+export const getSellsCountByDateRange = async(startDate , endDate) => {
+  const res = await axios.post('/api/sales/count', {
+      "startDate" : "2026-02-14", 
+      "endDate" : "2026-03-12"
+  });
+  // console.log(res.data);
+  return res?.data;
+}
+
+
+export const getTotalSalesAmountByDateRange = async(startDate , endDate) => {
+ const res = await axios.get('/api/sales/totalAmount', {
+     params :{
+       startDate, 
+      endDate
+    }
+  });
+
+  // console.log(res.data);
+  return res.data;
+  
+}
+
+
+

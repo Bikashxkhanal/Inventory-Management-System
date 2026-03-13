@@ -3,8 +3,10 @@ import CustomChart from "../../Chart/CustomChart";
 import getChartFor from "../../Chart/CreateOptions";
 import { Arrow, purchaseImg, revenueImg, salesImg, userImg } from '../../../assets/Imagesender';
 import useFetch from '../../../hooks/useFetch';
-import { getTotalSalesAmountByDateRange, getPurchaseAmountByDateRange } from '../../../services/api.js';
 import { fetchStaffStats } from '../../../api/staff.api.js';
+import {getPurchaseAmountOfDateRange, getTotalPurchaseAmountByDateRange} from '../../../api/purchase.api.js';
+import {getSalesAmountOfDateRange, getTotalSalesAmountByDateRange} from '../../../api/sales.api.js'
+import {getStartDateOfCurrentYear, formatDate, getDateBeforeCurrentDate} from '../../../helpers/date/date.js'
 
 
 export const data1 = {
@@ -50,15 +52,72 @@ export const data2 = {
 
 
 const DashboardComp = ( ) => {
+    //get today current date (y-m-d) format 
+    const currentDate = new Date();
+    const formatedCurrentDate = formatDate(currentDate);
+    const formatedstartingYearDateOfCurrentDate = getStartDateOfCurrentYear(currentDate);  
+    
+    const dateOfSevenDayBeforeCurrentDate = getDateBeforeCurrentDate(7); //get week range 
+
     //call the api to get the sells details 
     const {data : salesData, isLoading, error}= useFetch(
     "salesAmount", 
-    getTotalSalesAmountByDateRange
+    () => getTotalSalesAmountByDateRange(formatedstartingYearDateOfCurrentDate, formatedCurrentDate)
 );
+
+    const { data : saleAmtOfDate} = useFetch(
+        "salesAmt", 
+      () =>   getSalesAmountOfDateRange(dateOfSevenDayBeforeCurrentDate, formatedCurrentDate)
+    );
+
+     const { data : purchaseAmtOfDate} = useFetch(
+        "purchaseAmt", 
+      () =>  getPurchaseAmountOfDateRange(dateOfSevenDayBeforeCurrentDate, formatedCurrentDate)
+    );
+
+    //data fromat for custom chart :: data = { labels : {} // can be time , week days , datasets : 
+    // [ {}, {} , ...]
+    // numeric value (amount , staff count, etc) can be number of object , likely keeping less than 4
+    
+    //first push the data of one (either sale or purchase) => labels , then data , simillary for another
+    //check for dublicate labels while pushing new one 
+    const dummyData ={ labels : [] , datasets : [  {
+            label : "Sale",
+            //data is amount
+            data : [],
+            backgroundColor : "rgba(244, 90, 150)"
+        }, 
+        {
+            label : "Purchase",
+            data :[],
+             backgroundColor : "rgba(44, 90, 200)"
+        }]
+     }
+
+     // for storing unique lables (date)
+    const dummySet = new Set();
+
+    saleAmtOfDate?.forEach((saleItem) => {
+        dummySet.add(saleItem.saleCreatedDate);
+        // [...dummyData.labels, dummyData.labels.push(saleItem.saleCreatedDate)]
+        dummyData.datasets?.[0].data.push(saleItem.amount);
+    })
+
+    purchaseAmtOfDate?.forEach((purchaseItem) => {
+        dummySet.add(purchaseItem.purchaseCreatedDate);
+        // [...dummyData.labels, dummyData.labels.push(purchaseItem.purchaseCreatedDate) ]
+       
+         dummyData.datasets?.[1].data.push(purchaseItem.amount);
+    })
+
+    // console.log(dummyData);
+    console.log(dummySet);
+    dummyData.labels = [...dummySet];
+    console.log(dummyData);
 
     const {data : purcahseData} = useFetch(
         "purchaseAmount", 
-        getPurchaseAmountByDateRange
+       () =>  getTotalPurchaseAmountByDateRange(formatedstartingYearDateOfCurrentDate, formatedCurrentDate)
     )
 
     const {data : staffData} = useFetch(
@@ -80,7 +139,7 @@ if(isLoading) return <div>please wait...</div>
         </div>
         <div className='flex flex-row flex-start gap-20 flex-wrap'>
         <div className="w-90 md:w-110 ml-8 mt-10">
-        <CustomChart  type="bar" data={data1} options={getChartFor("bar", "Sales and Purchases")} />
+        <CustomChart  type="bar" data={dummyData} options={getChartFor("bar", "Sales and Purchases")} />
         </div>
         <div className="w-90  md:w-110 ml-8 mt-10">
         <CustomChart  type="line" data={data2} options={getChartFor("line", "Sales")} />

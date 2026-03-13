@@ -34,8 +34,19 @@ class SalesController {
     }
 
     //get sales information(amount) by date range
-    public function getTotalSalesAmountByDateRange($requestData){
+    public function getTotalSalesAmountByDateRange(){
         try{
+           if(!isset($_GET['startDate'])){
+            throw new Exception("Start Date is required");
+        } 
+        $requestData['startDate']  =   (string)$_GET['startDate'] ;
+        
+
+        if(!isset($_GET['endDate'])){
+            throw new Exception("End Date is required");
+        } 
+        $requestData['endDate']  =  (string)$_GET['endDate'] ;
+
       $result =   $this->salesService->getTotalSalesAmountByDateRange($requestData);
       http_response_code(200);
       echo json_encode([
@@ -82,6 +93,16 @@ class SalesController {
     // return the sales amount of of each date of the requested date range including both start and end date
     public function getSalesAmountOfDateRange($requestData){
       try {
+         if(!isset($_GET['startDate'])){
+            throw new Exception("Start Date is required");
+        } 
+        $requestData['startDate']  =   (string)$_GET['startDate'] ;
+        
+
+        if(!isset($_GET['endDate'])){
+            throw new Exception("End Date is required");
+        } 
+        $requestData['endDate']  =  (string)$_GET['endDate'] ;
       $result = $this->salesService->getSalesAmountOfDateRange($requestData);
 
       http_response_code(200);
@@ -95,8 +116,8 @@ class SalesController {
         http_response_code(400);
         echo json_encode([
           'success' => true, 
-          'message' => $e.getMessage(), 
-          data => []
+          'message' => $e->getMessage(), 
+          'data' => []
         ]);
         
       }
