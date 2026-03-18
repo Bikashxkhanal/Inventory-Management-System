@@ -6,7 +6,8 @@ import useFetch from '../../../hooks/useFetch';
 import { fetchStaffStats } from '../../../api/staff.api.js';
 import {getPurchaseAmountOfDateRange, getTotalPurchaseAmountByDateRange} from '../../../api/purchase.api.js';
 import {getSalesAmountOfDateRange, getTotalSalesAmountByDateRange} from '../../../api/sales.api.js'
-import {getStartDateOfCurrentYear, formatDate, getDateBeforeCurrentDate, getLastTwoWeekWithStartAndEndDate} from '../../../helpers/date/date.js'
+import {getStartDateOfCurrentYear, formatDate, getDateBeforeCurrentDate,
+     getLastTwoWeekWithStartAndEndDate, convertDateIntoWeekDay} from '../../../helpers/date/date.js'
 
 
 //data must be fetched as getSalesAmountByDateRange(startDate, endDate) AND PurchaseAmountByDateRange(startDate, endDate) OR , where both start and 
@@ -20,12 +21,12 @@ export const data2 = {
     labels : ["Sun", "Mon", "Tues", "Wed", "Thus", "Fri", "Sat"],
     datasets : [
         {
-            label : "week 1 of January ",
+            label : "Last Weak",
             data : [44, 99, 80, 100, 59, 150, 200],
             backgroundColor : "rgba(244, 90, 150)"
         }, 
         {
-            label : "week 1 of Febuary",
+            label : "Weak Before Last Weak",
             data : [88, 98, 70, 180, 198, 100, 250]
         }
     ],
@@ -34,13 +35,17 @@ export const data2 = {
 
 
 const DashboardComp = ( ) => {
+
     //get today current date (y-m-d) format 
     const currentDate = new Date();
     const formatedCurrentDate = formatDate(currentDate);
     const formatedstartingYearDateOfCurrentDate = getStartDateOfCurrentYear(currentDate);  
-    const dateOfSevenDayBeforeCurrentDate = getDateBeforeCurrentDate(7); //get week range 
-    const lastTwoWeekDateRange = getLastTwoWeekWithStartAndEndDate();
 
+     //get the date of seven day before current today date
+    const dateOfSevenDayBeforeCurrentDate = getDateBeforeCurrentDate(7);
+
+    //returns last two week start and end date
+    const lastTwoWeekDateRange = getLastTwoWeekWithStartAndEndDate(); 
 
 
     //call the api to get the sells details 
@@ -48,9 +53,9 @@ const DashboardComp = ( ) => {
     "salesAmount", 
     () => getTotalSalesAmountByDateRange(formatedstartingYearDateOfCurrentDate, formatedCurrentDate)    
     );
-    console.log(formatedCurrentDate);
+    // console.log(formatedCurrentDate);
     
-    console.log(salesData?.data);
+    // console.log(salesData?.data);
     
     
     //all the sales with date and amount between range
@@ -106,7 +111,7 @@ const DashboardComp = ( ) => {
     // console.log(dummySet);
     dummyData.labels = [...dummySet];
     // console.log(dummyData);
-
+    
     const {data : purcahseData} = useFetch(
         "purchaseAmount", 
        () =>  getTotalPurchaseAmountByDateRange(formatedstartingYearDateOfCurrentDate, formatedCurrentDate)
@@ -123,19 +128,53 @@ const DashboardComp = ( ) => {
     //last week data 
    const lastWeek =  lastTwoWeekDateRange?.[0];
     const {data: lineChartLastWeekData } = useFetch(
-        "salesAmountWithRange",
+        "salesAmountWithRangeFirst",
         () => getSalesAmountOfDateRange(lastWeek.startDate, lastWeek.endDate) 
     )
 
     //week before last week data
     const beforeLastWeek = lastTwoWeekDateRange?.[1];
     const {data : lineChartBeforeLastWeekData} = useFetch(
-        "salesAmountWithRange", 
+        "salesAmountWithRangeLast", 
         () => getSalesAmountOfDateRange(beforeLastWeek.startDate , beforeLastWeek.endDate)
     )
 
-    //creating a array to store the range of dates
+    //creating a array to store the range of dates into day format (sunday, monday, tuesday);
+    const dummyData2 = {
+         labels : ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+         datasets : [
+             {
+            label : "Last Weak",
+            data : [],
+            backgroundColor : "rgba(100, 240, 0)"
+        }, 
+        {
+            label : "Weak Before Last Weak",
+            data : [],
+             backgroundColor : "rgba(100, 0, 200)"
+        }]
+     }
     
+    lineChartLastWeekData?.forEach((eachDate) => {
+        dummyData2.datasets?.[0]?.data.push(eachDate.totalAmount)
+    })
+
+    lineChartBeforeLastWeekData?.forEach((eachDate) => {
+        dummyData2.datasets?.[1]?.data.push(eachDate.totalAmount)
+    })
+     
+    // console.log(lineChartLastWeekData);
+    // console.log(lineChartBeforeLastWeekData);
+    // console.log(lastTwoWeekDateRange);
+    
+    
+    
+    
+
+  
+  
+
+
 
 
     //consoling the data
@@ -161,7 +200,7 @@ if(isLoading) return <div>please wait...</div>
         <CustomChart  type="bar" data={dummyData} options={getChartFor("bar", "Sales and Purchases")} />
         </div>
         <div className="w-90  md:w-110 ml-8 mt-10">
-        <CustomChart  type="line" data={data2} options={getChartFor("line", "Sales")} />
+        <CustomChart  type="line" data={dummyData2} options={getChartFor("line", "Sales")} />
         </div>
         </div>
     </div>

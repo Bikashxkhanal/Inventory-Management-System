@@ -1,3 +1,5 @@
+const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 function formatDate(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -48,9 +50,21 @@ function getLastTwoWeekWithStartAndEndDate() {
   ];
 }
 
+const convertDateIntoWeekDay = (date) => {
+
+    // date must be in yyyy-mm-dd format 
+    const currentDay = new Date(date);
+    const day = currentDay.getDay();
+    return days[day];
+    
+}
+
+
+
 export {
     formatDate,
     getStartDateOfCurrentYear,
     getDateBeforeCurrentDate,
-    getLastTwoWeekWithStartAndEndDate
+    getLastTwoWeekWithStartAndEndDate,
+    convertDateIntoWeekDay
 }
