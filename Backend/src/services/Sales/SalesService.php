@@ -2,16 +2,30 @@
 
 namespace App\Services\Sales;
 
-use App\Models\SalesModel;
+
+use PDO;
 use DateTime;
 use Exception;
-use InvalidArgumentException;
+use InvalidArgumentException; 
+use App\Models\SalesModel;
+use App\Models\SalesItemsModel;
+use App\Models\CustomerModel;
 
 class SalesService {
     private SalesModel $salesModel;
+    private SalesItemsModel $salesItemsModel;
+    private CustomerModel $customerModel;
 
-    public function __construct() {
-        $this->salesModel = new SalesModel();
+
+    public function __construct(
+        SalesModel $salesModel,
+        SalesItemsModel $salesItemsModel,
+        CustomerModel $customerModel
+    ) {
+        
+        $this->salesModel = $salesModel;
+        $this->salesItemsModel = $salesItemsModel;
+        $this->customerModel = $customerModel;
     }
 
     public function getPaginatedSales(int $page, int $limit): array {
@@ -19,8 +33,65 @@ class SalesService {
     }
 
     public function createSale(array $data): array {
-        return $this->salesModel->insertSale($data);
+        //$data should have $data['customer']['...'], $data['sales'][...], $data['salesItems'][[], [], ...]
+        //TODO: to create sale , first check where customer of given phone number exist or not(if provided)
+        // if phone number is not provdied no need to check , 
+        // if customer exist returns it ID, if not insert and returns it id
+        // add sale (use customer id here if available) to sales DB, and returns it's ID
+        //add salesItems (use sales ID), if transcation complete commit , if not rollback
+         global $pdo;
+
+        try{
+            //starting trancation 
+            $pdo->beginTransaction();
+
+            $customer = null;
+            //if phone number is provided then
+            if(!empty($data['customer']['phoneNumber'])){
+                //returns customer
+                $customer =  $this->customerModel->findByPhoneNumber($data['customer']['phoneNumber']);
+                if($customer === false){
+                //if customer is not in db , add 
+                 $customer = $this->customerModel->create((string) $data['customer']['phoneNumber']);
+                }
+            }
+
+             //assuming no customer id is provided
+            $customerId = null;
+
+        $data['sales']['customerId'] = isset($customer['id']) ? $customer['id'] : $customerId;
+
+        //after inserting sells, it returns success and id.
+        $sale =  $this->salesModel->insertSale($data['sales']);
+        if(($sale['success']) != true){
+                throw new Exception("Sales couldnot be created");
+        }
+
+        //after inserting sells , insert sellsItems, each sellItem contains: sale_id, product_id, quantity, price , subtotal (item_subtotal) TODO: CREATE class of sells and sells, items in future
+
+        //adding sellID to each data
+        foreach($data['salesItems'] as &$eachData) {
+                $eachData['saleId'] = $sale['id'];
+        }
+        unset($eachData);
+
+        //adding sells items in the db
+        $salesItemInsertStatus =  $this->salesItemsModel->addSalesItems($data['salesItems']);
+        
+        //commiting to the db
+        $pdo->commit();
+
+        return ['success' => true ];
+  
+        }catch(Throwable $th){
+        //rollbacking if any of the transcation failes
+        $pdo->rollback();
+        throw $th;
+        }
+        
     }
+
+
 
     public function updateSale(array $data): array {
         return $this->salesModel->updateSaleDetails($data);

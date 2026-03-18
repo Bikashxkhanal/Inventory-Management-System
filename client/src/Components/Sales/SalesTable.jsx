@@ -3,7 +3,7 @@ import { DataTable, ActionComponent } from './../index';
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchSales } from '../../api/sales.api';
-import PaginationController from '../Pagination Controls/PaginationController';
+import PaginationController from '../PaginationControls/PaginationController';
 import { useSelector } from 'react-redux';
 
 const SalesTable = () => {

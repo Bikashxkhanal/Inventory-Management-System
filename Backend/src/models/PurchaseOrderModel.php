@@ -22,14 +22,14 @@ class PurchaseOrderModel
 
     public function addPoItems(array $poItemDetails)
     {
-        try {
+        
             global $pdo;
             $stmt = $pdo->prepare("INSERT INTO purchase_order_items (purchase_order_id, product_id, quantity, proposed_unit_price) VALUES (?,?,?,?)");
             if (!$stmt->execute($poItemDetails)) {
                 throw new DomainException('failed to add sell items');
             }
         }
-    }
+    
 
     //soft delete
     public function deletePo(int $poId)

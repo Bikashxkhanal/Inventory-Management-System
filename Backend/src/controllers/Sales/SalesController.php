@@ -4,12 +4,15 @@ namespace App\Controllers\Sales;
 
 use App\Services\Sales\SalesService;
 use Exception;
+use App\Models\SalesModel;
+use App\Models\SalesItemsModel;
+use App\Models\CustomerModel;
 
 class SalesController {
     private SalesService $salesService;
 
     public function __construct() {
-        $this->salesService = new SalesService();
+        $this->salesService = new SalesService(new SalesModel, new SalesItemsModel, new CustomerModel);
     }
 
     // Fetch paginated sales
@@ -96,7 +99,7 @@ class SalesController {
          if(!isset($_GET['startDate'])){
             throw new Exception("Start Date is required");
         } 
-        $requestData['startDate']  =   (string)$_GET['startDate'] ;
+        $requestData['startDate']  =  (string)$_GET['startDate'] ;
         
 
         if(!isset($_GET['endDate'])){

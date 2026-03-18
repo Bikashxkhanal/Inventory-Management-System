@@ -6,25 +6,7 @@ import useFetch from '../../../hooks/useFetch';
 import { fetchStaffStats } from '../../../api/staff.api.js';
 import {getPurchaseAmountOfDateRange, getTotalPurchaseAmountByDateRange} from '../../../api/purchase.api.js';
 import {getSalesAmountOfDateRange, getTotalSalesAmountByDateRange} from '../../../api/sales.api.js'
-import {getStartDateOfCurrentYear, formatDate, getDateBeforeCurrentDate} from '../../../helpers/date/date.js'
-
-
-export const data1 = {
-    labels : ["01-20" , "01-22", "01-24"],
-    datasets : [
-        {
-            label : "Sale",
-            //data is amount
-            data : [44, 99, 80],
-            backgroundColor : "rgba(244, 90, 150)"
-        }, 
-        {
-            label : "Purchase",
-            data :[88, 98, 70]
-        }
-    ],
-    
-}
+import {getStartDateOfCurrentYear, formatDate, getDateBeforeCurrentDate, getLastTwoWeekWithStartAndEndDate} from '../../../helpers/date/date.js'
 
 
 //data must be fetched as getSalesAmountByDateRange(startDate, endDate) AND PurchaseAmountByDateRange(startDate, endDate) OR , where both start and 
@@ -56,19 +38,24 @@ const DashboardComp = ( ) => {
     const currentDate = new Date();
     const formatedCurrentDate = formatDate(currentDate);
     const formatedstartingYearDateOfCurrentDate = getStartDateOfCurrentYear(currentDate);  
-    
     const dateOfSevenDayBeforeCurrentDate = getDateBeforeCurrentDate(7); //get week range 
+    const lastTwoWeekDateRange = getLastTwoWeekWithStartAndEndDate();
+
+
 
     //call the api to get the sells details 
     const {data : salesData, isLoading, error}= useFetch(
     "salesAmount", 
-    () => getTotalSalesAmountByDateRange(formatedstartingYearDateOfCurrentDate, formatedCurrentDate)
-);
+    () => getTotalSalesAmountByDateRange(formatedstartingYearDateOfCurrentDate, formatedCurrentDate)    
+    );
+   
+    
 
     const { data : saleAmtOfDate} = useFetch(
         "salesAmt", 
       () =>   getSalesAmountOfDateRange(dateOfSevenDayBeforeCurrentDate, formatedCurrentDate)
     );
+    
 
      const { data : purchaseAmtOfDate} = useFetch(
         "purchaseAmt", 
@@ -81,7 +68,9 @@ const DashboardComp = ( ) => {
     
     //first push the data of one (either sale or purchase) => labels , then data , simillary for another
     //check for dublicate labels while pushing new one 
-    const dummyData ={ labels : [] , datasets : [  {
+    const dummyData = {
+         labels : [] , 
+         datasets : [  {
             label : "Sale",
             //data is amount
             data : [],
@@ -124,6 +113,33 @@ const DashboardComp = ( ) => {
         "staff", 
         fetchStaffStats
     )  
+
+
+
+    //for CustomChart::line 
+    //last week data 
+   const lastWeek =  lastTwoWeekDateRange?.[0];
+    const {data: lineChartLastWeekData } = useFetch(
+        "salesAmountWithRange",
+        () => getSalesAmountOfDateRange(lastWeek.startDate, lastWeek.endDate) 
+    )
+
+    //week before last week data
+    const beforeLastWeek = lastTwoWeekDateRange?.[1];
+    const {data : lineChartBeforeLastWeekData} = useFetch(
+        "salesAmountWithRange", 
+        () => getSalesAmountOfDateRange(beforeLastWeek.startDate , beforeLastWeek.endDate)
+    )
+
+    //creating a array to store the range of dates
+    
+
+
+    //consoling the data
+    console.log("first" , lineChartLastWeekData);
+    console.log("last" , lineChartBeforeLastWeekData);
+    
+    
 
 if(isLoading) return <div>please wait...</div>
 

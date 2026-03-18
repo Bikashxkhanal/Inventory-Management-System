@@ -4,7 +4,7 @@ import { DataTable, ActionComponent } from './../index'
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchPurchase } from '../../api/purchase.api';
-import PaginationController from '../Pagination Controls/PaginationController';
+import PaginationController from '../PaginationControls/PaginationController';
 import { useNavigate } from 'react-router-dom';
 
 

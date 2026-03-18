@@ -12,11 +12,11 @@ class PurchaseModel {
     public function create($vendor_id, $purchase_date, $totalAmount) {
       global $pdo;
         $stmt = $pdo->prepare("
-            INSERT INTO purchase (vendor_id, purchase_date, total_amount, status) 
-            VALUES (?, ?, ?, ?) 
+            INSERT INTO purchase (vendor_id) 
+            VALUES (?) 
         ");
-        $stmt->execute([$vendor_id, $purchase_date, $totalAmount, 'completed']);
-        return $pdo->lastInsertId();
+        $stmt->execute([$vendor_id]);
+        return ['success' => true , 'id' => $pdo->lastInsertId()];
     }
 
     public function fetchPaginated($page, $limit) {

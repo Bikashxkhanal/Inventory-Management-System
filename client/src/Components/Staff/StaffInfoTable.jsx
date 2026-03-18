@@ -2,7 +2,7 @@ import { DataTable, ActionComponent } from './../index'
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchStaff } from '../../api/staff.api';
-import PaginationController from '../Pagination Controls/PaginationController';
+import PaginationController from '../PaginationControls/PaginationController';
 
 const StaffInfoTable = () => {
 
