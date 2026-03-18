@@ -20,11 +20,11 @@ const InfoContainer = ({
       <div className='flex flex-row justify-start gap-2 md:gap-3'>
         <p>
           {
-            amount && 'Rs.'
+            amount !== null && 'Rs.'
           }
           <span className={`text-lg md:text-2xl ${color} font-semi font-mono`}>{/* amount */}
             {
-              amount ?? count ?? <p>Unknown</p>
+              amount ?? count
             }
           </span>
         </p>

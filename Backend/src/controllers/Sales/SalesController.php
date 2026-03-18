@@ -2,17 +2,21 @@
 
 namespace App\Controllers\Sales;
 
+//this controller is for both sales and salesItems
 use App\Services\Sales\SalesService;
 use Exception;
 use App\Models\SalesModel;
 use App\Models\SalesItemsModel;
 use App\Models\CustomerModel;
+use App\Models\StockModel;
 
 class SalesController {
     private SalesService $salesService;
+    private SalesItemsService $salesItemsService;
 
     public function __construct() {
-        $this->salesService = new SalesService(new SalesModel, new SalesItemsModel, new CustomerModel);
+        $this->salesService = new SalesService(new SalesModel(), new SalesItemsModel(), new CustomerModel(), new StockModel());
+  
     }
 
     // Fetch paginated sales
@@ -26,8 +30,24 @@ class SalesController {
 
     // Create sale (Salesperson)
     public function createSale($requestData) {
-        $result = $this->salesService->createSale($requestData);
-        echo json_encode($result);
+      try {
+      $result = $this->salesService->createSale($requestData);
+      http_response_code(200);
+      echo json_encode([
+        'success' => true,
+        'message' => 'Sales added successfully!', 
+        'data' => [],
+      ]);
+       
+      } catch (Exception $e) {
+        http_response_code(400);
+        echo json_encode([
+        'success' => false,
+        'message' => $e->getMessage(), 
+        'data' => []
+      ]);
+      }
+      
     }
 
     // Update sale (Store Manager)
@@ -72,7 +92,7 @@ class SalesController {
 
     //get all the sells count (numer of sells done) from date range selected
     public function getSalesCountByDateRange($requestData){
-        try {
+        try{
         $result = $this->salesService->getSalesCountByDateRange($requestData);
         http_response_code(200);
         echo json_encode([
@@ -86,8 +106,7 @@ class SalesController {
       echo json_encode([
         'success' => false,
         'message' => $e->getMessage(), 
-        'data' => [
-             
+        'data' => [    
         ]
       ]);
     }

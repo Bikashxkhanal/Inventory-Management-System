@@ -21,7 +21,7 @@ const SideBarLayout = () => {
   const [activeId, setActiveId] = useState(false);
   const {authStatus,  permissions, user , company} = useSelector((state) => state.auth);
   
-  console.log(permissions);
+  // console.log(permissions);
   
   const icons = [userImg, stockImg, purchaseImg, salesImg, revenueImg];
   let navItems = {};

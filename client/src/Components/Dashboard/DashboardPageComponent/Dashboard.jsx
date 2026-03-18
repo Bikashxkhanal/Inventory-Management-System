@@ -48,9 +48,12 @@ const DashboardComp = ( ) => {
     "salesAmount", 
     () => getTotalSalesAmountByDateRange(formatedstartingYearDateOfCurrentDate, formatedCurrentDate)    
     );
-   
+    console.log(formatedCurrentDate);
     
-
+    console.log(salesData?.data);
+    
+    
+    //all the sales with date and amount between range
     const { data : saleAmtOfDate} = useFetch(
         "salesAmt", 
       () =>   getSalesAmountOfDateRange(dateOfSevenDayBeforeCurrentDate, formatedCurrentDate)
@@ -87,9 +90,9 @@ const DashboardComp = ( ) => {
     const dummySet = new Set();
 
     saleAmtOfDate?.forEach((saleItem) => {
-        dummySet.add(saleItem.saleCreatedDate);
+        dummySet.add(saleItem.salesDate);
         // [...dummyData.labels, dummyData.labels.push(saleItem.saleCreatedDate)]
-        dummyData.datasets?.[0].data.push(saleItem.amount);
+        dummyData.datasets?.[0].data.push(saleItem.totalAmount);
     })
 
     purchaseAmtOfDate?.forEach((purchaseItem) => {
@@ -100,9 +103,9 @@ const DashboardComp = ( ) => {
     })
 
     // console.log(dummyData);
-    console.log(dummySet);
+    // console.log(dummySet);
     dummyData.labels = [...dummySet];
-    console.log(dummyData);
+    // console.log(dummyData);
 
     const {data : purcahseData} = useFetch(
         "purchaseAmount", 
@@ -136,8 +139,8 @@ const DashboardComp = ( ) => {
 
 
     //consoling the data
-    console.log("first" , lineChartLastWeekData);
-    console.log("last" , lineChartBeforeLastWeekData);
+    // console.log("first" , lineChartLastWeekData);
+    // console.log("last" , lineChartBeforeLastWeekData);
     
     
 

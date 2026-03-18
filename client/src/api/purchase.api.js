@@ -50,7 +50,7 @@ export const getPurchaseAmountOfDateRange = async(startDate , endDate) => {
 
 //get the total purchase between provided purchase range
 export const getTotalPurchaseAmountByDateRange = async(startDate , endDate) => {
-  console.log(startDate, endDate);
+  // console.log(startDate, endDate);
   
   const res = await axios.get('/api/purchase/totalAmount', {
   params :  {

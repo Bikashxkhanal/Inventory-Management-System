@@ -28,7 +28,8 @@ class PurchaseOrderModel
             if (!$stmt->execute($poItemDetails)) {
                 throw new DomainException('failed to add sell items');
             }
-        }
+            return ['success' => true];
+    }
     
 
     //soft delete

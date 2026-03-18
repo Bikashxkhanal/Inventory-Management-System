@@ -10,7 +10,7 @@ class PurchaseModel {
     }
 
     public function create($vendor_id, $purchase_date, $totalAmount) {
-      global $pdo;
+        global $pdo;
         $stmt = $pdo->prepare("
             INSERT INTO purchase (vendor_id) 
             VALUES (?) 
@@ -20,7 +20,7 @@ class PurchaseModel {
     }
 
     public function fetchPaginated($page, $limit) {
-      global $pdo;
+        global $pdo;
         $offset = ($page - 1) * $limit;
         $stmt = $pdo->prepare("
             SELECT * FROM purchase ORDER BY created_at DESC LIMIT ? OFFSET ?

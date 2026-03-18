@@ -39,11 +39,11 @@
   'GET /api/stocks/stats' => [StockController::class, 'fetchStockStats'],
 
   //sales
-   'GET /api/sales' => [SalesController::class, 'fetchSales'],
-   'POST /api/sales' => [SalesController::class, 'createSale'],
-   'GET /api/sales/totalAmount' => [SalesController::class, 'getTotalSalesAmountByDateRange'],
-    'POST /api/sales/count' => [SalesController::class, 'getSalesCountByDateRange'],
-    'GET /api/sales/amount' => [SalesController::class , 'getSalesAmountOfDateRange'], 
+   'GET /api/sales' => [SalesController::class, 'fetchSales'], //fetch sales data (entire for table)
+   'POST /api/sales' => [SalesController::class, 'createSale'], //create sell
+   'GET /api/sales/totalAmount' => [SalesController::class, 'getTotalSalesAmountByDateRange'], //fetch sells total amount for dash
+    'POST /api/sales/count' => [SalesController::class, 'getSalesCountByDateRange'], // fetch sells count  for dashboard
+    'GET /api/sales/amount' => [SalesController::class , 'getSalesAmountOfDateRange'],  //fetch sells data for with date and amount for chart
 
     ];
 

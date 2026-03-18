@@ -2,6 +2,8 @@
 namespace App\Models;
 
 use PDO;
+use Exception;
+use Throwable;
 
 class StockModel {
 
@@ -9,9 +11,9 @@ class StockModel {
     
     }
 
-    public function fetchStocks(int $offset, int $limit): array {
-        global $pdo;
-   $stmt = $pdo->prepare("
+public function fetchStocks(int $offset, int $limit): array {
+     global $pdo;
+    $stmt = $pdo->prepare("
     SELECT 
         id AS productId,
         name,
@@ -26,16 +28,15 @@ class StockModel {
     FROM product
     ORDER BY id DESC
     LIMIT :limit OFFSET :offset
-");
+            ");
 
 
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmt->execute();
 
-        $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
     public function countStocks(): int {
             global $pdo;
@@ -43,8 +44,8 @@ class StockModel {
         return (int)$stmt->fetchColumn();
     }
 
-    public function countStockStatuses(): array
-{
+ public function countStockStatuses(): array {
+
         global $pdo;
    $stmt = $pdo->query("
     SELECT
@@ -67,5 +68,64 @@ class StockModel {
 
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
+
+//get stock quantity  
+public function getStockQuantityByProduct(string $productId) {
+    global $pdo;
+    $stmt =  $pdo->prepare("
+        SELECT quantity
+         FROM stock 
+         WHERE product_id = ?
+    ");
+
+    $stmt->execute([$productId]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $result['quantity'] ?? 0;
+
+}
+
+//get selling price of stock by product 
+public function getStockSellingPriceByProduct(string $productId) {
+    global $pdo;
+    $stmt =  $pdo->prepare("
+        SELECT selling_price AS sellingPrice
+         FROM stock 
+         WHERE product_id = ?
+    ");
+
+    $stmt->execute([$productId]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $result ?? 0;
+}
+
+public function reduceStock(array $stocksDatas){
+    // [['productId' => .., 'quantity' => ..], [...], [...]]
+
+    try {
+        global $pdo;
+        $stmt = $pdo->prepare("
+            UPDATE stock
+            SET quantity = quantity - ? 
+            WHERE product_id = ?
+        ");
+
+         foreach ($stocksDatas as $stockData) {
+        $stmt->execute([$stockData['quantity'], $stockData['productId']]);
+    }
+
+        return ['success' => true ];
+
+    } catch (\Throwable $th) {
+      throw new Exception("Failed to reduce stock");
+    }
+}
+
+//check if the product has enough stock or not
+public function hasEnoughStock(string $productId, int $sellingQuantity){
+    $availableQty  =  (int) $this->getStockQuantityByProduct($productId);
+    return $availableQty >= $sellingQuantity ? true : false;
+} 
 
 }

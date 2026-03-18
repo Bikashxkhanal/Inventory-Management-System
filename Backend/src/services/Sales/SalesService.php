@@ -10,41 +10,55 @@ use InvalidArgumentException;
 use App\Models\SalesModel;
 use App\Models\SalesItemsModel;
 use App\Models\CustomerModel;
+use App\Models\StockModel;
+
 
 class SalesService {
     private SalesModel $salesModel;
     private SalesItemsModel $salesItemsModel;
     private CustomerModel $customerModel;
-
+    private StockModel $stockModel;
 
     public function __construct(
         SalesModel $salesModel,
         SalesItemsModel $salesItemsModel,
-        CustomerModel $customerModel
+        CustomerModel $customerModel, 
+        StockModel $stockModel
     ) {
         
         $this->salesModel = $salesModel;
         $this->salesItemsModel = $salesItemsModel;
         $this->customerModel = $customerModel;
+        $this->stockModel= $stockModel;
     }
 
-    public function getPaginatedSales(int $page, int $limit): array {
+public function getPaginatedSales(int $page, int $limit): array {
         return $this->salesModel->fetchPaginated($page, $limit);
     }
 
-    public function createSale(array $data): array {
+    
+public function createSale(array $data): array {
         //$data should have $data['customer']['...'], $data['sales'][...], $data['salesItems'][[], [], ...]
         //TODO: to create sale , first check where customer of given phone number exist or not(if provided)
         // if phone number is not provdied no need to check , 
         // if customer exist returns it ID, if not insert and returns it id
         // add sale (use customer id here if available) to sales DB, and returns it's ID
         //add salesItems (use sales ID), if transcation complete commit , if not rollback
-         global $pdo;
+        global $pdo;
 
         try{
             //starting trancation 
             $pdo->beginTransaction();
 
+            //check stock quantity , TODO: must be shift to model not a policy
+            foreach($data['salesItems'] as $saleItems){
+             $isEnough =   $this->stockModel->hasEnoughStock($saleItems['productId'], $saleItems['quantity']);
+             if($isEnough == false){
+                throw new Exception("Availabe quantity is less" );
+             }
+
+            }
+            
             $customer = null;
             //if phone number is provided then
             if(!empty($data['customer']['phoneNumber'])){
@@ -59,13 +73,13 @@ class SalesService {
              //assuming no customer id is provided
             $customerId = null;
 
-        $data['sales']['customerId'] = isset($customer['id']) ? $customer['id'] : $customerId;
+            $data['sales']['customerId'] = isset($customer['id']) ? $customer['id'] : $customerId;
 
-        //after inserting sells, it returns success and id.
-        $sale =  $this->salesModel->insertSale($data['sales']);
-        if(($sale['success']) != true){
-                throw new Exception("Sales couldnot be created");
-        }
+            //after inserting sells, it returns success and id.
+            $sale =  $this->salesModel->insertSale($data['sales']);
+            if(($sale['success']) != true){
+                 new Exception("Sales couldnot be created");
+             }
 
         //after inserting sells , insert sellsItems, each sellItem contains: sale_id, product_id, quantity, price , subtotal (item_subtotal) TODO: CREATE class of sells and sells, items in future
 
@@ -77,7 +91,17 @@ class SalesService {
 
         //adding sells items in the db
         $salesItemInsertStatus =  $this->salesItemsModel->addSalesItems($data['salesItems']);
-        
+
+        //reduce stock of the products 
+        $stocksDatas = [];
+        foreach($data['salesItems'] as &$eachData){
+            $stockDatas['productId'] = $eachData['productId'];
+            $stockDatas['quantity'] = $eachData['quantity'];
+            array_push($stocksDatas, $stockDatas);
+        }
+        //even this is under policy must be done from model
+       $this->stockModel->reduceStock($stocksDatas);
+
         //commiting to the db
         $pdo->commit();
 
@@ -93,13 +117,14 @@ class SalesService {
 
 
 
-    public function updateSale(array $data): array {
-        return $this->salesModel->updateSaleDetails($data);
-    }
+
+// public function updateSale(array $data): array {
+//     return $this->salesModel->updateSaleDetails($data);
+// }
 
 
 
-    public function getTotalSalesAmountByDateRange(array $requestedData) {
+public function getTotalSalesAmountByDateRange(array $requestedData) {
     // Validate required fields
     if (empty($requestedData['startDate']) || empty($requestedData['endDate'])) {
         throw new InvalidArgumentException('startDate and endDate are required.');
@@ -127,13 +152,13 @@ class SalesService {
         throw new InvalidArgumentException('startDate must not be after endDate.');
     }
 
-    $result = $this->salesModel->getTotalSalesAmountByDateRange($startDate, $endDate);
+    $result = $this->salesItemsModel->getTotalSalesAmountByDateRange($startDate, $endDate);
 
     return $result;
 }
 
 
-    public function getSalesCountByDateRange(array $requestedData) {
+public function getSalesCountByDateRange(array $requestedData) {
     // Validate required fields exist
     if (empty($requestedData['startDate']) || empty($requestedData['endDate'])) {
         throw new InvalidArgumentException('startDate and endDate are required.');
@@ -166,9 +191,10 @@ class SalesService {
     return $this->salesModel->getSalesCountByDate($startDate, $endDate);
 }
 
-//
+
 public function getSalesAmountOfDateRange(array $requestedData){
-       // Validate required fields exist
+
+    // Validate required fields exist
     if (empty($requestedData['startDate']) || empty($requestedData['endDate'])) {
         throw new InvalidArgumentException('startDate and endDate are required.');
     }
@@ -196,20 +222,13 @@ public function getSalesAmountOfDateRange(array $requestedData){
     }
 
     //calling sales model and returning data 
-    $result =  $this->salesModel->getSalesAmountOfDateRange($startDate, $endDate);
+    $result =  $this->salesItemsModel->getSalesAmountOfDateRange($startDate, $endDate);
 
-  if($result === null){
+    if($result === null){
     throw new Exception("Failed to get sales data");
-  }
+    }
 
-  return $result;
-
-
-}
-
-
-
-
-
+    return $result;
+ }
 
 }
