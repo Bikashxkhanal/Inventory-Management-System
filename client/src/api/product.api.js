@@ -5,3 +5,12 @@ export const fetchProductsByCategory = async (categoryId) => {
   });
   return response.data;
 };
+
+
+export const searchProducts = async (searchQuery) => {
+  const response = await api.get('/api/products/search', {
+      params : {query : searchQuery }
+  });
+
+  return response?.data;
+}

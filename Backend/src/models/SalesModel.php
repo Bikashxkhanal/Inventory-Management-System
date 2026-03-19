@@ -15,9 +15,12 @@ class SalesModel {
         $offset = ($page - 1) * $limit;
 
         $stmt = $pdo->prepare("
-            SELECT *
-            FROM sales 
-            ORDER BY id DESC 
+            SELECT s.id  AS id,
+            s.customer_id AS customer, 
+            s.status AS status, 
+            CONCAT(sy.firstName, ' ', sy.lastName) AS initiator
+            FROM sales AS s LEFT JOIN sys_user AS sy ON s.created_by = sy.id
+            ORDER BY s.id DESC 
             LIMIT :limit OFFSET :offset
         ");
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);

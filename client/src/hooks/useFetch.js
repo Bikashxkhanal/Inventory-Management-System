@@ -2,7 +2,7 @@ import {  useQuery } from "@tanstack/react-query";
 
 const useFetch = (key, queryFn, options = {}) => {
     return useQuery({
-        queryKey : [key], 
+        queryKey: Array.isArray(key) ? key : [key],
         queryFn : queryFn, 
         ...options
     })

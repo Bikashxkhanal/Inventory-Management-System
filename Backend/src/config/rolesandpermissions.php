@@ -11,7 +11,9 @@ return [
             'DELETE_VENDOR',
             'GENERATE_REPORT',
             'VIEW_REPORT',
-            'VIEW_STOCK'
+            'VIEW_STOCK',
+            'ADD_PRODUCT',
+            'DELETE_PRODUCT'
     
         ],
         'admin' => [
@@ -20,6 +22,8 @@ return [
              'GENERATE_REPORT',
              'VIEW_REPORT',
              'VIEW_STOCK',
+              'ADD_PRODUCT',
+            'DELETE_PRODUCT'
             
 
         ],
@@ -27,7 +31,6 @@ return [
             'DASHBOARD',
             'GENERATE_REPORT',
              'VIEW_REPORT',
-             'CREATE_PO',
              'REVERSE_SALE',
              'VIEW_STOCK',
              'CREATE_PURCHASE',

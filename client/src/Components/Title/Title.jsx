@@ -2,7 +2,7 @@
 const Title = ({
         name = "Inventory"
     }) => {
-    return <p className="text-3xl font-semibold max-w-screen"> {name} </p>
+    return <p className="ml-5 text-3xl font-semibold max-w-screen"> {name} </p>
 
 }
 

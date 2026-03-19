@@ -12,9 +12,9 @@ class StockService {
     }
 
     public function getPaginatedStocks(int $page, int $limit): array {
-
+       
         $offset = ($page - 1) * $limit;
-
+        
         $stocks = $this->stockModel->fetchStocks($offset, $limit);
         $totalRecords = $this->stockModel->countStocks();
 
@@ -44,6 +44,23 @@ class StockService {
         'outOfStock' => (int)($stats['outOfStock'] ?? 0),
         'highStock' => (int)($stats['highStock'] ?? 0),
     ];
+}
+
+public function getStockQuantityAndUnitPriceOfAProduct(int $productId){
+
+     //sanitize\validate the input 
+    $productId = filter_var(trim($productId), FILTER_VALIDATE_INT);
+
+    if($productId == false){
+        throw new Exception("Enter valid productId");
+    }
+
+    //db calls
+   $stockQty =  $this->stockModel->getStockQuantityByProduct($productId);
+   $stockSellingPrice = $this->stockModel->getStockSellingPriceByProduct($productId);
+
+   return ['quantity' => $stockQty , 'sellingPrice' => $stockSellingPrice];
+
 }
 
 }

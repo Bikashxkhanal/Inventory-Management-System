@@ -17,22 +17,6 @@ import {getStartDateOfCurrentYear, formatDate, getDateBeforeCurrentDate,
 // and amount as data , the amount of sale and purchase should be reduced to two diffrent part of datasets 
 
 
-export const data2 = {
-    labels : ["Sun", "Mon", "Tues", "Wed", "Thus", "Fri", "Sat"],
-    datasets : [
-        {
-            label : "Last Weak",
-            data : [44, 99, 80, 100, 59, 150, 200],
-            backgroundColor : "rgba(244, 90, 150)"
-        }, 
-        {
-            label : "Weak Before Last Weak",
-            data : [88, 98, 70, 180, 198, 100, 250]
-        }
-    ],
-    
-}
-
 
 const DashboardComp = ( ) => {
 
@@ -76,7 +60,7 @@ const DashboardComp = ( ) => {
     
     //first push the data of one (either sale or purchase) => labels , then data , simillary for another
     //check for dublicate labels while pushing new one 
-    const dummyData = {
+    const chartOneData = {
          labels : [] , 
          datasets : [  {
             label : "Sale",
@@ -96,21 +80,21 @@ const DashboardComp = ( ) => {
 
     saleAmtOfDate?.forEach((saleItem) => {
         dummySet.add(saleItem.salesDate);
-        // [...dummyData.labels, dummyData.labels.push(saleItem.saleCreatedDate)]
-        dummyData.datasets?.[0].data.push(saleItem.totalAmount);
+        // [...chartOneData.labels, chartOneData.labels.push(saleItem.saleCreatedDate)]
+        chartOneData.datasets?.[0].data.push(saleItem.totalAmount);
     })
 
     purchaseAmtOfDate?.forEach((purchaseItem) => {
         dummySet.add(purchaseItem.purchaseCreatedDate);
-        // [...dummyData.labels, dummyData.labels.push(purchaseItem.purchaseCreatedDate) ]
+        // [...chartOneData.labels, chartOneData.labels.push(purchaseItem.purchaseCreatedDate) ]
        
-         dummyData.datasets?.[1].data.push(purchaseItem.amount);
+         chartOneData.datasets?.[1].data.push(purchaseItem.amount);
     })
 
-    // console.log(dummyData);
+    // console.log(chartOneData);
     // console.log(dummySet);
-    dummyData.labels = [...dummySet];
-    // console.log(dummyData);
+    chartOneData.labels = [...dummySet];
+    // console.log(chartOneData);
     
     const {data : purcahseData} = useFetch(
         "purchaseAmount", 
@@ -140,7 +124,7 @@ const DashboardComp = ( ) => {
     )
 
     //creating a array to store the range of dates into day format (sunday, monday, tuesday);
-    const dummyData2 = {
+    const chartTwoData = {
          labels : ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
          datasets : [
              {
@@ -156,11 +140,11 @@ const DashboardComp = ( ) => {
      }
     
     lineChartLastWeekData?.forEach((eachDate) => {
-        dummyData2.datasets?.[0]?.data.push(eachDate.totalAmount)
+        chartTwoData.datasets?.[0]?.data.push(eachDate.totalAmount)
     })
 
     lineChartBeforeLastWeekData?.forEach((eachDate) => {
-        dummyData2.datasets?.[1]?.data.push(eachDate.totalAmount)
+        chartTwoData.datasets?.[1]?.data.push(eachDate.totalAmount)
     })
      
     // console.log(lineChartLastWeekData);
@@ -197,10 +181,10 @@ if(isLoading) return <div>please wait...</div>
         </div>
         <div className='flex flex-row flex-start gap-20 flex-wrap'>
         <div className="w-90 md:w-110 ml-8 mt-10">
-        <CustomChart  type="bar" data={dummyData} options={getChartFor("bar", "Sales and Purchases")} />
+        <CustomChart  type="bar" data={chartOneData} options={getChartFor("bar", "Sales and Purchases")} />
         </div>
         <div className="w-90  md:w-110 ml-8 mt-10">
-        <CustomChart  type="line" data={dummyData2} options={getChartFor("line", "Sales")} />
+        <CustomChart  type="line" data={chartTwoData} options={getChartFor("line", "Sales")} />
         </div>
         </div>
     </div>

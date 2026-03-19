@@ -57,7 +57,7 @@ const DynamicForm = ({ useCase,
   <select
     {...register(field.name)}
      onChange={(e) => {
-      register(field.name).onChange(e); // call react-hook-form handler
+      register(field.name).onChange(e); // calling react-hook-form handler
       if(onFieldChange) onFieldChange(field.name, e.target.value); // notify parent
     }}
     className="w-full cursor-pointer text-center border-2 border-gray-300 rounded-sm py-2"

@@ -41,9 +41,7 @@ export const formConfig  = {
 
     ], 
     addSellsItems : [
-         {name : 'category' , type : 'select', options : [], required : true}, 
-        {name : 'product' , type : 'select', options : [], required : true}, 
-        {name : 'customerName' , type : 'text' , required : false}, 
+        {name : 'product' , type : 'text', required : true}, 
         {name : 'quantity', type : 'text', required : true}, 
         {name : 'unitPrice', type : 'text', required : true},
         {name : 'subTotal', type : 'text' , required : true},

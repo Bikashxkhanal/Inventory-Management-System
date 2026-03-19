@@ -15,21 +15,21 @@ public function fetchStocks(int $offset, int $limit): array {
      global $pdo;
     $stmt = $pdo->prepare("
     SELECT 
-        id AS productId,
-        name,
-        stock,
-        buy_price AS purchasePrice,
-        sell_price AS sellingPrice,
+        p.id AS productId,
+        p.name AS name,
+        s.quantity AS stock,
+        s.selling_price AS sellingPrice,
         CASE 
-            WHEN stock < 200 THEN 'Low Stock'
-            WHEN stock > 1000 THEN 'High Stock'
+            WHEN s.quantity < 200 THEN 'Low Stock'
+            WHEN s.quantity > 1000 THEN 'High Stock'
             ELSE 'In Stock'
         END AS status
-    FROM product
-    ORDER BY id DESC
+    FROM product AS p INNER JOIN stock AS s ON p.id = s.product_id
+    ORDER BY p.id DESC
     LIMIT :limit OFFSET :offset
-            ");
+    ");
 
+   
 
     $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
     $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -40,7 +40,7 @@ public function fetchStocks(int $offset, int $limit): array {
 
     public function countStocks(): int {
             global $pdo;
-        $stmt = $pdo->query("SELECT COUNT(*) FROM product");
+        $stmt = $pdo->query("SELECT COUNT(*) FROM stock");
         return (int)$stmt->fetchColumn();
     }
 
@@ -51,26 +51,26 @@ public function fetchStocks(int $offset, int $limit): array {
     SELECT
         COUNT(*) AS total,
 
-        SUM(CASE WHEN stock < 200 THEN 1 ELSE 0 END) AS outOfStock,
+        SUM(CASE WHEN quantity < 200 THEN 1 ELSE 0 END) AS outOfStock,
 
         SUM(CASE 
-            WHEN stock >= 200 AND stock <= 1000 THEN 1 
+            WHEN quantity >= 200 AND quantity <= 1000 THEN 1 
             ELSE 0 
         END) AS inStock,
 
         SUM(CASE 
-            WHEN stock > 1000 THEN 1 
+            WHEN quantity > 1000 THEN 1 
             ELSE 0 
         END) AS highStock
 
-    FROM product
+    FROM stock
 ");
 
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
 //get stock quantity  
-public function getStockQuantityByProduct(string $productId) {
+public function getStockQuantityByProduct(int $productId) {
     global $pdo;
     $stmt =  $pdo->prepare("
         SELECT quantity
@@ -86,7 +86,7 @@ public function getStockQuantityByProduct(string $productId) {
 }
 
 //get selling price of stock by product 
-public function getStockSellingPriceByProduct(string $productId) {
+public function getStockSellingPriceByProduct(int $productId) {
     global $pdo;
     $stmt =  $pdo->prepare("
         SELECT selling_price AS sellingPrice

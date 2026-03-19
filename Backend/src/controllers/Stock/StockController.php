@@ -29,10 +29,24 @@ class StockController {
         echo json_encode($result);
     }
 
-    public function fetchStockStats($requestData)
+public function fetchStockStats($requestData)
 {
     $result = $this->stockService->getStockStats();
     echo json_encode($result);
+}
+
+public function getStockQuantityAndUnitPriceOfAProduct(){
+            try {
+                if(!isset($_GET['productId'])){
+                    throw new Exception("Product Id is required");
+                }
+
+                $productId = (int) $_GET['productId'];
+                //call service method
+                $this->stockService->getStockQuantityAndUnitPriceOfAProduct($productId);
+            } catch (Exception $e) {
+                //throw $th;
+            }
 }
 
 }
