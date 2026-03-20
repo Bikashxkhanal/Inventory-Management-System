@@ -16,8 +16,8 @@ const Spinner = memo(() => (
 
 
 const SearchBar = memo(({
-  onSearch,           // async (query, signal) => [{ label, value }]
-  onSelect,          // (item: { label, value }) => void
+  onSearch,         
+  onSelect,        
   placeholder = "Search...",
   debounceMs = 400,
   minChars = 1,
@@ -92,7 +92,7 @@ const SearchBar = memo(({
     setSuggestions([]);
     setIsOpen(false);
     setActiveIndex(-1);
-    onSelect?.(item);       // bubble up { label, value } to parent
+    onSelect?.(item);      
   }, [onSelect]);
 
   const handleClear = useCallback(() => {

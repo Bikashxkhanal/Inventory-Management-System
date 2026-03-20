@@ -29,4 +29,21 @@ class ProductModel {
         $stmt = $pdo->prepare("UPDATE product SET stock = stock + ? WHERE id = ?");
         $stmt->execute([$quantity, $productId]);
     }
+
+
+    public function getSearchedProduct(string $searchQuery){
+        global $pdo; 
+
+         $stmt =  $pdo->prepare("
+                SELECT 
+                id AS productId,
+                name AS productName
+                FROM product WHERE name LIKE CONCAT('%', ? , '%')
+        ");
+
+        $stmt->execute([$searchQuery]);
+
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
 }

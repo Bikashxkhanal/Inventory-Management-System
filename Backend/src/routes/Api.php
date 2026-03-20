@@ -6,6 +6,7 @@
     use App\Controllers\Vendor\VendorController;
     use App\Controllers\Stock\StockController;
     use App\Controllers\Sales\SalesController;
+    use App\Controllers\Product\ProductController;
 
 
 
@@ -31,6 +32,7 @@
     'GET /api/products' => [PurchaseController::class, 'fetchProductsByCategory'],
     'GET /api/categories' => [PurchaseController::class, 'fetchCategories'],
 
+    'GET /api/products/search' => [ProductController::class , 'getSearchedProduct'],
     
   'GET /api/vendors' => [VendorController::class, 'fetchVendors'],
 
@@ -44,6 +46,7 @@
    'GET /api/sales/totalAmount' => [SalesController::class, 'getTotalSalesAmountByDateRange'], //fetch sells total amount for dash
     'POST /api/sales/count' => [SalesController::class, 'getSalesCountByDateRange'], // fetch sells count  for dashboard
     'GET /api/sales/amount' => [SalesController::class , 'getSalesAmountOfDateRange'],  //fetch sells data for with date and amount for chart
+    
 
     ];
 

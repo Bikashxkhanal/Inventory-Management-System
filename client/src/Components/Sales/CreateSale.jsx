@@ -18,6 +18,7 @@ const CreateSale = () => {
 
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProductForCat, setSelectedProductForCat] = useState(null);
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -84,7 +85,6 @@ const CreateSale = () => {
       return;
     }
     setSelectedProduct(item);
-    console.log('Selected product:', item.value);
   }, []);
 
 
@@ -120,8 +120,8 @@ const CreateSale = () => {
          />
          <FilterComponent type='category' 
          options={productOptions}
-         onChange={(value) => setSelectedProduct(value)}
-         catValue={selectedProduct}
+         onChange={(value) => setSelectedProductForCat(value)}
+         catValue={selectedProductForCat}
           label="Select a product" />
       </div>
    
