@@ -8,7 +8,8 @@ import { fetchCategories } from '../../api/category.api'
 import { fetchProductsByCategory, searchProducts, fetchAProductDetails } from '../../api/product.api'
 import { useSelector } from 'react-redux'
 import useFetch from '../../hooks/useFetch'
-import { da } from 'zod/v4/locales'
+import OrderLineBar from './OrderLineBar'
+
 
 
 
@@ -26,6 +27,9 @@ const CreateSale = () => {
 
   //pass the details of the products to the form like(available qty, selected product,)
   const [productDetails , setProductDetails] = useState({});
+
+  //order items for showing the items 
+  const [orderItems , setOrderItems] = useState([]);
 
 
   // 1 Fetch Categories
@@ -89,6 +93,7 @@ const CreateSale = () => {
 
   const handleSubmit = (data) => {
    console.log(data);
+   setOrderItems((prev) => [...prev, data]);
    
   };
 
@@ -117,7 +122,8 @@ const CreateSale = () => {
 
   }, []);
 
-   console.log(selectedProduct);
+   console.log("Order" , orderItems);
+   
 
 
   //  Role Protection
@@ -161,6 +167,14 @@ const CreateSale = () => {
       status={mutation.isPending}
       onSubmit={handleSubmit}
     />
+
+    {
+
+      orderItems?.length > 0 && 
+      <OrderLineBar orderItems={orderItems} />
+
+    }
+
     </div>
   );
 };
