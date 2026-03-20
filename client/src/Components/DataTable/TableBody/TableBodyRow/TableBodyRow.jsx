@@ -6,7 +6,7 @@ const TableBodyRow = (
     }
 ) => {
     return (
-        <tr className="w-full">
+        <tr className="w-full odd:bg-white even:bg-gray-200">
             {
                 RowData?.map((item) => <TableBodyCell key={item} data={item} />)
             }

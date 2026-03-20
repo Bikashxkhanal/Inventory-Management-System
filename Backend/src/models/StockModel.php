@@ -73,15 +73,18 @@ public function fetchStocks(int $offset, int $limit): array {
 public function getStockQuantityByProduct(int $productId) {
     global $pdo;
     $stmt =  $pdo->prepare("
-        SELECT quantity
+        SELECT quantity AS stock
          FROM stock 
          WHERE product_id = ?
     ");
 
     $stmt->execute([$productId]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    if(!$result){
+        throw new Exception("Failed to get product quantity");
+    }
 
-    return $result['quantity'] ?? 0;
+    return $result['stock'];
 
 }
 
@@ -97,7 +100,7 @@ public function getStockSellingPriceByProduct(int $productId) {
     $stmt->execute([$productId]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    return $result ?? 0;
+    return $result['sellingPrice'] ?? 0;
 }
 
 public function reduceStock(array $stocksDatas){

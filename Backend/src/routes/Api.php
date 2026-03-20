@@ -33,6 +33,7 @@
     'GET /api/categories' => [PurchaseController::class, 'fetchCategories'],
 
     'GET /api/products/search' => [ProductController::class , 'getSearchedProduct'],
+    'GET /api/product' => [ProductController::class , 'getAProductDetail'],
     
   'GET /api/vendors' => [VendorController::class, 'fetchVendors'],
 

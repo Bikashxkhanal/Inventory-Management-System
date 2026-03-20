@@ -14,3 +14,13 @@ export const searchProducts = async (searchQuery) => {
 
   return response?.data;
 }
+
+
+export const fetchAProductDetails = async (productId) => {
+  const response = await api.get('/api/product', {
+    params : {id :  productId}
+  })
+  console.log(response?.data);
+  
+  return response.data;
+}

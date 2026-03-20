@@ -41,10 +41,11 @@ export const formConfig  = {
 
     ], 
     addSellsItems : [
-        {name : 'product' , type : 'text', required : true}, 
+        {name : 'product' , type : 'display', required : true}, 
+        {name : 'stock' , type : 'display', required : true}, 
         {name : 'quantity', type : 'text', required : true}, 
-        {name : 'unitPrice', type : 'text', required : true},
-        {name : 'subTotal', type : 'text' , required : true},
+        {name : 'unitPrice', type : 'display', required : true},
+        {name : 'subTotal', type : 'display' , required : true},
     ],
     createProduct : [
         {name : 'name' , type : 'text' , required : true}, 

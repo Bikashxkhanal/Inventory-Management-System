@@ -4,13 +4,15 @@
     use Exception;
     use App\Services\Product\ProductService;
     use App\Models\ProductModel;
+    use App\Models\StockModel;
+
 
     class ProductController {
 
         private ProductService $productService;
 
         public function __construct(){ 
-         $this->productService =   new ProductService(new ProductModel);
+         $this->productService =   new ProductService(new ProductModel, new StockModel);
         }
 
         public function getSearchedProduct(){
@@ -43,5 +45,33 @@
                 ]);
             }
             
+        }
+
+        public function getAProductDetail(){
+            try {
+
+            if(!isset($_GET['id'])){
+                throw new Exception("Product id is required");
+            }
+
+            $productId = (int) $_GET['id'];
+
+            $result = $this->productService->getAProductDetail($productId);
+
+            http_response_code(200);
+            echo json_encode([
+                'success' => true, 
+                'message' => 'Product details fetched successfully!', 
+                'data' => is_array($result) ? $result : [$result]
+            ]);
+
+            } catch (Exception $e) {
+               http_response_code(300);
+               echo json_encode([
+                'success' => false, 
+                'message' => $e->getMessage(), 
+                'data' => []
+               ]);
+            }
         }
     }

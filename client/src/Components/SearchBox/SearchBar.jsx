@@ -17,20 +17,22 @@ const Spinner = memo(() => (
 
 const SearchBar = memo(({
   onSearch,         
-  onSelect,        
+  onSelect,   
+  isLoading = false, 
+  suggestions = [],   
   placeholder = "Search...",
   debounceMs = 400,
   minChars = 1,
   className = ""
 }) => {
+
+  console.log(suggestions);
+  
   const [query, setQuery] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [suggestions, setSuggestions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);  // keyboard nav
 
   const debounceTimer = useRef(null);
-  const abortController = useRef(null);
   const containerRef = useRef(null);
 
   // Close dropdown on outside click
@@ -49,35 +51,22 @@ const SearchBar = memo(({
   useEffect(() => {
     return () => {
       if (debounceTimer.current) clearTimeout(debounceTimer.current);
-      if (abortController.current) abortController.current.abort();
+    
     };
   }, []);
 
   const debouncedSearch = useCallback((value) => {
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
-    if (abortController.current) abortController.current.abort();
 
     if (!value || value.trim().length < minChars) {
-      setIsLoading(false);
-      setSuggestions([]);
+      onSearch('');
       setIsOpen(false);
       return;
     }
 
-    setIsLoading(true);
-
-    debounceTimer.current = setTimeout(async () => {
-      abortController.current = new AbortController();
-      try {
-        const results = await onSearch?.(value.trim(), abortController.current.signal);
-        setSuggestions(results || []);
-        setIsOpen(true);
-        setActiveIndex(-1);
-      } catch (err) {
-        if (err.name !== 'AbortError') setSuggestions([]);
-      } finally {
-        setIsLoading(false);
-      }
+    debounceTimer.current = setTimeout(() => {
+      onSearch(value.trim());   // ← just lifts query up, no fetch here
+      setIsOpen(true);
     }, debounceMs);
   }, [onSearch, debounceMs, minChars]);
 
@@ -87,24 +76,23 @@ const SearchBar = memo(({
     debouncedSearch(value);
   }, [debouncedSearch]);
 
-  const handleSelect = useCallback((item) => {
-    setQuery(item.label);   // show selected label in input
-    setSuggestions([]);
-    setIsOpen(false);
-    setActiveIndex(-1);
-    onSelect?.(item);      
-  }, [onSelect]);
 
-  const handleClear = useCallback(() => {
-    setQuery('');
-    setSuggestions([]);
-    setIsOpen(false);
-    setIsLoading(false);
-    setActiveIndex(-1);
-    if (debounceTimer.current) clearTimeout(debounceTimer.current);
-    if (abortController.current) abortController.current.abort();
-    onSelect?.(null);
-  }, [onSelect]);
+const handleSelect = useCallback((item) => {
+  setQuery(item.label);
+  setIsOpen(false);
+  setActiveIndex(-1);
+  onSelect?.(item);
+}, [onSelect]);
+
+
+const handleClear = useCallback(() => {
+  setQuery('');
+  setIsOpen(false);
+  setActiveIndex(-1);
+  if (debounceTimer.current) clearTimeout(debounceTimer.current);
+  onSelect?.(null);
+  onSearch('');
+}, [onSelect, onSearch]);
 
   // Keyboard navigation
   const handleKeyDown = useCallback((e) => {
@@ -188,11 +176,11 @@ const SearchBar = memo(({
                     : 'hover:bg-gray-50'}
                 `}
               >
-                {/* Highlight matched part */}
+               
                 <HighlightMatch text={item.label} query={query} />
               </li>
             ))
-          ) : (
+          ) : (  
             <li className="px-3 py-2 text-xs text-gray-400 select-none">
               No results found
             </li>

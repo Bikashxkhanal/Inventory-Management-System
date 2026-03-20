@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom'
 import { createSale } from '../../api/sales.api'
 import useMutate from '../../hooks/useMutate'
 import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { fetchCategories } from '../../api/category.api'
-import { fetchProductsByCategory, searchProducts } from '../../api/product.api'
+import { fetchProductsByCategory, searchProducts, fetchAProductDetails } from '../../api/product.api'
 import { useSelector } from 'react-redux'
 import useFetch from '../../hooks/useFetch'
-import { useCallback } from 'react'
+import { da } from 'zod/v4/locales'
+
+
 
 const CreateSale = () => {
 
@@ -17,18 +19,21 @@ const CreateSale = () => {
   const userRole = user?.role ?? 'guest';
 
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState({});
   const [selectedProductForCat, setSelectedProductForCat] = useState(null);
 
   const [searchQuery, setSearchQuery] = useState('');
 
+  //pass the details of the products to the form like(available qty, selected product,)
+  const [productDetails , setProductDetails] = useState({});
+
 
   // 1 Fetch Categories
-  const { data: categories } = useQuery({
-    queryKey: ['categories'],
-    queryFn: fetchCategories,
-    staleTime: 5 * 60 * 1000
-  });
+  const { data: categories } = useFetch(
+   ['categories'],
+   fetchCategories,
+  {  staleTime: 5 * 60 * 1000}
+  );
 
   
   const categoryOptions =
@@ -38,14 +43,38 @@ const CreateSale = () => {
     })) || [];
 
  
-  const { data: products, isLoading: productsLoading } = useQuery({
-    queryKey: ['products', selectedCategory],
-    queryFn: () => fetchProductsByCategory(selectedCategory),
-    enabled: !!selectedCategory,
-    staleTime: 5 * 60 * 1000
-  });
+  const { data: products, isLoading: productsLoading } = useFetch(
+    ['products', selectedCategory],
+    () => fetchProductsByCategory(selectedCategory),
+   {
+     enabled: !!selectedCategory,
+    staleTime: 5 * 60 * 1000}
+  );
 
-  
+
+    //fetch product available quantity , unitPrice and productName from the db ,
+  const {data : productDetailById } = useFetch(
+   ['productsDetails', selectedProduct?.value],
+ () => fetchAProductDetails(selectedProduct?.value), 
+
+  {
+    enabled: !!selectedProduct?.value,          
+    staleTime: 5 * 60 * 1000,
+  }
+  );
+
+
+  useEffect(() => {
+  if (productDetailById) {
+    console.log(productDetailById);
+    
+    setProductDetails({
+      product:   selectedProduct?.label,
+      unitPrice: productDetailById?.sellingPrice,
+      stock:  productDetailById?.stock,
+    });
+  }
+}, [productDetailById]);
 
   const productOptions =
     products?.map(prod => ({
@@ -59,11 +88,11 @@ const CreateSale = () => {
   });
 
   const handleSubmit = (data) => {
-    mutation.mutate(data);
+   console.log(data);
+   
   };
 
   //searching logic
- 
   const { data: searchResults, isFetching } = useFetch(
     ['productSearch', searchQuery],          
     () => searchProducts(searchQuery),
@@ -81,12 +110,14 @@ const CreateSale = () => {
 
   const handleSelect = useCallback((item) => {
     if (!item) {
-      setSelectedProduct(null);
+      setSelectedProduct(null);     
       return;
     }
     setSelectedProduct(item);
+
   }, []);
 
+   console.log(selectedProduct);
 
 
   //  Role Protection
@@ -104,11 +135,10 @@ const CreateSale = () => {
            onSearch={handleSearch}     
           onSelect={handleSelect}
           debounceMs={400}
-          minChars={2}
-          suggestions={searchResults || []}   
+          minChars={1}
+          suggestions={searchResults || []} 
           isLoading={isFetching} 
           
-
           />
 
          <FilterComponent type='category' 
@@ -127,16 +157,8 @@ const CreateSale = () => {
    
     <DynamicForm
       useCase="addSellsItems"
+      dynamicValues={productDetails}
       status={mutation.isPending}
-
-      // loadingStates={{
-      //   productsLoading
-      // }}
-      // onFieldChange={(fieldName, value) => {
-      //   if (fieldName === 'category') {
-      //     setSelectedCategory(value);
-      //   }
-      // }}
       onSubmit={handleSubmit}
     />
     </div>

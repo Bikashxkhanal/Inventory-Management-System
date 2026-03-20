@@ -31,13 +31,28 @@ class ProductModel {
     }
 
 
+    public function getProductName(int $productId){
+        global $pdo;
+        
+        $stmt = $pdo->prepare("SELECT name FROM product WHERE id = ?");
+        $stmt->execute([$productId]);
+
+       $result =  $stmt->fetch(PDO::FETCH_ASSOC);
+       if(!$result){
+            throw new Exception("Product id doesnot exist");
+       }
+       
+       return $result ;
+    }
+
+
     public function getSearchedProduct(string $searchQuery){
         global $pdo; 
 
          $stmt =  $pdo->prepare("
                 SELECT 
-                id AS productId,
-                name AS productName
+                id AS id,
+                name AS name
                 FROM product WHERE name LIKE CONCAT('%', ? , '%')
         ");
 
