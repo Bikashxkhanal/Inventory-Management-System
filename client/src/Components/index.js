@@ -83,6 +83,7 @@ import SalesTitle from "./Sales/SalesTitle";
 import CreateSale from "./Sales/CreateSale";
 import UpdateSale from "./Sales/UpdateSale";
 import SalesLayout from './Sales/SalesLayout';
+import AddCustomer from "./Sales/AddCustomer";
 
 
 export {
@@ -184,11 +185,13 @@ export {
     //dynamic form
     DynamicForm,
 
+    //sales
     CreateSale,
     UpdateSale,
     SalesTable,
     SalesTitle,
     SalesLayout,
+    AddCustomer
     
     
 

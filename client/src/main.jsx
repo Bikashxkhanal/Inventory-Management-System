@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import {QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createRoot } from 'react-dom/client'
+import { PersistGate } from 'redux-persist/integration/react'
 import './index.css'
 import App from './App.jsx'
 import { createBrowserRouter, RouterProvider, BrowserRouter } from 'react-router-dom'
@@ -8,7 +9,7 @@ import LandingPage from './pages/Landingpage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import SignupPage from './pages/SignupPage.jsx'
 import { Provider } from 'react-redux';
-import store from './Stores/Store.js'
+import store, {persistor} from './Stores/Store.js'
 import OtpVerificationPage from './pages/EmailOtpVerificationPage.jsx'
 import { DashboardLayout, Protected, SideBarLayout, Stock, Staff, CreateStaff, UpdateStaff, Purchase, CreateSale } from './Components/index.js'
 import SuperAdminVerificationPage from './pages/SuperAdminVerificationPage.jsx'
@@ -121,8 +122,10 @@ createRoot(document.getElementById('root')).render(
 
   <QueryClientProvider client={queryClient} >
   <Provider store={store} >
+    <PersistGate loading={null}  persistor={persistor}>
   <RouterProvider router={router} >
   </RouterProvider>
+  </PersistGate>
 </Provider>
 </QueryClientProvider>
   

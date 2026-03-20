@@ -1,42 +1,58 @@
 import { useEffect, useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
+import { NewButton } from "..";
+import {clearAllSalesItems} from '../../Stores/cartSlice';
 
 
-const OrderLineBar = ({ orderItems = [] }) => {
-    const [grandTotal, setGrandTotal] = useState(0);
-
+const OrderLineBar = ({
+  salesItemsList = [], 
+  handlePageNavigation
+}) => {
+   const dispatch = useDispatch();
+   const [grandTotal, setGrandTotal] = useState(0);
+  
+  
+  
+    
   const amount = useMemo(() => {
-    return orderItems.reduce(
+    return salesItemsList.reduce(
       (acc, item) => acc + Number(item?.subTotal),
       0
     );
-  }, [orderItems]);
+  }, [salesItemsList]);
 
   console.log(amount);
   
 
-  useEffect(() => {
-    setGrandTotal(() => Number(amount));
-  }, [amount]);
-  
+  useMemo(() => setGrandTotal(Number(amount)), [amount]);
+
+  const handleSellsItemsClearance = () => {
+    alert("Are you sure");
+    dispatch(clearAllSalesItems());
+  }
 
   return (
-    <div className="w-[97%] mx-6  mt-20 bg-gray-200 ">
+    <div className="w-[97%] mx-6 pt-4 px-4 mt-20 border border-gray-200 rounded-lg bg-gray-200 ">
       {/* Items container */}
-      {orderItems.map((orderItem, index) => (
+      {salesItemsList.map((orderItem, index) => (
         <div
           key={index}
           className=" py-2 bg-yellow-400 border border-yellow-600 rounded-sm mb-4 flex flex-row justify-around"
         >
           <span>{orderItem?.product}</span>
-          <span>{orderItem?.quantity}</span>
-          <span>{orderItem?.unitPrice}</span>
-          <span>{orderItem?.subTotal}</span>
+          <span>{orderItem?.quantity + ' qty'}</span>
+          <span>{"Rs." + orderItem?.unitPrice}</span>
+          <span>{'Rs.' + orderItem?.subTotal}</span>
         </div>
       ))}
 
       {/* Show total amount */}
-      <div className="w-full  py-2 mb-4 pr-15 flex flex-row-reverse ">
-        Total Amount {grandTotal}
+      <div className="w-full  py-2 pl-10 mb-4 pr-2 flex flex-col justify-end items-end gap-4">
+        <p className="text-lg  font-semibold">Total Amount Rs.{grandTotal} </p>
+        <div className="flex flex-row flex-start gap-5">
+        <NewButton children="Clear All" size="lg" className="text-bold cursor-pointer"  onClick={handleSellsItemsClearance} />
+        <NewButton className="cursor-pointer" size="lg" onClick={handlePageNavigation} >Next</NewButton> 
+        </div>
       </div>
     </div>
   );
