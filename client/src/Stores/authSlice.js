@@ -4,7 +4,7 @@ import { act } from "react";
 //register the business , login into system , OTP verification 
 
 const initialState = {
-        authStatus : 'idle', // idle, loading, authenticated , unauthenticated , signup_in_progress , user_verification_in_progress, 
+    authStatus : 'idle', // idle, loading, authenticated , unauthenticated , signup_in_progress , user_verification_in_progress, 
         //  opt_verifying , user_verified
   company : {
     companyId : null,

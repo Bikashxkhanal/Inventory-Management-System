@@ -51,12 +51,11 @@ class SalesModel {
 
        //insert into sales 
         $stmt = $pdo->prepare("
-            INSERT INTO sales (customer_id, status, created_by)
-            VALUES (?, ?, ?)
+            INSERT INTO sales (customer_id, created_by)
+            VALUES (?,  ?)
         ");
         $status = $stmt->execute([
             $data['customerId'],
-            $data['status'], 
             $data['createdBy'],
         ]);
     

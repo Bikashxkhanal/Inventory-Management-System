@@ -11,6 +11,7 @@ use App\Models\SalesModel;
 use App\Models\SalesItemsModel;
 use App\Models\CustomerModel;
 use App\Models\StockModel;
+use App\Models\ProductModel;
 
 
 class SalesService {
@@ -18,18 +19,21 @@ class SalesService {
     private SalesItemsModel $salesItemsModel;
     private CustomerModel $customerModel;
     private StockModel $stockModel;
+    private ProductModel $productModel;
 
     public function __construct(
         SalesModel $salesModel,
         SalesItemsModel $salesItemsModel,
         CustomerModel $customerModel, 
-        StockModel $stockModel
+        StockModel $stockModel,
+        ProductModel $productModel
     ) {
         
         $this->salesModel = $salesModel;
         $this->salesItemsModel = $salesItemsModel;
         $this->customerModel = $customerModel;
         $this->stockModel= $stockModel;
+        $this->productModel= $productModel;
     }
 
 public function getPaginatedSales(int $page, int $limit): array {
@@ -48,7 +52,21 @@ public function createSale(array $data): array {
 
         try{
             //starting trancation 
-            $pdo->beginTransaction();
+            $pdo->beginTransaction(); 
+
+            foreach($data['salesItems'] as &$eachSaleItems){
+
+            $result =  $this->productModel->findProductIdByName($eachSaleItems['product']); 
+
+                if($result == null){
+                    throw new Exception("Add the items that in the stock" . $result);
+                }
+
+                $eachSaleItems['productId']  = $result;
+            }
+
+            unset($eachSaleItems);
+                  
 
             //check stock quantity , TODO: must be shift to model not a policy
             foreach($data['salesItems'] as $saleItems){

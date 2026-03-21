@@ -4,6 +4,7 @@ import {useForm} from 'react-hook-form'
 import {zodResolver } from '@hookform/resolvers/zod'
 import {InputBox, NewButton} from './../index'
 import { useEffect } from "react";
+import { da } from "zod/v4/locales";
 
 
 const DynamicForm = ({ useCase,
@@ -17,7 +18,7 @@ const DynamicForm = ({ useCase,
     const fields = formConfig[useCase] || []
     
     const schema = buildSchema(fields)
-    const {register, handleSubmit, setValue, watch, setError, clearErrors, formState: {errors}} = useForm({resolver : zodResolver(schema)})
+    const {register, handleSubmit, setValue, watch, setError, clearErrors,reset, formState: {errors}} = useForm({resolver : zodResolver(schema)})
 
 
      useEffect(() => {
@@ -55,8 +56,14 @@ const DynamicForm = ({ useCase,
 
   }, [quantity, unitPrice, stockQty, setValue, setError, clearErrors]);
 
+  const onSubmitHandler = (data) => {
+      onSubmit(data);
+      reset();
+      
+  }
+
     return (   
-        <form  onSubmit={handleSubmit(onSubmit)} className= "mt-15 md:mt-5 flex flex-col justify-start gap-4 mx-5 items-start relative">
+        <form  onSubmit={handleSubmit(onSubmitHandler)} className= "mt-15 md:mt-5 flex flex-col justify-start gap-4 mx-5 items-start relative">
             <p className='text-xl bg-transparent md:text-3xl font-semibold md:font-bold '>{title}</p>
              <div className='flex flex-col md:grid md:grid-cols-2 gap-4 w-full '>
             {

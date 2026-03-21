@@ -6,8 +6,8 @@ export const updateSale = async () => {
   return response;
 };
 
-export const createSale = async () => {
-  const response = await api.post('/api/sales');
+export const createSale = async (salesData) => {
+  const response = await api.post('/api/sales', salesData);
   return response;
 };
 export const fetchSales = async () => {

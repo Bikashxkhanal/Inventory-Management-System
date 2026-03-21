@@ -6,8 +6,9 @@ import { useEffect, useState, useCallback } from 'react';
 import { searchProducts, fetchAProductDetails } from '../../api/product.api';
 import useFetch from '../../hooks/useFetch';
 import OrderLineBar from './OrderLineBar';
-import { addSalesItemsToCart } from '../../Stores/cartSlice';
+import { addSalesItemsToCart, clearAllSalesItems } from '../../Stores/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import ConfirmSalesOverLayUI from './ConfirmSales';
 
 const CreateSale = () => {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ const CreateSale = () => {
 
   const { user } = useSelector((state) => state.auth);
   const userRole = user?.role ?? 'guest';
+  
 
   const salesItemsList = useSelector(
     (state) => state.salesItemsCart.cartSalesItems
@@ -26,7 +28,21 @@ const CreateSale = () => {
 
   const [productDetails, setProductDetails] = useState({});
 
-  // 🔥 Fetch product details
+  //data that is neeed to be send to backend for forr creating sells 
+
+  const [custumerNumber, setCustomerNumber] = useState(null);
+
+  const [salesData, setSalesData] = useState({
+    customer : {}, 
+    sales : {
+    }, 
+    salesItems : []
+  });
+
+
+
+
+  //  Fetch product details
   const { data: productDetailById } = useFetch(
     ['productsDetails', selectedProduct?.value],
     () => fetchAProductDetails(selectedProduct?.value),
@@ -46,16 +62,14 @@ const CreateSale = () => {
     }
   }, [productDetailById, selectedProduct]);
 
-  const mutation = useMutate(createSale, {
-    onSuccess: () => navigate('/web/sales'),
-  });
+ 
 
-  // 🔥 Add item to cart
+  //  Add item to cart
   const handleSubmit = (data) => {
     dispatch(addSalesItemsToCart(data));
   };
 
-  // 🔍 Search logic
+  //  Search logic
   const { data: searchResults, isFetching } = useFetch(
     ['productSearch', searchQuery],
     () => searchProducts(searchQuery),
@@ -76,33 +90,78 @@ const CreateSale = () => {
     setSelectedProduct(item);
   }, []);
 
-  // 🔥 Page change
+  //  Page change
   const handlePageChange = () => {
     setSellPage((prev) => prev + 1);
   };
 
-  // 🔥 Page renderer
+  //handle confirmSales page ui closing and confirm actions 
+    const onClose = () => {  
+        setSellPage((prev) => prev-1);
+    }
+    console.log(user);
+    
+    const onConfirm = () => {
+      setSalesData((prev) => ({
+          ...prev, 
+          customer : {
+            ...prev.customer,
+             phoneNumber : custumerNumber
+          }, 
+          sales : {
+            createdBy : user?.id
+          },
+
+        salesItems : { 
+            ...salesItemsList
+        }
+        
+      }))
+
+      console.log(salesData);
+      
+      //calling the sales API
+      mutation.mutate(salesData);
+    
+    }
+
+    //method to create the sales 
+     const mutation = useMutate(createSale, {
+          onSuccess: () => {
+            dispatch(clearAllSalesItems())
+            setSellPage((prev) => prev-2)
+          },
+      });
+  
+
+  //  Page renderer
   const renderSellsPages = () => {
     switch (sellPage) {
       case 1:
-        return <AddCustomer handleClick={handlePageChange} />;
+        return <AddCustomer onClick={(phone) => 
+        {
+        setCustomerNumber(phone)
+          handlePageChange()
+        }} />;
+      case 2 : return <ConfirmSalesOverLayUI customerNumber={custumerNumber} show onClose={onClose} onConfirm={onConfirm} />
       default:
         return null;
     }
   };
 
-  // 🔒 Role protection
+  // Role protection
   if (userRole !== 'salesperson') {
     return <h2>You do not have permission to create sales.</h2>;
   }
-
+    console.log(salesData);
+    
   return (
     <div className="flex flex-col gap-5">
       <h2 className="pt-8 pb-2 px-5 text-3xl font-bold text-green-600 border-b bg-white shadow-sm">
         Create Sale
       </h2>
 
-      {/* 🔥 Show main page only when sellPage === 0 */}
+      
       {sellPage === 0 && (
         <>
           <div className="flex justify-center">
@@ -120,7 +179,6 @@ const CreateSale = () => {
           <DynamicForm
             useCase="addSellsItems"
             dynamicValues={productDetails}
-            status={mutation.isPending}
             onSubmit={handleSubmit}
           />
 
@@ -133,8 +191,9 @@ const CreateSale = () => {
         </>
       )}
 
-      {/* 🔥 Render next page */}
+     
       {renderSellsPages()}
+    
     </div>
   );
 };

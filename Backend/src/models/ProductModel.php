@@ -61,4 +61,18 @@ class ProductModel {
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
+
+    public function findProductIdByName(string $productName) {
+        global $pdo;
+        $stmt = $pdo->prepare("
+                SELECT id FROM product 
+                WHERE LOWER(name) = LOWER(?)
+        ");
+
+        $stmt->execute([$productName]);
+
+       $result =  $stmt->fetch(PDO::FETCH_ASSOC);
+       return $result['id'] ;
+
+    }
 }

@@ -107,7 +107,7 @@ const queryClient = new QueryClient();
                   element : <Sales />
                 }, 
                 {
-                  path : "sales/create", 
+                  path : "sale/create", 
                   element : <CreateSale />
                 }
             

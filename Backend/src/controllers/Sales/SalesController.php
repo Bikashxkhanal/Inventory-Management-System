@@ -9,13 +9,14 @@ use App\Models\SalesModel;
 use App\Models\SalesItemsModel;
 use App\Models\CustomerModel;
 use App\Models\StockModel;
+use App\Models\ProductModel;
 
 class SalesController {
     private SalesService $salesService;
     private SalesItemsService $salesItemsService;
 
     public function __construct() {
-        $this->salesService = new SalesService(new SalesModel(), new SalesItemsModel(), new CustomerModel(), new StockModel());
+        $this->salesService = new SalesService(new SalesModel(), new SalesItemsModel(), new CustomerModel(), new StockModel(), new ProductModel());
   
     }
 
@@ -44,7 +45,7 @@ class SalesController {
         echo json_encode([
         'success' => false,
         'message' => $e->getMessage(), 
-        'data' => []
+        'data' => [$requestData]
       ]);
       }
       

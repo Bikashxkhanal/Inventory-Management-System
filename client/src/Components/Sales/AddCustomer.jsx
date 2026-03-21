@@ -1,14 +1,19 @@
 import { useState } from "react";
 import { NewButton } from "..";
 
-const AddCustomer = ({ handlePageNavigation }) => {
+const AddCustomer = ({ onClick }) => {
   const [phone, setPhone] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onClick(phone);
+  }
 
   return (
     <div className="bg-white min-h-screen md:bg-gray-100 flex justify-center items-start ">
-      <form className="w-full md:w-[550px] bg-white mt-50 rounded-xl md:shadow-md flex flex-col gap-4 p-10 ">  
+      <div className="w-full md:w-[550px] bg-white mt-50 rounded-xl md:shadow-md flex flex-col gap-4 p-10 ">  
 
-        <div className="w-full flex flex-col md:flex-row  gap-4 md:gap-2">
+        <form onSubmit={handleSubmit} className="w-full flex flex-col md:flex-row  gap-4 md:gap-2">
           <input
             type="text"
             placeholder="Enter Customer phone number"
@@ -23,11 +28,11 @@ const AddCustomer = ({ handlePageNavigation }) => {
             children="Next"
             size="lg"
             className="px-4 cursor-pointer"
-            onClick={handlePageNavigation}
+            as="button"
           />
-        </div>
+        </form>
 
-      </form>
+      </div>
     </div>
   );
 };
