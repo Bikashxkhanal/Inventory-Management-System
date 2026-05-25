@@ -6,6 +6,7 @@ import { baseOptions } from "./BaseOption"
     switch (type) {
         case "bar" : return {
             ...baseOptions,
+            maintainAspectRatio: false,
             plugins : {
                 title : {
                     ...baseOptions.plugins.title,
@@ -14,11 +15,11 @@ import { baseOptions } from "./BaseOption"
                 legend :{
                     ...baseOptions.plugins.legend,
                 },
-                scales : {
-                    y: {beginAtZero : true}
-                }
-            }
-
+            },
+            scales : {
+                y: { beginAtZero : true },
+                x: { ticks: { maxRotation: 45, minRotation: 0 } },
+            },
         }
         
         case "pie" : return {
@@ -39,16 +40,23 @@ import { baseOptions } from "./BaseOption"
 
         case  "line" : return {
             ...baseOptions,
+            maintainAspectRatio: false,
             plugins : {
             title : {
                 ...baseOptions.plugins.title,
                 text : title,
             },
+            legend: {
+                ...baseOptions.plugins.legend,
+            },
         },
-            
-                tension : 0.3,
-        
-
+            scales: {
+                x: { ticks: { maxRotation: 45, minRotation: 0 } },
+                y: { beginAtZero: true },
+            },
+            elements: {
+                line: { tension: 0.3 },
+            },
         }
             
         default : return {

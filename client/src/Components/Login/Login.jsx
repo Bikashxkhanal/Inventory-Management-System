@@ -4,16 +4,26 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { loginUser } from "../../Stores/authThunk.js";
 import { useNavigate } from "react-router-dom";
+import { getRememberedLogin } from "../../helpers/auth/rememberMe";
 
 function LoginComponent(){
   const [loginDetail, setLoginDetail] = useState({
     username : "",
     password : "",
   });
+  const [rememberMe, setRememberMe] = useState(false);
 
   const dispatch = useDispatch();
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const saved = getRememberedLogin();
+    if (saved?.username) {
+      setLoginDetail((prev) => ({ ...prev, username: saved.username }));
+      setRememberMe(true);
+    }
+  }, []);
   
 
   const {loading, user, error} = useSelector((state)=> state.auth);
@@ -64,7 +74,12 @@ function LoginComponent(){
     }
     console.log(loginDetail);
     
-     dispatch(loginUser(loginDetail));
+     dispatch(
+      loginUser({
+        ...loginDetail,
+        rememberMe,
+      })
+    );
       
   }
 
@@ -90,7 +105,13 @@ function LoginComponent(){
       <form  method="POST"  className="w-full space-y-4" onSubmit={handleSubmit} >
 
         { error && <p className={`text-center text-red-700`}> {error}</p>}
-        <InputBox placeholder="Phone number or email" name="username" type="text" onChange={ handleChange}  />
+        <InputBox
+          placeholder="Phone number or email"
+          name="username"
+          type="text"
+          value={loginDetail.username}
+          onChange={handleChange}
+        />
         {errors.usernameErr && <p className={`text-red-600`}>{errors.usernameErr}</p>}
 
         <InputBox placeholder="password" name="password" type="password"
@@ -98,8 +119,13 @@ function LoginComponent(){
         {errors.passwordErr && <p className={`text-red-600`}>{errors.passwordErr}</p>}
 
         <div className="flex justify-between text-sm">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" />
+          <label className="flex cursor-pointer items-center gap-2">
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="h-4 w-4 rounded border-slate-300 text-green-700 focus:ring-green-600"
+            />
             <span>Remember me</span>
           </label>
 

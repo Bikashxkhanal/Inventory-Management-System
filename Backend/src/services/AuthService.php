@@ -146,10 +146,11 @@
          }
       
          $user = $this->userModel->getById($userInfo['id']);
-      
+
+        $rememberMe = !empty($input['rememberMe']) || !empty($input['remember_me']);
 
         try {
-         $this->sessionService->createUserSession($user);
+         $this->sessionService->createUserSession($user, $rememberMe);
       }catch(Exception $e){
          throw new Exception('couldnot create session');
       }

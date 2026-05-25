@@ -5,7 +5,7 @@
   
 
     class VendorPolicy{
-        private  $rolesWithPermissions = require_once __DIR__ . '/../../config/rolesandpermissions.php';
+        private  $rolesWithPermissions = require __DIR__ . '/../../config/rolesandpermissions.php';
          
         public function canCreateVendor( string $currentUserRole): bool{
             if(!in_array('CREATE_VENDOR', $this->rolesWithPermissions['roles'][$currentUserRole] )) return false;

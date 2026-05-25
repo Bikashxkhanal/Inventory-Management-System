@@ -6,9 +6,9 @@
         public function __construct(SessionInterface $session){
             $this->session = $session;
         }
-         public function createUserSession($user){
-            $rolesWithPermissions = require_once __DIR__ . '/../config/rolesandpermissions.php';
-            $this->session->start();
+         public function createUserSession($user, bool $rememberMe = false){
+            $rolesWithPermissions = require __DIR__ . '/../config/rolesandpermissions.php';
+            $this->session->start($rememberMe);
             $this->session->set('user', [
                 'user' => [
                 'id' => $user['id'],

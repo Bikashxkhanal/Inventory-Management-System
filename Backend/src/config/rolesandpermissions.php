@@ -13,18 +13,34 @@ return [
             'VIEW_REPORT',
             'VIEW_STOCK',
             'ADD_PRODUCT',
-            'DELETE_PRODUCT'
+            'DELETE_PRODUCT',
+            'CREATE_PURCHASE',
+            'UPDATE_PURCHASE',
+            'DELETE_PURCHASE',
+            'VERIFY_PURCHASE',
+            'VIEW_VENDOR',
+            'CREATE_VENDOR',
+            'UPDATE_VENDOR',
+            'DELETE_VENDOR',
     
         ],
         'admin' => [
             'DASHBOARD',
+             'VIEW_USER',
              'CREATE_USER',
              'GENERATE_REPORT',
              'VIEW_REPORT',
              'VIEW_STOCK',
               'ADD_PRODUCT',
-            'DELETE_PRODUCT'
-            
+            'DELETE_PRODUCT',
+            'CREATE_PURCHASE',
+            'UPDATE_PURCHASE',
+            'DELETE_PURCHASE',
+            'VERIFY_PURCHASE',
+            'VIEW_VENDOR',
+            'CREATE_VENDOR',
+            'UPDATE_VENDOR',
+            'DELETE_VENDOR',
 
         ],
         'manager' => [
@@ -34,9 +50,13 @@ return [
              'REVERSE_SALE',
              'VIEW_STOCK',
              'CREATE_PURCHASE',
+             'CREATE_USER',
+             'VIEW_USER',
+             'VIEW_VENDOR',
+             'CREATE_VENDOR',
+             'ADD_PRODUCT',
         ],
         'salesperson' => [
-            'DASHBOARD',
             'CREATE_SALE',
             'VIEW_STOCK'
 
@@ -54,7 +74,11 @@ return [
         'CREATE_SALE' => 'can make a sale', 
         'REVERSE_SALE' => 'can reverse a sale',
         'VIEW_STOCK' => 'can view the stock quantity',
-        
+        'CREATE_PURCHASE' => 'can create purchase',
+        'UPDATE_PURCHASE' => 'can update purchase',
+        'DELETE_PURCHASE' => 'can delete purchase',
+        'VERIFY_PURCHASE' => 'can verify draft purchase',
+        'REJECT_PURCHASE' => 'can reject draft purchase',
 
     ]
     

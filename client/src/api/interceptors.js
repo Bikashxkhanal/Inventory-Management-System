@@ -15,8 +15,13 @@ const responseInterceptor = (response) => {
 
 const responseErrorInterceptor  = (error) => {
     const status = error.response?.status;
-    const message = error.response?.data?.message || error.message || 'something went wrong';
-    return Promise.reject({status, message})
+    const data = error.response?.data;
+    const message =
+      (typeof data === 'object' && data?.message) ||
+      (typeof data === 'string' ? data : null) ||
+      error.message ||
+      'something went wrong';
+    return Promise.reject({ status, message, data })
 }
 
 export {requestInterceptor, responseInterceptor, responseErrorInterceptor}

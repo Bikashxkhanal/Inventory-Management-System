@@ -11,12 +11,14 @@ class StockService {
        $this->stockModel = new StockModel();
     }
 
-    public function getPaginatedStocks(int $page, int $limit): array {
+    public function getPaginatedStocks(int $page, int $limit, ?string $search = null): array {
        
         $offset = ($page - 1) * $limit;
         
-        $stocks = $this->stockModel->fetchStocks($offset, $limit);
-        $totalRecords = $this->stockModel->countStocks();
+        $stocks = $this->stockModel->fetchStocks($offset, $limit, $search);
+        $totalRecords = $search
+            ? $this->stockModel->countStocksFiltered($search)
+            : $this->stockModel->countStocks();
 
         $totalPages = ceil($totalRecords / $limit);
 

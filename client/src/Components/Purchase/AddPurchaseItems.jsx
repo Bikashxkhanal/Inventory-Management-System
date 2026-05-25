@@ -20,10 +20,11 @@ const AddPurchaseItems = () => {
     queryKey: ['categories'],
     queryFn: fetchCategories
   });
-  console.log(categories?.data);
-  
+  const categoryList = Array.isArray(categories)
+    ? categories
+    : categories?.data ?? [];
 
-  const categoryOptions = categories?.data?.map(cat => ({
+  const categoryOptions = categoryList.map((cat) => ({
     label: cat.name,
     value: cat.id
   })) || [];

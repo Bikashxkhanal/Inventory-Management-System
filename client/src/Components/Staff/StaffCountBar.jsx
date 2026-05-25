@@ -17,8 +17,8 @@ const StaffCountBar = () => {
 
   const datas = [
     { name: 'admin', color: 'red', value: data.admin, total },
-    { name: 'sales staff', color: 'green', value: data.sales, total },
-    { name: 'manager', color: 'blue', value: data.manager, total }
+    { name: 'sales staff', color: 'green', value: data.sales ?? data.salesperson ?? 0, total },
+    { name: 'manager', color: 'blue', value: data.manager, total },
   ];
 
   return <SegmentedProgressBar label="Staff" datas={datas} />;

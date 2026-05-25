@@ -1,5 +1,52 @@
 @import 'tailwindcss';
 
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']),
+a[href].cursor-pointer,
+label[for] {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Horizontal inset for all authenticated app pages */
+.app-main__inner {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 480px) {
+  .app-main__inner {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .app-main__inner {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 976px) {
+  .app-main__inner {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.page-content {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 @theme{
     --breakpoint-* : initial;
     --breakpoint-sm : 480px;
@@ -12,4 +59,49 @@
       --color-mediumblue: #190F8F;
       --color-graywhite : #F5F5F5;
 
+}
+
+@keyframes purchase-slide-in-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes purchase-slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes purchase-slide-out-down {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+.purchase-slide-in-up {
+  animation: purchase-slide-in-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.purchase-slide-in-right {
+  animation: purchase-slide-in-right 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.purchase-slide-out-down {
+  animation: purchase-slide-out-down 0.35s ease-in forwards;
 }

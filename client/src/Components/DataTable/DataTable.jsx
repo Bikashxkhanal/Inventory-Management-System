@@ -2,11 +2,12 @@ import { data } from 'react-router-dom';
 import {TableBody, TableHead} from './../index'
 
 const DataTable = ({
-    tableData = [] // expected value in tableData :: {headers : [], bodyData : []}
-
-
+    tableData = [],
+    columnKeys = null,
 }) => {
-  const keys =  tableData.length ? Object.keys(tableData[0]) : []
+  const keys =
+    columnKeys ??
+    (tableData.length ? Object.keys(tableData[0]) : []);
  
 
   return (

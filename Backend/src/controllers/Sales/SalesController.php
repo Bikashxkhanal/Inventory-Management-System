@@ -29,6 +29,31 @@ class SalesController {
         echo json_encode($sales);
     }
 
+    public function fetchSalesDetails($requestData)
+    {
+        try {
+            $page = max(1, (int) ($_GET['page'] ?? 1));
+            $limit = max(1, min(50, (int) ($_GET['limit'] ?? 10)));
+            $filters = [
+                'phone' => isset($_GET['phone']) ? trim((string) $_GET['phone']) : null,
+                'date_from' => $_GET['date_from'] ?? null,
+                'date_to' => $_GET['date_to'] ?? null,
+                'category_id' => !empty($_GET['category_id']) ? (int) $_GET['category_id'] : null,
+                'product_id' => !empty($_GET['product_id']) ? (int) $_GET['product_id'] : null,
+            ];
+            $result = $this->salesService->getSalesDetailsList($page, $limit, $filters);
+            http_response_code(200);
+            echo json_encode([
+                'success' => true,
+                'data' => $result['data'],
+                'meta' => $result['meta'],
+            ]);
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
     // Create sale (Salesperson)
     public function createSale($requestData) {
       try {

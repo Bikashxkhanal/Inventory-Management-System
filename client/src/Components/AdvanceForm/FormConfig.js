@@ -15,7 +15,6 @@ export const formConfig  = {
     ], 
     createPurchase : [
         {name : 'vendor' , type : 'select' , options : [], required : true}, 
-        {name : 'totalValue' , type : 'text' , required : true}, 
         {name : 'date', type : 'date' , required : true}
     ], 
 

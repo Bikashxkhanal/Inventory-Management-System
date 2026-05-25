@@ -51,7 +51,7 @@ import { DotsHortlIcon } from "./Icons/DotsHortlIcon";
 import ActionComponent from "./Actions/ActionComponent";
 import AdvForm from "./AdvanceForm/AdvForm";
 import CreateStaff from "./Staff/Create/CreateStaff";
-import UpdateStaff from "./Staff/Edit/UdpateStaff";
+import UpdateStaff from "./Staff/Edit/UpdateStaff";
 
 //Staff Data 
 import { staffData } from "./Staff/StaffData";

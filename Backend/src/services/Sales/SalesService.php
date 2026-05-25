@@ -40,6 +40,11 @@ public function getPaginatedSales(int $page, int $limit): array {
         return $this->salesModel->fetchPaginated($page, $limit);
     }
 
+    public function getSalesDetailsList(int $page, int $limit, array $filters = []): array
+    {
+        return $this->salesModel->fetchSalesDetailsList($page, $limit, $filters);
+    }
+
     
 public function createSale(array $data): array {
         //$data should have $data['customer']['...'], $data['sales'][...], $data['salesItems'][[], [], ...]
@@ -54,6 +59,7 @@ public function createSale(array $data): array {
             //starting trancation 
             $pdo->beginTransaction(); 
 
+            //get product Id by productName for all 
             foreach($data['salesItems'] as &$eachSaleItems){
 
             $result =  $this->productModel->findProductIdByName($eachSaleItems['product']); 
@@ -66,6 +72,7 @@ public function createSale(array $data): array {
             }
 
             unset($eachSaleItems);
+
                   
 
             //check stock quantity , TODO: must be shift to model not a policy

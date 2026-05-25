@@ -3,14 +3,16 @@
     use App\Contracts\SessionInterface;
 
     class SessionManager implements SessionInterface{
-        public function start(){
+        public function start(bool $persistent = false){
             if(session_status() === PHP_SESSION_NONE){
+                $lifetime = $persistent ? 60 * 60 * 24 * 30 : 0;
                 session_set_cookie_params([
+                    'lifetime' => $lifetime,
                     'path' => '/',
                     'domain' => 'localhost',
-                    'secure' => true,      // true only for HTTPS
+                    'secure' => true,
                     'httponly' => true,
-                    'samesite' => 'None'     // use 'None' + secure=true if different domains
+                    'samesite' => 'None',
                 ]);
                 session_start();
             }

@@ -1,31 +1,51 @@
-import { SegmentedProgressBar } from './../index';
+import { SegmentedProgressBar } from '../index';
 import { useQuery } from '@tanstack/react-query';
 import { fetchPurchaseStats } from '../../api/purchase.api';
 
 const PurchaseCountBar = () => {
-
   const { data, isLoading, isError } = useQuery({
     queryKey: ['purchase-stats'],
     queryFn: fetchPurchaseStats,
-    staleTime: 5 * 60 * 1000,
-    cacheTime: 30 * 60 * 1000,
+    staleTime: 2 * 60 * 1000,
   });
 
-  if (isLoading) return <h1>Loading...</h1>;
-  if (isError || !data) return <h1>Error loading purchase stats</h1>;
+  if (isLoading) {
+    return (
+      <div className="mb-6 h-14 animate-pulse rounded-xl bg-slate-100" />
+    );
+  }
 
-  const total = data.total;
-const datas = [
-    { name: 'completed', color: 'green', value: parseInt(data.completed) || 0, total },
-    { name: 'draft', color: 'red', value: parseInt(data.draft) || 0, total }
+  if (isError || !data) {
+    return null;
+  }
+
+  const stats = data?.total != null ? data : data?.data ?? data;
+  const total = Number(stats.total) || 0;
+  const datas = [
+    {
+      name: 'Completed',
+      color: 'green',
+      value: parseInt(stats.completed, 10) || 0,
+      total,
+    },
+    {
+      name: 'Pending',
+      color: 'yellow',
+      value: parseInt(stats.draft, 10) || 0,
+      total,
+    },
+    {
+      name: 'Rejected',
+      color: 'red',
+      value: parseInt(stats.rejected, 10) || 0,
+      total,
+    },
   ];
 
-
   return (
-    <SegmentedProgressBar
-      label="Purchase"
-      datas={datas}
-    />
+    <div className="mb-6">
+      <SegmentedProgressBar label="Purchase overview" datas={datas} />
+    </div>
   );
 };
 

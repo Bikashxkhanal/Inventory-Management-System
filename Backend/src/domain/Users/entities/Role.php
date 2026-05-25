@@ -16,13 +16,13 @@
         }
 
         public function getRoles() {
-            $roles = require_once __DIR__ . '/../../config/rolesandpermissions.php';
+            $roles = require __DIR__ . '/../../config/rolesandpermissions.php';
             return $roles;
         }
 
         public function hasPermission(permission $permissionName):bool{
 
-            $rolewithpermissions = require_once __DIR__ . '/../../config/rolesandpermissions.php';
+            $rolewithpermissions = require __DIR__ . '/../../config/rolesandpermissions.php';
             $permissions = $rolewithpermissions['roles'][$this->role];
             return (bool) in_array($permissionName->getName(), $permissions);
           

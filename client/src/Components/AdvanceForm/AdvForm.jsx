@@ -27,7 +27,13 @@ const handleSubmission = (e) => {
     if(!handleValidation(form)) return;
     //send the form to the backend
 }
-    return <form action="" method="POST" className= "mt-15 md:mt-5 flex flex-col justify-start gap-4 mx-5 items-start relative" onSubmit={handleSubmission}>
+    return (
+    <form
+      action=""
+      method="POST"
+      className="relative mt-15 flex w-full max-w-2xl flex-col items-start justify-start gap-4 md:mt-5"
+      onSubmit={handleSubmission}
+    >
         <p className='text-xl bg-transparent md:text-3xl font-semibold md:font-bold '>{title}</p>
         <div className='flex flex-col md:grid md:grid-cols-2 gap-4 w-full '>
         {
@@ -37,6 +43,7 @@ const handleSubmission = (e) => {
 
         <NewButton  className='md:w-50 bg-green-500 hover:bg-green-800 cursor-pointer w-full md:absolute md:right-0 md:top-[110%]' children={children} />
         </form>
+    );
 }
 
 export default AdvForm;

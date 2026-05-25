@@ -32,7 +32,7 @@ const OrderLineBar = ({
   }
 
   return (
-    <div className="w-[97%] mx-6 pt-4 px-4 mt-20 border border-gray-200 rounded-lg bg-gray-200 ">
+    <div className="mt-20 w-full rounded-lg border border-gray-200 bg-gray-200 px-4 py-4">
       {/* Items container */}
       {salesItemsList.map((orderItem, index) => (
         <div

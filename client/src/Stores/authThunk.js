@@ -26,6 +26,10 @@ import {
   userVerifyAPI,
   logoutAPI,
 } from "../services/api";
+import {
+  saveRememberedLogin,
+  clearRememberedLogin,
+} from "../helpers/auth/rememberMe";
 
 const BASE_URL = `http://localhost/PROJECTS/INVENTORY-MANAGEMENT-SYSTEM/backend/public`;
 
@@ -92,6 +96,13 @@ export const loginUser = (loginData) => async (dispatch) => {
     if (!data?.success) {
       throw new Error(data.message || "Login failed");
     }
+
+    if (loginData.rememberMe) {
+      saveRememberedLogin(loginData.username);
+    } else {
+      clearRememberedLogin();
+    }
+
     dispatch(loginSucess(data?.data));
   } catch (error) {
     console.log("Error" , error);

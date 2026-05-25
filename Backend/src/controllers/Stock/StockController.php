@@ -24,7 +24,8 @@ class StockController {
         $page = 1;
     }
 
-        $result = $this->stockService->getPaginatedStocks($page, $limit);
+        $search = isset($_GET['search']) ? trim((string) $_GET['search']) : null;
+        $result = $this->stockService->getPaginatedStocks($page, $limit, $search);
 
         echo json_encode($result);
     }

@@ -6,9 +6,15 @@ const CustomChart  = ({
     type
 } ) => {
 
-    if(type === 'bar') return <Bar data={data} options={options} />
-    if(type === 'line') return <Line data={data} options={options} />
-    if(type === 'pie' ) return <Pie data={data} options={options} />
+    const wrap = (Chart) => (
+        <div className="h-full w-full">
+            <Chart data={data} options={options} />
+        </div>
+    );
+
+    if(type === 'bar') return wrap(Bar);
+    if(type === 'line') return wrap(Line);
+    if(type === 'pie' ) return wrap(Pie);
 
 }
 

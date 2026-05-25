@@ -12,10 +12,12 @@ import ConfirmSalesOverLayUI from './ConfirmSales';
 
 const CreateSale = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
+ 
+ 
   const { user } = useSelector((state) => state.auth);
   const userRole = user?.role ?? 'guest';
+  const userId = user?.id;
   
 
   const salesItemsList = useSelector(
@@ -34,12 +36,11 @@ const CreateSale = () => {
 
   const [salesData, setSalesData] = useState({
     customer : {}, 
-    sales : {
-    }, 
+    sales : {}, 
     salesItems : []
   });
 
-
+  const [message, setMessage] = useState("");
 
 
   //  Fetch product details
@@ -99,29 +100,30 @@ const CreateSale = () => {
     const onClose = () => {  
         setSellPage((prev) => prev-1);
     }
-    console.log(user);
+    
     
     const onConfirm = () => {
-      setSalesData((prev) => ({
-          ...prev, 
+      const updatedSalesData = {
+          ...salesData, 
           customer : {
-            ...prev.customer,
+            ...salesData.customer,
              phoneNumber : custumerNumber
           }, 
           sales : {
-            createdBy : user?.id
+          ...salesData.sales,
+            createdBy : userId
           },
 
         salesItems : { 
             ...salesItemsList
         }
         
-      }))
+      }
 
-      console.log(salesData);
+      setSalesData(updatedSalesData)
       
       //calling the sales API
-      mutation.mutate(salesData);
+      mutation.mutate(updatedSalesData);
     
     }
 
@@ -143,7 +145,9 @@ const CreateSale = () => {
         setCustomerNumber(phone)
           handlePageChange()
         }} />;
-      case 2 : return <ConfirmSalesOverLayUI customerNumber={custumerNumber} show onClose={onClose} onConfirm={onConfirm} />
+      case 2 : return <ConfirmSalesOverLayUI customerNumber={custumerNumber} 
+                    apiRequest={mutation.isPending}
+                  show onClose={onClose} onConfirm={onConfirm} />
       default:
         return null;
     }
@@ -153,11 +157,11 @@ const CreateSale = () => {
   if (userRole !== 'salesperson') {
     return <h2>You do not have permission to create sales.</h2>;
   }
-    console.log(salesData);
+   
     
   return (
-    <div className="flex flex-col gap-5">
-      <h2 className="pt-8 pb-2 px-5 text-3xl font-bold text-green-600 border-b bg-white shadow-sm">
+    <div className="flex w-full flex-col gap-5">
+      <h2 className="rounded-xl border border-slate-200 bg-white px-4 py-4 text-2xl font-bold text-green-600 shadow-sm sm:px-5 sm:text-3xl">
         Create Sale
       </h2>
 

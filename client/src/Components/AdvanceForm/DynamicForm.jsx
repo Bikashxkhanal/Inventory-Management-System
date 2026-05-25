@@ -4,10 +4,11 @@ import {useForm} from 'react-hook-form'
 import {zodResolver } from '@hookform/resolvers/zod'
 import {InputBox, NewButton} from './../index'
 import { useEffect } from "react";
-import { da } from "zod/v4/locales";
 
 
-const DynamicForm = ({ useCase,
+
+const DynamicForm = ({
+  useCase,
   title = '',
   status,
   onSubmit,
@@ -63,7 +64,10 @@ const DynamicForm = ({ useCase,
   }
 
     return (   
-        <form  onSubmit={handleSubmit(onSubmitHandler)} className= "mt-15 md:mt-5 flex flex-col justify-start gap-4 mx-5 items-start relative">
+        <form
+          onSubmit={handleSubmit(onSubmitHandler)}
+          className="relative mt-15 flex w-full max-w-2xl flex-col items-start justify-start gap-4 md:mt-5"
+        >
             <p className='text-xl bg-transparent md:text-3xl font-semibold md:font-bold '>{title}</p>
              <div className='flex flex-col md:grid md:grid-cols-2 gap-4 w-full '>
             {

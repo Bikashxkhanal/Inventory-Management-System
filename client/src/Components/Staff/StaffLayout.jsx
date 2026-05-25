@@ -1,17 +1,47 @@
-import {StaffCountBar, StaffInfoTable, StaffTitle, StaffFilterBar, NewButton, IconImage} from './../index'
-import { Add } from '../../assets/Imagesender';
+import { useState, useEffect } from 'react';
+import { StaffCountBar, StaffInfoTable, StaffTitle, StaffFilterBar } from './../index';
+import { formatDate } from '../../helpers/date/date';
+import useDebouncedValue from '../../hooks/useDebouncedValue';
 
 const StaffLayout = () => {
-    return <div className='flex flex-col justify-start gap-8 mx-4 mt-8 ' >
-        <div className='w-full flex flex-row justify-between mt-15 md:mt-5 mb-4'>
-                <StaffTitle />
-                <NewButton  as='a' href='/web/staff/create-staff' children='New' className='bg-green-600 hover:bg-green-800' iconStart={<IconImage src={Add} />}/>
-        </div>
-       
-        <StaffFilterBar  />
-        <StaffCountBar />
-        <StaffInfoTable />
+  const [search, setSearch] = useState('');
+  const debouncedSearch = useDebouncedValue(search, 400);
+  const [role, setRole] = useState('');
+  const [dateRange, setDateRange] = useState([null, null]);
+  const [applied, setApplied] = useState({});
+
+  useEffect(() => {
+    setApplied((prev) => ({
+      ...prev,
+      q: debouncedSearch.trim() || undefined,
+      role: role || undefined,
+    }));
+  }, [debouncedSearch, role]);
+
+  const applyFilters = () => {
+    setApplied((prev) => ({
+      ...prev,
+      join_from: dateRange[0] ? formatDate(new Date(dateRange[0])) : undefined,
+      join_to: dateRange[1] ? formatDate(new Date(dateRange[1])) : undefined,
+    }));
+  };
+
+  return (
+    <div className="page-content mt-6 flex flex-col gap-6 md:mt-8">
+      <StaffTitle />
+      <StaffFilterBar
+        search={search}
+        onSearchChange={setSearch}
+        role={role}
+        onRoleChange={setRole}
+        dateRange={dateRange}
+        onDateChange={setDateRange}
+        onApply={applyFilters}
+      />
+      <StaffCountBar />
+      <StaffInfoTable filters={applied} />
     </div>
-}
+  );
+};
 
 export default StaffLayout;

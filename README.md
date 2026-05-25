@@ -1,80 +1,259 @@
-# 🛒 Inventory Management System (IMS)
+# Inventory Management System (IMS)
 
-![React](https://img.shields.io/badge/React-18.2.0-blue?logo=react&logoColor=white) 
-![Node.js](https://img.shields.io/badge/Node.js-20.4-green?logo=node.js&logoColor=white) 
-![PHP](https://img.shields.io/badge/PHP-8.2-purple?logo=php&logoColor=white) 
-![MySQL](https://img.shields.io/badge/MySQL-8.0-blue?logo=mysql&logoColor=white) 
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.3.3-skyblue?logo=tailwind-css&logoColor=white) 
-![Redux](https://img.shields.io/badge/Redux-Toolkit-purple?logo=redux&logoColor=white) 
-![TanStack](https://img.shields.io/badge/TanStack-ReactQuery-orange?logo=react&logoColor=white) 
-![Redis](https://img.shields.io/badge/Redis-7.0-orange?logo=redis&logoColor=white)  
+Multi-company inventory platform with role-based access, purchases, sales, stock, staff, products, and vendors.
 
----
-
-## 🔥 Overview
-
-The **Inventory Management System (IMS)** is a **full-stack application** designed for multi-level inventory operations.  
-
-- **Backend:** PHP serves as a **data provider**, handling all requests and business logic related to users, products, orders, and reports.  
-- **Frontend:** React handles **UI, routing, state management**, caching, and data visualization.  
-- **SPA with CSR:** Smooth, dynamic navigation without full-page reloads.  
-- **Multi-user system:** Supports **Super Admin, Admin, Store Manager, and Sales Person** with **role-based dashboards and access control**.  
+| Layer | Stack |
+|-------|--------|
+| **Frontend** | React 19 · Vite 7 · Tailwind CSS 4 · Redux Toolkit · TanStack Query · React Router |
+| **Backend** | PHP 8.2+ · REST API · PHP sessions · Composer |
+| **Data** | MySQL 8 |
+| **Cache / OTP** | Redis (signup & verification OTP) |
 
 ---
 
-## 🛠️ Tech Stack
+## Overview
 
-| Layer | Technology |
-|-------|------------|
-| **Frontend** | `React.js` • `Tailwind CSS` • `TanStack Query` • `Redux` • Client-Side Rendering (CSR) |
-| **Backend** | `PHP` • `PHP Built-in Session` • REST APIs • Data Provider only |
-| **Database** | `MySQL` |
-| **Caching** | `Redis` |
-| **Architecture** | SPA • CSR • Role-based Access Control |
+IMS is a full-stack **single-page application** for day-to-day retail and wholesale operations:
 
----
+- **Companies** onboard via signup and email OTP verification.
+- **Staff** are managed per company with roles and approval workflow.
+- **Purchases** follow a draft → finalize → verify (or reject) flow and update stock when verified.
+- **Sales** record line items and reduce stock.
+- **Dashboard** shows KPIs and charts (sales vs purchases, date ranges, drill-down lists).
+- **Sidebar navigation** is driven by **permissions** loaded at login (not only role name).
 
-## 🌟 User Roles
-
-1. **Super Admin** – Full control over all operations and users.  
-2. **Admin** – Can add/remove users, manage suppliers, and oversee operations.  
-3. **Store Manager** – Can view reports, generate purchase orders (PO), and override sales staff decisions.  
-4. **Sales Person** – Handles selling and billing operations under role-based restrictions.  
+The React app talks to the PHP API through Vite’s `/api` proxy. Authentication uses **PHP sessions** with optional **Remember me** (longer-lived session cookie).
 
 ---
 
-## 📝 Business Logic & Features
+## Features
 
-1. **User Authentication:** Users must be able to login securely.  
-2. **Role-Based Authentication:** Access and operations depend on user role.  
-3. **Role-Based Dashboard Orientation:** Each role sees a tailored dashboard view.  
-4. **Role-Based Access Level:** Permissions and features vary based on role.  
-5. **Purchase Order Management:** Organizations can generate POs and send them to suppliers.  
-6. **Batch-Based Product Storage:** Products stored with batch tracking.  
-7. **Real-Time Stock Updates:** Stock updates automatically on purchases or sales.  
-8. **Billing System:** Generate bills during sales operations.  
-9. **Stock Alerts:** Notify when stock is low or full.  
-10. **Sales Forecasting:** Predict monthly best-selling products.  
-11. **Reports Visualization:** View monthly sales reports dynamically.  
-12. **Stock Prediction:** Suggest required stock based on previous sales.  
-13. **Admin Operations:** Admin can register users (sales staff and managers), add/remove suppliers and users.  
-14. **Manager Permissions:** Managers can view reports, generate POs, and overturn sales staff decisions.  
+### Authentication & onboarding
+
+- Company registration and super-admin signup
+- Email OTP verification before full access
+- **Login with password** (see [Login](#login))
+- Session verify on protected routes, logout with confirmation
+- Remember me (stores username locally; extended session on server)
+
+### Dashboard
+
+- Summary cards (sales, purchases, stock-related stats)
+- Bar chart: sales vs purchases (e.g. last 7 days)
+- Line chart with presets and custom date range
+- Detail pages for sales and purchase breakdowns
+
+### Stock
+
+- List stock by product with search and filters
+- Stock statistics for the company
+
+### Staff
+
+- List, search, and filter staff
+- Create and update staff (name, email, phone, role, password)
+- Approve / reject pending staff
+- Soft delete with confirmation (role-gated)
+
+### Vendors
+
+- Vendor catalog per company
+- Create, update, delete (with confirmation)
+- Approve / reject workflow where applicable
+
+### Products & categories
+
+- Product catalog with categories
+- Add, edit, delete products; set selling price
+- Approve / reject product entries (role-gated)
+- Category listing for purchase and sale flows
+
+### Purchases
+
+- Purchase list with filters and stats
+- **Wizard**: vendor + date → line items → auto total → finalize
+- Status workflow: **draft**, **completed**, **rejected**
+- Role-based **verify** / **reject** / edit / delete
+- Stock updates when purchases are verified
+
+### Sales
+
+- Sales list and detail views
+- Create sale with product search and line items
+- Stock decremented on completed sales
+
+### Access control
+
+- Roles: `superadmin`, `admin`, `manager`, `salesperson`
+- Fine-grained permissions (e.g. `CREATE_PURCHASE`, `CREATE_SALE`, `VIEW_STOCK`)
+- Sidebar items appear only when the user’s permission set matches (e.g. Purchase hidden for salesperson)
 
 ---
 
-## ⚡ Frontend Highlights
+## User roles
 
-- Built as a **React SPA** for **dynamic UI rendering**.  
-- **State Management:** `Redux` manages global app state efficiently.  
-- **Data Fetching & Caching:** `TanStack Query` integrates with backend APIs and caches results in `Redis`.  
-- **UI/UX:** `Tailwind CSS` ensures responsive and modern design.  
-- **Routing:** Frontend handles all routing and role-based dashboard navigation.  
+| Role | Typical access |
+|------|----------------|
+| **Superadmin** | Full company control: dashboard, staff, vendors, products, purchases (including verify/delete), stock, sales |
+| **Admin** | Same as superadmin except some destructive actions reserved for superadmin |
+| **Manager** | Dashboard, reports, stock, purchases (create), staff (create/view), vendors, products (add) |
+| **Salesperson** | Stock view, create sales — **no** purchase or staff management in sidebar |
+
+Permissions are defined in `Backend/src/config/rolesandpermissions.php`.
 
 ---
 
-## 🔹 Backend Highlights
+## Login
 
-- **PHP Backend:** Provides all data via REST APIs.  
-- **Session Management:** PHP built-in session handles authentication.  
-- **Business Logic:** Enforces role-based operations and validations.  
-- **Database:** `MySQL` stores users, products, orders, and reports.  
+Sign in at **`/login`**. Every account must authenticate with a **password**.
+
+| Field | Description |
+|-------|-------------|
+| **Email or phone** | One identifier in the username field. Client accepts a valid **email** or Nepal mobile **`97` / `98` + 8 digits** (10 digits total). |
+| **Password** | Required. Checked on the server with `password_verify` against the stored hash. |
+| **Role** | Not typed at login. It is stored on the user record and returned in the session after a successful login; it controls permissions and UI. |
+
+Optional **Remember me** keeps the username in `localStorage` and can extend the session cookie (about 30 days).
+
+> **Note:** The login API currently resolves users by **email**. For demo accounts below, use the **email** column plus the shared password. Phone numbers are the registered contact on each staff profile.
+
+After changing roles or permissions in config, **log out and log in again** so the session picks up the new permission list.
+
+---
+
+## Demo accounts
+
+Seed data (two demo companies) after running migrations:
+
+```bash
+php Backend/scripts/seed_demo_data.php
+```
+
+**Password for all demo users:** `Password@1`
+
+Full list: [`Backend/migrations/DEMO_SEED_CREDENTIALS.md`](Backend/migrations/DEMO_SEED_CREDENTIALS.md)
+
+### Himalayan Traders Pvt Ltd
+
+| Role | Email | Phone | Password |
+|------|-------|-------|----------|
+| Superadmin | suman@himalayantraders.demo | 9811000010 | `Password@1` |
+| Admin | anita@himalayantraders.demo | 9811000011 | `Password@1` |
+| Manager | bikash@himalayantraders.demo | 9811000012 | `Password@1` |
+| Salesperson | rita@himalayantraders.demo | 9811000013 | `Password@1` |
+
+### Valley Retail Co
+
+| Role | Email | Phone | Password |
+|------|-------|-------|----------|
+| Superadmin | nabin@valleyretail.demo | 9812000010 | `Password@1` |
+| Admin | priya@valleyretail.demo | 9812000011 | `Password@1` |
+| Manager | kiran@valleyretail.demo | 9812000012 | `Password@1` |
+| Salesperson | sita@valleyretail.demo | 9812000013 | `Password@1` |
+
+Use **superadmin**, **admin**, or **manager** to see **Purchase** in the sidebar. **Salesperson** accounts only see stock and sales-related access.
+
+---
+
+## Getting started
+
+### Prerequisites
+
+- PHP 8.2+ with extensions for MySQL, JSON, session
+- Composer
+- Node.js 18+ and npm
+- MySQL 8
+- Redis (for OTP during signup)
+
+### Database migrations
+
+Run against your IMS database (in order):
+
+1. `Backend/migrations/001_purchase_status.sql`
+2. `Backend/migrations/002_add_rejected_status.sql`
+3. `Backend/migrations/003_staff_product_vendor.sql`
+
+Then optionally seed demo data:
+
+```bash
+php Backend/scripts/seed_demo_data.php
+```
+
+### Backend
+
+```bash
+cd Backend
+composer install
+```
+
+Create `Backend/.env` (or use your existing env loader) with at least:
+
+- `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`
+- Redis and mail settings used by `envConfig.php` / `mailConfig.php`
+
+Serve the API (example — adjust path to match your machine):
+
+```bash
+cd Backend/public
+php -S localhost:8000
+```
+
+The Vite dev server proxies `/api` to `http://localhost:8000` (see `client/vite.config.js`).
+
+### Frontend
+
+```bash
+cd client
+npm install
+npm run dev
+```
+
+Open the URL Vite prints (usually `http://localhost:5173`), go to **Login**, and use a demo **email** + **`Password@1`**.
+
+---
+
+## Project structure
+
+```
+Inventory-Management-System/
+├── Backend/
+│   ├── public/          # API entry (index.php)
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── services/
+│   │   ├── models/
+│   │   ├── config/      # roles, DB, Redis, mail
+│   │   └── routes/Api.php
+│   ├── migrations/
+│   └── scripts/seed_demo_data.php
+└── client/
+    └── src/
+        ├── Components/  # UI modules (Purchase, Sales, Staff, …)
+        ├── pages/
+        ├── api/         # API clients
+        ├── Stores/      # Redux
+        └── config/      # dashnav, icons
+```
+
+---
+
+## Main app routes (frontend)
+
+| Path | Description |
+|------|-------------|
+| `/` | Landing |
+| `/login` | Login (email/phone + password) |
+| `/signup` | Registration |
+| `/web/dashboard` | Dashboard |
+| `/web/stock` | Stock |
+| `/web/staff` | Staff management |
+| `/web/vendor` | Vendors |
+| `/web/product` | Products |
+| `/web/purchase` | Purchases |
+| `/web/sale` | Sales |
+
+---
+
+## License
+
+See repository license if present; otherwise treat as private project code.

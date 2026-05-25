@@ -38,11 +38,12 @@ const SearchBar = memo(({
   // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (containerRef.current && !containerRef.current.contains(e.target)) {
+      if(containerRef.current && !containerRef.current.contains(e.target)) {
         setIsOpen(false);
         setActiveIndex(-1);
       }
     };
+    
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);

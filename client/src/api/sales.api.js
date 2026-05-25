@@ -7,12 +7,22 @@ export const updateSale = async () => {
 };
 
 export const createSale = async (salesData) => {
+  console.log(salesData); 
   const response = await api.post('/api/sales', salesData);
+
   return response;
 };
-export const fetchSales = async () => {
-  const response = await api.get('/api/sales');
+export const fetchSales = async ({ page = 1, limit = 10 } = {}) => {
+  const response = await api.get('/api/sales', { params: { page, limit } });
   return response;
+};
+
+export const fetchSalesDetails = async (params = {}) => {
+  const body = await api.get('/api/sales/details', { params });
+  if (body?.success === false) {
+    throw new Error(body.message || 'Failed to load sales details');
+  }
+  return body;
 };
 
 //get the sells amount by month  or date range, the serch query must provide with full date for start and end as quuery
@@ -45,17 +55,12 @@ export const getTotalSellsAmountByDateRange = async ( startDate , endDate ) => {
   return response;
 }
 
-export const getSalesAmountOfDateRange = async(startDate, endDate) => {
-  const response = await api.get('/api/sales/amount' , {
-   params :  { 
-    startDate , 
-    endDate
-     }
+export const getSalesAmountOfDateRange = async (startDate, endDate) => {
+  const body = await api.get('/api/sales/amount', {
+    params: { startDate, endDate },
   });
-
-  return response.data;
-  // console.log(response?.data);
-}
+  return Array.isArray(body?.data) ? body.data : [];
+};
 
 
 

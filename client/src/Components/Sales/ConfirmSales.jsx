@@ -6,6 +6,7 @@ const ConfirmSalesOverLayUI = ({
   customerNumber,
   onClose,
   onConfirm,
+  apiRequest,
   show,
 }) => {
   const { company, user } = useSelector((state) => state.auth);
@@ -97,7 +98,11 @@ const ConfirmSalesOverLayUI = ({
 
           <div className="flex flex-row gap-10">
             <NewButton className="cursor-pointer" onClick={onClose}>Cancel</NewButton>
-            <NewButton className="cursor-pointer" onClick={onConfirm}>Confirm</NewButton>
+            <NewButton className="cursor-pointer" 
+            onClick={onConfirm}
+            disabled={apiRequest}
+            loading={apiRequest}
+            >Confirm</NewButton>
           </div>
         </div>
       </div>

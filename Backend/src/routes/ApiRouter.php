@@ -12,6 +12,7 @@
                 'success' => false,
                 'message' => 'page not found',
             ]);
+            return;
           }
 
           [$class, $methodName] = $routes[$key];

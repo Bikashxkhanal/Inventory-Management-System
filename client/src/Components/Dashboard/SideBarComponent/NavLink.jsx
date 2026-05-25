@@ -1,42 +1,29 @@
-import { isAction } from '@reduxjs/toolkit';
-import { NavLink} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
-
-function NavbarLink({
-    icon = null,
-    name, 
-    path,
-    css, 
-    
-
-}){
-    return( 
-     
-  <NavLink to={path}
-    className={({ isActive }) =>
-  [
-    "flex gap-6 w-[98%] px-8 py-2 rounded-sm",
-    "hover:bg-blue-950",
-    icon == null && "justify-center mt-0",
-    isActive
-      ? "bg-blue-950 font-semibold"
-      : "bg-darkblue text-gray-400"
-  ].filter(Boolean).join(" ")
-}>
-    <div class="flex justify-center">
-
-            {
-                // if there is no icon , then aligh the content to center
-                icon &&
-                 <img  src={icon }  alt="img" width="16px" height="8px" className='color-white' />
-            }
-    
-    <span className={`${css }`}>{name}</span>
-    </div>
-     
-  </NavLink>
-
-    );
+function NavbarLink({ icon: Icon = null, name, path, css = '', onNavigate }) {
+  return (
+    <NavLink
+      to={path}
+      onClick={() => onNavigate?.()}
+      className={({ isActive }) =>
+        [
+          'mx-1 flex w-[96%] cursor-pointer items-center gap-3 rounded-lg px-4 py-2.5 transition-colors',
+          'hover:bg-blue-950/80',
+          isActive ? 'bg-blue-950 font-semibold text-white' : 'text-gray-400',
+        ].join(' ')
+      }
+    >
+      {Icon && (
+        <Icon
+          size={20}
+          strokeWidth={2}
+          className="shrink-0 opacity-90"
+          aria-hidden
+        />
+      )}
+      <span className={`text-sm capitalize ${css}`}>{name}</span>
+    </NavLink>
+  );
 }
 
 export default NavbarLink;

@@ -1,16 +1,22 @@
-import {Container, StockFilterBar, StockInformationTable, StockGeneralInfoBar, StockTitle, NewButton, IconImage} from './../index'
-import { Add} from './../../assets/Imagesender'
+import { useState } from 'react';
+import useDebouncedValue from '../../hooks/useDebouncedValue';
+import { StockFilterBar, StockInformationTable, StockGeneralInfoBar, StockTitle } from './../index';
 
+const StockLayout = () => {
+  const [searchInput, setSearchInput] = useState('');
+  const debouncedSearch = useDebouncedValue(searchInput, 400);
 
-const StockLayout = () =>{
-    return <div className='flex flex-col justify-start mx-4 mt-8  gap-8' >
-        <div className='w-full flex flex-row justify-between mt-15 md:mt-5 mb-4'>
-            <StockTitle />
-            </div>
-            <StockFilterBar />
-            <StockGeneralInfoBar />
-            <StockInformationTable />
-             </div>
-}
+  return (
+    <div className="page-content mt-6 flex flex-col gap-6 md:mt-8">
+      <StockTitle />
+      <StockGeneralInfoBar />
+      <StockFilterBar
+        search={searchInput}
+        onSearchChange={setSearchInput}
+      />
+      <StockInformationTable search={debouncedSearch} />
+    </div>
+  );
+};
 
 export default StockLayout;

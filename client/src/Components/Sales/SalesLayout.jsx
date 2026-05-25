@@ -9,10 +9,8 @@ const SalesLayout = () => {
   const role = user?.role || 'guest'; // fallback if not logged in
 
   return (
-    <div className='flex flex-col px-4 gap-10'>
-      <div className='w-full flex flex-row justify-between 
-      mt-15 md:mt-0  mb-4 pt-8 pb-4 px-4 border-b border-white rounded-lg bg-white 
-      shadow-sm'>
+    <div className="page-content flex flex-col gap-6 sm:gap-8 md:gap-10">
+      <div className="mb-4 flex w-full flex-col gap-4 rounded-lg border border-slate-200 bg-white px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between md:mt-0">
         <SalesTitle />
 
         {/* Only Salesperson can create new sale */}
@@ -27,7 +25,7 @@ const SalesLayout = () => {
         )}
       </div>
 
-        <div className='w-full flex flex-row justify-center gap-5'>
+        <div className="flex w-full flex-col justify-center gap-3 sm:flex-row sm:gap-5">
          <FilterComponent type='date-range' />
          <NewButton children="Filter" />
         </div>

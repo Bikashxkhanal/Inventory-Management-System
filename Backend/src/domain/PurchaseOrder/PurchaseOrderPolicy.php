@@ -5,7 +5,7 @@
 
 
     class PurchaseOrderPolicy{
-        private $rolesWithPermissons = require_once __DIR__ . '/../../config/rolesandpermissions.php';
+        private $rolesWithPermissons = require __DIR__ . '/../../config/rolesandpermissions.php';
 
         public function __construct(private User $creator){}   
 

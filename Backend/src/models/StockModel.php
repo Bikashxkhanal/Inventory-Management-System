@@ -11,12 +11,31 @@ class StockModel {
     
     }
 
-public function fetchStocks(int $offset, int $limit): array {
+public function fetchStocks(int $offset, int $limit, ?string $search = null): array {
      global $pdo;
+    $where = '';
+    $params = [];
+    if ($search !== null && $search !== '') {
+        $where = ' WHERE p.name LIKE ? OR CAST(p.id AS CHAR) LIKE ?';
+        $q = '%' . $search . '%';
+        $params = [$q, $q];
+    }
+    $categoryJoin = '';
+    $categorySelect = "'' AS category";
+    try {
+        $colStmt = $pdo->query("SHOW COLUMNS FROM product LIKE 'category_id'");
+        if ($colStmt->fetch()) {
+            $categoryJoin = ' LEFT JOIN category c ON c.id = p.category_id';
+            $categorySelect = 'COALESCE(c.name, \'—\') AS category';
+        }
+    } catch (Throwable $e) {
+        // ignore
+    }
     $stmt = $pdo->prepare("
     SELECT 
         p.id AS productId,
         p.name AS name,
+        {$categorySelect},
         s.quantity AS stock,
         s.selling_price AS sellingPrice,
         CASE 
@@ -24,18 +43,29 @@ public function fetchStocks(int $offset, int $limit): array {
             WHEN s.quantity > 1000 THEN 'High Stock'
             ELSE 'In Stock'
         END AS status
-    FROM product AS p INNER JOIN stock AS s ON p.id = s.product_id
+    FROM product AS p INNER JOIN stock AS s ON p.id = s.product_id{$categoryJoin}{$where}
     ORDER BY p.id DESC
-    LIMIT :limit OFFSET :offset
+    " . \App\Helpers\EntitySchema::sqlLimitOffset($limit, $offset) . "
     ");
 
-   
-
-    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-    $stmt->execute();
+    $stmt->execute($params);
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public function countStocksFiltered(?string $search = null): int
+{
+    global $pdo;
+    $where = '';
+    $params = [];
+    if ($search !== null && $search !== '') {
+        $where = ' WHERE p.name LIKE ? OR CAST(p.id AS CHAR) LIKE ?';
+        $q = '%' . $search . '%';
+        $params = [$q, $q];
+    }
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM product p INNER JOIN stock s ON p.id = s.product_id{$where}");
+    $stmt->execute($params);
+    return (int) $stmt->fetchColumn();
 }
 
     public function countStocks(): int {
@@ -129,6 +159,20 @@ public function reduceStock(array $stocksDatas){
 public function hasEnoughStock(string $productId, int $sellingQuantity){
     $availableQty  =  (int) $this->getStockQuantityByProduct($productId);
     return $availableQty >= $sellingQuantity ? true : false;
-} 
+}
+
+public function increaseStock(array $stockRows): void
+{
+    global $pdo;
+    $stmt = $pdo->prepare("
+        UPDATE stock
+        SET quantity = quantity + ?
+        WHERE product_id = ?
+    ");
+
+    foreach ($stockRows as $row) {
+        $stmt->execute([(int) $row['quantity'], (int) $row['productId']]);
+    }
+}
 
 }
