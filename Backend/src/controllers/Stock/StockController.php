@@ -3,6 +3,7 @@ namespace App\Controllers\Stock;
 
 use App\Services\Stock\StockService;
 
+
 class StockController {
 
     private StockService $stockService;
@@ -10,6 +11,8 @@ class StockController {
     public function __construct( ) {
         $this->stockService = $stockService = new StockService();
     }
+
+
 
     public function fetchStocks($requestData) {
 
@@ -32,6 +35,7 @@ class StockController {
 
 public function fetchStockStats($requestData)
 {
+  
     $result = $this->stockService->getStockStats();
     echo json_encode($result);
 }

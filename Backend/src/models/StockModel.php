@@ -11,12 +11,12 @@ class StockModel {
     
     }
 
-public function fetchStocks(int $offset, int $limit, ?string $search = null): array {
+public function fetchStocks(int $offset, int $limit,int $companyId,  ?string $search = null): array {
      global $pdo;
-    $where = '';
-    $params = [];
+    $where = ' WHERE p.company_id = ?  ';
+    $params = [$companyId];
     if ($search !== null && $search !== '') {
-        $where = ' WHERE p.name LIKE ? OR CAST(p.id AS CHAR) LIKE ?';
+        $where = ' AND p.name LIKE ? OR CAST(p.id AS CHAR) LIKE ?';
         $q = '%' . $search . '%';
         $params = [$q, $q];
     }
@@ -53,13 +53,13 @@ public function fetchStocks(int $offset, int $limit, ?string $search = null): ar
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-public function countStocksFiltered(?string $search = null): int
+public function countStocksFiltered(int $companyId, ?string $search = null): int
 {
     global $pdo;
-    $where = '';
-    $params = [];
+    $where = ' WHERE p.company_id = ? ';
+    $params = [$companyId];
     if ($search !== null && $search !== '') {
-        $where = ' WHERE p.name LIKE ? OR CAST(p.id AS CHAR) LIKE ?';
+        $where = '  p.name LIKE ? OR CAST(p.id AS CHAR) LIKE ?';
         $q = '%' . $search . '%';
         $params = [$q, $q];
     }
@@ -68,16 +68,17 @@ public function countStocksFiltered(?string $search = null): int
     return (int) $stmt->fetchColumn();
 }
 
-    public function countStocks(): int {
+    public function countStocks(int $companyId): int {
             global $pdo;
-        $stmt = $pdo->query("SELECT COUNT(*) FROM stock");
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM stock WHERE company_id = ?");
+        $stmt->execute([$companyId]);
         return (int)$stmt->fetchColumn();
     }
 
- public function countStockStatuses(): array {
+ public function countStockStatuses(int $companyId): array {
 
         global $pdo;
-   $stmt = $pdo->query("
+   $stmt = $pdo->prepare("
     SELECT
         COUNT(*) AS total,
 
@@ -93,8 +94,10 @@ public function countStocksFiltered(?string $search = null): int
             ELSE 0 
         END) AS highStock
 
-    FROM stock
+    FROM stock WHERE company_id = ?
 ");
+
+    $stmt->execute([$companyId]);
 
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }

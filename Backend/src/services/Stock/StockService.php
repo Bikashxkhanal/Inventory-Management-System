@@ -2,6 +2,8 @@
 namespace App\Services\Stock;
 
 use App\Models\StockModel;
+use App\Services\SessionService;
+use App\Domain\Session\SessionManager;
 
 class StockService {
 
@@ -11,14 +13,25 @@ class StockService {
        $this->stockModel = new StockModel();
     }
 
+    private function currentUser(): array
+    {
+        $session = new SessionService(new SessionManager());
+        $user = $session->get('user');
+        if (!$user) {
+            throw new Exception('Unauthorized');
+        }
+        return $user;
+    }
+
     public function getPaginatedStocks(int $page, int $limit, ?string $search = null): array {
        
         $offset = ($page - 1) * $limit;
-        
-        $stocks = $this->stockModel->fetchStocks($offset, $limit, $search);
+
+        $user = $this->currentUser();
+        $stocks = $this->stockModel->fetchStocks($offset, $limit,$user['company']['companyId'], $search);
         $totalRecords = $search
-            ? $this->stockModel->countStocksFiltered($search)
-            : $this->stockModel->countStocks();
+            ? $this->stockModel->countStocksFiltered( $user['company']['companyId'], $search)
+            : $this->stockModel->countStocks($user['company']['companyId']);
 
         $totalPages = ceil($totalRecords / $limit);
 
@@ -36,7 +49,8 @@ class StockService {
 
     public function getStockStats(): array
 {
-    $stats = $this->stockModel->countStockStatuses();
+    $user = $this->currentUser();
+    $stats = $this->stockModel->countStockStatuses($user['company']['companyId']);
 
     $total = $stats['total'] ?? 0;
 
