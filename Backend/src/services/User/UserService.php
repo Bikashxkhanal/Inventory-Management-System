@@ -26,6 +26,16 @@ use PDOException;
               
         }
 
+        private function currentUser(): array
+        {
+            $session = new SessionService(new SessionManager());
+            $user = $session->get('user');
+            if (!$user) {
+                throw new Exception('Unauthorized');
+            }
+            return $user;
+        }
+
         public function userAccountCreationService($input){
             //TODO add error handling here
             //sanitization 
@@ -48,22 +58,11 @@ use PDOException;
            };
 
 
-            //same company Id
-
         $validatedInput['password_hash'] =   password_hash($validatedInput['password'], PASSWORD_BCRYPT);
 
-        //firstName, lastName, email , phoneNumber, isVerified, role, companyId, password_hash
-        //hashing password 
-
-            $currentUser = $sessionService->get('user');
-            // $currentDetails = [
-            //         'id' => 1000,
-            //         'firstName' => "Bikash",
-            //         'lastName' => "khanal",
-            //         'role' => 'superadmin',
-            //         'companyId' => 8010
-                
-            // ];
+    
+            $currentUser = $this->currentUser();
+    
 
             if(!$currentUser){
                 throw new Exception("No logged in user found");
@@ -79,8 +78,6 @@ use PDOException;
                  $validatedInput['status'] = 'pending';
              }
 
-            // $creator = new User();
-            // $creator->addUserDetails($currentUser);
 
             $staff = new User();
             $staff->addUserDetails($validatedInput);
@@ -93,6 +90,7 @@ use PDOException;
             
             $details = $staff->getUserDetails();
             $conflict = $this->userModel->getDuplicateConflict(
+                $details['companyId'],
                 $details['email'] ?? null,
                 $details['phoneNumber'] ?? null
             );
@@ -119,7 +117,8 @@ use PDOException;
 
         public function fetchStaffService(int $page, int $limit, array $filters = []): array
 {
-          return  $this->userModel->fetchStaff($page, $limit, $filters);
+        $user = $this->currentUser();
+          return  $this->userModel->fetchStaff($page, $limit, $user['company']['companyId'], $filters);
         // $staffDetails['fullName'] = $staffDetails['firstName'] . " " . $staffDetails['lastName'];
        
 
@@ -127,7 +126,8 @@ use PDOException;
 
  public function fetchStaffStatsService(): array
 {
-    return $this->userModel->fetchStaffStats();
+    $user = $this->currentUser();
+    return $this->userModel->fetchStaffStats($user['company']['companyId']);
 }
 
 public function softDeleteStaffService(int $id): void

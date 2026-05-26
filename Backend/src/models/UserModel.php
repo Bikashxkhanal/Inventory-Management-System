@@ -81,13 +81,13 @@ use PDOException;
         }
 
     /** Human-readable message if email or phone is already taken. */
-    public function getDuplicateConflict(?string $email, ?string $phoneNumber, ?int $excludeId = null): ?string
+    public function getDuplicateConflict(int $companyId, ?string $email, ?string $phoneNumber, ?int $excludeId = null): ?string
     {
         global $pdo;
 
         if ($email !== null && $email !== '') {
-            $sql = 'SELECT id FROM sys_user WHERE email = ?';
-            $params = [$email];
+            $sql = 'SELECT id FROM sys_user WHERE companyId = ? AND email = ?';
+            $params = [$companyId, $email];
             if ($excludeId !== null) {
                 $sql .= ' AND id != ?';
                 $params[] = $excludeId;
@@ -101,8 +101,8 @@ use PDOException;
         }
 
         if ($phoneNumber !== null && $phoneNumber !== '') {
-            $sql = 'SELECT id FROM sys_user WHERE phoneNumber = ?';
-            $params = [$phoneNumber];
+            $sql = 'SELECT id FROM sys_user WHERE companyId =? AND phoneNumber = ?';
+            $params = [$companyId, $phoneNumber];
             if ($excludeId !== null) {
                 $sql .= ' AND id != ?';
                 $params[] = $excludeId;
@@ -190,13 +190,13 @@ try {
 }
 
         }
-public function fetchStaff(int $page, int $limit, array $filters = []): array
+public function fetchStaff(int $page, int $limit,int $companyId, array $filters = []): array
 {
     global $pdo;
     $offset = ($page - 1) * $limit;
 
-    $where = ["role IN ('admin', 'manager', 'salesperson')"];
-    $params = [];
+    $where = ["companyId = ? AND role IN ('admin', 'manager', 'salesperson')"];
+    $params = [$companyId];
 
     $viewerRole = strtolower((string) ($filters['viewer_role'] ?? ''));
     if (EntitySchema::hasColumn('sys_user', 'status')) {
@@ -294,23 +294,23 @@ public function setStaffApproval(int $id, bool $approve): bool
 }
 
 
-public function fetchStaffStats(): array
+public function fetchStaffStats(int $companyId): array
 {
     global $pdo;
     // Get total staff count
     $inactive = EntitySchema::hasColumn('sys_user', 'status') ? " AND (status IS NULL OR status != 'inactive')" : '';
-    $stmtTotal = $pdo->prepare("SELECT COUNT(*) as total FROM sys_user WHERE role IN ('admin', 'manager' , 'salesperson'){$inactive}");
-    $stmtTotal->execute();
+    $stmtTotal = $pdo->prepare("SELECT COUNT(*) as total FROM sys_user WHERE companyId = ? AND role IN ('admin', 'manager' , 'salesperson'){$inactive}");
+    $stmtTotal->execute([$companyId]);
     $total = (int) $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'];
 
     // Get count by role
     $stmtRoles = $pdo->prepare("
         SELECT role, COUNT(*) as count
-        FROM sys_user WHERE role IN ('admin', 'manager' , 'salesperson')
+        FROM sys_user WHERE companyId = ? AND role IN ('admin', 'manager' , 'salesperson') AND status='active'
         GROUP BY role
 
     ");
-    $stmtRoles->execute();
+    $stmtRoles->execute([$companyId]);
     $roles = $stmtRoles->fetchAll(PDO::FETCH_ASSOC);
 
     $stats = [
