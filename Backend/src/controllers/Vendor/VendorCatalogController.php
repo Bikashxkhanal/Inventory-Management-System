@@ -43,6 +43,7 @@ class VendorCatalogController
             $result = $this->vendorModel->fetchCatalog(
                 $page,
                 $limit,
+                $user['company']['companyId'],
                 $search ?: null,
                 $user['user']['role'] ?? ''
             );
@@ -64,6 +65,7 @@ class VendorCatalogController
             }
             $id = $this->vendorModel->createVendor(
                 $input,
+                $user['company']['companyId'],
                 (int) ($user['user']['id'] ?? 0),
                 $user['user']['role'] ?? ''
             );

@@ -18,12 +18,12 @@ class VendorModel {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function fetchCatalog(int $page, int $limit, ?string $search = null, ?string $viewerRole = null): array
+    public function fetchCatalog(int $page, int $limit, int $companyId,  ?string $search = null, ?string $viewerRole = null): array
     {
         global $pdo;
         $offset = ($page - 1) * $limit;
-        $where = ['1=1'];
-        $params = [];
+        $where = ['v.company_id = ?'];
+        $params = [$companyId];
 
         if (\App\Helpers\EntitySchema::hasColumn('vendor', 'approval_status')) {
             if (strtolower((string) $viewerRole) !== 'superadmin') {
@@ -91,7 +91,7 @@ class VendorModel {
         ];
     }
 
-    public function createVendor(array $data, int $createdBy, string $creatorRole): int
+    public function createVendor(array $data, int $companyId, int $createdBy, string $creatorRole): int
     {
         global $pdo;
         $approval = strtolower($creatorRole) === 'superadmin' ? 'active' : 'pending';
@@ -104,6 +104,11 @@ class VendorModel {
         if (\App\Helpers\EntitySchema::hasColumn('vendor', 'created_by')) {
             $cols[] = 'created_by';
             $vals[] = $createdBy;
+        }
+
+        if (\App\Helpers\EntitySchema::hasColumn('vendor', 'company_id')) {
+            $cols[] = 'company_id';
+            $vals[] = $companyId;
         }
         $ph = implode(', ', array_fill(0, count($cols), '?'));
         $stmt = $pdo->prepare('INSERT INTO vendor (' . implode(', ', $cols) . ") VALUES ({$ph})");
