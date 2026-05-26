@@ -15,18 +15,32 @@ class CategoryController
         $this->categoryModel = new CategoryModel();
     }
 
+    private function currentUser(): array
+    {
+        $session = new SessionService(new SessionManager());
+        $user = $session->get('user');
+        if (!$user) {
+            throw new Exception('Unauthorized');
+        }
+        return $user;
+    }
+
     public function fetchAll(): void
     {
-        $categories = $this->categoryModel->fetchAll();
+        $user = $this->currentUser();
+        $categories = $this->categoryModel->fetchAll($user['company']['companyId']);
         echo json_encode(['success' => true, 'data' => $categories]);
     }
 
     public function create(): void
     {
         try {
-            $session = new SessionService(new SessionManager());
-            $user = $session->get('user');
+            $user = $this->currentUser();
             $role = strtolower((string) ($user['user']['role'] ?? ''));
+            $companyId = $user['company']['companyId'];
+            if(!$companyId){
+                throw new Exception("Please select a company first!");
+            }
             if ($role !== 'superadmin') {
                 throw new Exception('Only superadmin can create categories');
             }
@@ -37,7 +51,7 @@ class CategoryController
                 throw new Exception('Category name is required');
             }
 
-            $id = $this->categoryModel->create($name);
+            $id = $this->categoryModel->create($name, $companyId);
             http_response_code(201);
             echo json_encode([
                 'success' => true,

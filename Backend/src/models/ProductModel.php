@@ -48,17 +48,17 @@ class ProductModel {
     }
 
 
-    public function getSearchedProduct(string $searchQuery){
+    public function getSearchedProduct(string $searchQuery, int $companyId){
         global $pdo; 
 
          $stmt =  $pdo->prepare("
                 SELECT 
                 id AS id,
                 name AS name
-                FROM product WHERE name LIKE CONCAT('%', ? , '%')
+                FROM product WHERE company_id = ? AND name LIKE CONCAT('%', ? , '%')
         ");
 
-        $stmt->execute([$searchQuery]);
+        $stmt->execute([$companyId, $searchQuery]);
 
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
@@ -78,12 +78,12 @@ class ProductModel {
 
     }
 
-    public function fetchCatalog(int $page, int $limit, ?string $search = null, ?string $viewerRole = null): array
+    public function fetchCatalog(int $page, int $limit, int $companyId, ?string $search = null, ?string $viewerRole = null): array
     {
         global $pdo;
         $offset = ($page - 1) * $limit;
-        $where = ['1=1'];
-        $params = [];
+        $where = ['p.company_id = ?'];
+        $params = [$companyId];
 
         if (EntitySchema::hasColumn('product', 'approval_status')) {
             if (strtolower((string) $viewerRole) !== 'superadmin') {
@@ -149,7 +149,7 @@ class ProductModel {
         ];
     }
 
-    public function createProduct(array $data, int $createdBy, string $creatorRole): int
+    public function createProduct(array $data, int $companyId, int $createdBy, string $creatorRole): int
     {
         global $pdo;
         $approval = strtolower($creatorRole) === 'superadmin' ? 'active' : 'pending';
@@ -179,6 +179,22 @@ class ProductModel {
                 $cols[] = 'created_by';
                 $vals[] = $createdBy;
             }
+
+            if (EntitySchema::hasColumn('product', 'sell_price')) {
+                $cols[] = 'sell_price';
+                $vals[] = $data['selling_price'];
+            }
+
+            if (EntitySchema::hasColumn('product', 'company_id')) {
+                $cols[] = 'company_id';
+                $vals[] = $companyId;
+            }
+
+            if (EntitySchema::hasColumn('product', 'buy_price')) {
+                $cols[] = 'buy_price';
+                $vals[] = 0;
+            }
+            
             $ph = implode(', ', array_fill(0, count($cols), '?'));
             $stmt = $pdo->prepare('INSERT INTO product (' . implode(', ', $cols) . ") VALUES ({$ph})");
             $stmt->execute($vals);

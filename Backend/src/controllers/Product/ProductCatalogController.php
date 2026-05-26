@@ -40,9 +40,11 @@ class ProductCatalogController
             $page = max(1, (int) ($_GET['page'] ?? 1));
             $limit = max(1, min(50, (int) ($_GET['limit'] ?? 10)));
             $search = isset($_GET['search']) ? trim((string) $_GET['search']) : null;
+            $user = $this->currentUser();
             $result = $this->productModel->fetchCatalog(
                 $page,
                 $limit,
+                $user['company']['companyId'],
                 $search ?: null,
                 $user['user']['role'] ?? ''
             );
@@ -67,6 +69,7 @@ class ProductCatalogController
             }
             $id = $this->productModel->createProduct(
                 $input,
+                $user['company']['companyId'],
                 (int) ($user['user']['id'] ?? 0),
                 $user['user']['role'] ?? ''
             );

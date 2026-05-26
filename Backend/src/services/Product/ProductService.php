@@ -3,6 +3,8 @@
     namespace App\Services\Product;
     use App\Models\ProductModel;
     use App\Models\StockModel;
+    use App\Services\SessionService;
+    use App\Domain\Session\SessionManager;
     use PDO;
 
     class ProductService{
@@ -17,8 +19,14 @@
             //validate and sanitize 
 
              $query = strtolower(trim($searchedQuery));
+             $session = new SessionService(new SessionManager());
+                $user = $session->get('user');
+                $companyId = $user['company']['companyId'];
+                if(!$companyId){
+                    throw new Exception('Company ID not found');
+                }
 
-           $result = $this->productModel->getSearchedProduct($searchedQuery);
+           $result = $this->productModel->getSearchedProduct($searchedQuery, $companyId);
 
            return $result;
 
