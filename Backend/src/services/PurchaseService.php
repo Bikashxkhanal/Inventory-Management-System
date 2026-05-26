@@ -40,12 +40,12 @@ class PurchaseService
         if (!$session || empty($session['user'])) {
             throw new Exception('Unauthorized');
         }
-        return $session['user'];
+       return $session;
     }
 
     private function currentRole(): string
     {
-        return strtolower((string) $this->currentUser()['role']);
+        return strtolower((string) $this->currentUser()['user']['role']);
     }
 
     public function createPurchaseHeader(int $vendorId, string $purchaseDate): array
@@ -59,9 +59,10 @@ class PurchaseService
         }
 
         $created = $this->purchaseModel->create(
+            $user['company']['companyId'],
             $vendorId,
             $purchaseDate,
-            (int) $user['id']
+            (int) $user['user']['id']
         );
 
         return [
@@ -267,12 +268,14 @@ class PurchaseService
 
     public function fetchPaginated(int $page, int $limit, ?string $statusFilter = null): array
     {
-        return $this->purchaseModel->fetchPaginated($page, $limit, $statusFilter);
+        $user = $this->currentUser();
+        return $this->purchaseModel->fetchPaginated($user['company']['companyId'], $page, $limit, $statusFilter);
     }
 
     public function fetchPurchasesDetailsList(int $page, int $limit, array $filters = []): array
     {
-        return $this->purchaseModel->fetchPurchasesDetailsList($page, $limit, $filters);
+        $user = $this->currentUser();
+        return $this->purchaseModel->fetchPurchasesDetailsList($user['company']['companyId'], $page, $limit, $filters);
     }
 
     public function getPurchaseById(int $id): array
@@ -286,7 +289,8 @@ class PurchaseService
 
     public function fetchStats(): array
     {
-        return $this->purchaseModel->fetchStats();
+        $user = $this->currentUser();
+        return $this->purchaseModel->fetchStats($user['company']['companyId']);
     }
 
     public function getTotalPurchaseAmountByDateRange(array $requestedData)
@@ -295,6 +299,8 @@ class PurchaseService
             throw new InvalidArgumentException('Start Date and End Date are required.');
         }
 
+        $user = $this->currentUser();
+
         $startDate = $requestedData['startDate'];
         $endDate = $requestedData['endDate'];
         $dateFormat = 'Y-m-d';
@@ -311,11 +317,12 @@ class PurchaseService
             throw new InvalidArgumentException('Start Date must not be after endDate.');
         }
 
-        return $this->purchaseModel->getTotalPurchaseAmountByDateRange($startDate, $endDate);
+        return $this->purchaseModel->getTotalPurchaseAmountByDateRange($user['company']['companyId'], $startDate, $endDate);
     }
 
     public function getPurchaseAmountOfDateRange(array $requestedData): array
     {
+        $user = $this->currentUser();
         if (empty($requestedData['startDate']) || empty($requestedData['endDate'])) {
             throw new InvalidArgumentException('Start Date and End Date are required.');
         }
@@ -336,7 +343,7 @@ class PurchaseService
             throw new InvalidArgumentException('Start Date must not be after endDate.');
         }
 
-        return $this->purchaseModel->getPurchaseAmountOfDateRange($startDate, $endDate);
+        return $this->purchaseModel->getPurchaseAmountOfDateRange($user['company']['companyId'],$startDate, $endDate);
     }
 
     private function applyStockFromItems(array $items): void

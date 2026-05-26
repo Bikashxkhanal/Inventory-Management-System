@@ -6,13 +6,13 @@ use PDO;
 
 class PurchaseModel
 {
-    public function create(int $vendorId, string $purchaseDate, ?int $createdBy = null): array
+    public function create(int $companyId, int $vendorId, string $purchaseDate, ?int $createdBy = null): array
     {
         global $pdo;
 
-        $columns = ['vendor_id'];
-        $placeholders = ['?'];
-        $values = [$vendorId];
+        $columns = ['vendor_id, company_id'];
+        $placeholders = ['?, ?'];
+        $values = [$vendorId, $companyId];
 
         if (PurchaseSchema::hasPurchaseColumn('purchase_date')) {
             $columns[] = 'purchase_date';
@@ -49,13 +49,13 @@ class PurchaseModel
         return ['success' => true, 'id' => (int) $pdo->lastInsertId()];
     }
 
-    public function fetchPaginated(int $page, int $limit, ?string $statusFilter = null): array
+    public function fetchPaginated(int $companyId, int $page, int $limit, ?string $statusFilter = null): array
     {
         global $pdo;
         $offset = ($page - 1) * $limit;
 
-        $where = '';
-        $params = [];
+        $where = ' WHERE p.company_id = ? ';
+        $params = [$companyId];
         if (
             $statusFilter !== null &&
             $statusFilter !== '' &&
@@ -76,12 +76,12 @@ class PurchaseModel
                 ];
             }
             if (PurchaseSchema::canSetStatus($statusFilter)) {
-                $where = ' WHERE p.status = ?';
+                $where .= ' AND p.status = ? ';
                 $params[] = $statusFilter;
             }
         }
 
-        $countSql = 'SELECT COUNT(*) FROM purchase p' . $where;
+        $countSql = 'SELECT COUNT(*) FROM purchase p ' . $where;
         $countStmt = $pdo->prepare($countSql);
         $countStmt->execute($params);
         $totalRecords = (int) $countStmt->fetchColumn();
@@ -93,24 +93,24 @@ class PurchaseModel
         ];
 
         if (PurchaseSchema::hasPurchaseColumn('purchase_date')) {
-            $select[] = 'p.purchase_date AS purchase_date';
+            $select[] = ' p.purchase_date AS purchase_date ';
         } else {
-            $select[] = 'DATE(p.created_at) AS purchase_date';
+            $select[] = ' DATE(p.created_at) AS purchase_date ';
         }
 
         if (PurchaseSchema::hasPurchaseColumn('total_amount')) {
-            $select[] = 'p.total_amount AS total_amount';
+            $select[] = ' p.total_amount AS total_amount ';
         } else {
-            $select[] = '0 AS total_amount';
+            $select[] = ' 0 AS total_amount ';
         }
 
         if (PurchaseSchema::hasPurchaseColumn('status')) {
-            $select[] = 'p.status AS status';
+            $select[] = ' p.status AS status ';
         } else {
-            $select[] = "'draft' AS status";
+            $select[] = " 'draft' AS status ";
         }
 
-        $select[] = 'p.created_at AS created_at';
+        $select[] = ' p.created_at AS created_at ';
 
         $sql = sprintf(
             'SELECT %s FROM purchase p INNER JOIN vendor v ON v.id = p.vendor_id%s ORDER BY p.created_at DESC LIMIT ? OFFSET ?',
@@ -178,7 +178,7 @@ class PurchaseModel
         return $row ?: null;
     }
 
-    public function fetchStats(): array
+    public function fetchStats(int $companyId): array
     {
         global $pdo;
 
@@ -186,14 +186,15 @@ class PurchaseModel
             $rejectedExpr = PurchaseSchema::supportsRejectedStatus()
                 ? "SUM(status = 'rejected')"
                 : '0';
-            $stmt = $pdo->query("
+            $stmt = $pdo->prepare("
                 SELECT
                     COUNT(*) AS total,
                     SUM(status = 'draft') AS draft,
                     SUM(status = 'completed') AS completed,
                     {$rejectedExpr} AS rejected
-                FROM purchase
+                FROM purchase WHERE company_id = ?
             ");
+            $stmt->execute([$companyId]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         }
 
@@ -264,7 +265,7 @@ class PurchaseModel
         $stmt->execute([$id]);
     }
 
-    public function getTotalPurchaseAmountByDateRange(string $startDate, string $endDate)
+    public function getTotalPurchaseAmountByDateRange(int $companyId, string $startDate, string $endDate)
     {
         global $pdo;
 
@@ -272,25 +273,28 @@ class PurchaseModel
             $stmt = $pdo->prepare("
                 SELECT SUM(total_amount) AS totalAmount
                 FROM purchase
-                WHERE status = 'completed'
-                AND created_at BETWEEN ? AND ?
+                WHERE status = 'completed' AND 
+                company_id = ?
+                AND DATE(created_at) BETWEEN ? AND ?
             ");
         } elseif (PurchaseSchema::hasPurchaseColumn('total_amount')) {
             $stmt = $pdo->prepare('
                 SELECT SUM(total_amount) AS totalAmount
                 FROM purchase
-                WHERE created_at BETWEEN ? AND ?
+                WHERE
+                company_id = ? AND 
+                DATE(created_at) BETWEEN ? AND ?
             ');
         } else {
             return 0;
         }
 
-        $stmt->execute([$startDate, $endDate]);
+        $stmt->execute([$companyId, $startDate, $endDate]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['totalAmount'] ?? 0;
     }
 
-    public function getPurchaseAmountOfDateRange(string $startDate, string $endDate)
+    public function getPurchaseAmountOfDateRange(int $companyId, string $startDate, string $endDate)
     {
         global $pdo;
 
@@ -299,6 +303,7 @@ class PurchaseModel
                 SELECT DATE(created_at) AS purchaseCreatedDate, SUM(total_amount) AS amount
                 FROM purchase
                 WHERE status = 'completed'
+                AND company_id = ?
                 AND DATE(created_at) BETWEEN DATE(?) AND DATE(?)
                 GROUP BY DATE(created_at)
             ");
@@ -306,30 +311,32 @@ class PurchaseModel
             $stmt = $pdo->prepare('
                 SELECT DATE(created_at) AS purchaseCreatedDate, SUM(total_amount) AS amount
                 FROM purchase
-                WHERE DATE(created_at) BETWEEN DATE(?) AND DATE(?)
+                WHERE 
+                company_id = ? AND
+                DATE(created_at) BETWEEN ? AND ?
                 GROUP BY DATE(created_at)
             ');
         } else {
             return [];
         }
 
-        $stmt->execute([$startDate, $endDate]);
+        $stmt->execute([$companyId, $startDate, $endDate]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
-    public function fetchPurchasesDetailsList(int $page, int $limit, array $filters = []): array
+    public function fetchPurchasesDetailsList(int $companyId, int $page, int $limit, array $filters = []): array
     {
         global $pdo;
         $offset = ($page - 1) * $limit;
-        $where = ['1=1'];
-        $params = [];
+        $where = ['p.company_id = ? '];
+        $params = [$companyId];
 
         if (!empty($filters['vendor_id'])) {
-            $where[] = 'p.vendor_id = ?';
+            $where[] = ' p.vendor_id = ? ';
             $params[] = (int) $filters['vendor_id'];
         }
         if (!empty($filters['date_from'])) {
-            $where[] = 'DATE(p.created_at) >= ?';
+            $where[] .= ' DATE(p.created_at) >= ? ';
             $params[] = $filters['date_from'];
         }
         if (!empty($filters['date_to'])) {
