@@ -194,7 +194,7 @@ class ProductModel {
                 $cols[] = 'buy_price';
                 $vals[] = 0;
             }
-            
+
             $ph = implode(', ', array_fill(0, count($cols), '?'));
             $stmt = $pdo->prepare('INSERT INTO product (' . implode(', ', $cols) . ") VALUES ({$ph})");
             $stmt->execute($vals);

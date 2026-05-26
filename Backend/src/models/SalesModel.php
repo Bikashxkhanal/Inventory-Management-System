@@ -11,30 +11,46 @@ class SalesModel {
     public function __construct() {}
 
     //fetch paginated sales
-    public function fetchPaginated(int $page, int $limit): array {
+    public function fetchPaginated(int $companyId, int $page, int $limit): array
+    {
         global $pdo;
+    
         $offset = ($page - 1) * $limit;
-
+    
         $stmt = $pdo->prepare("
-            SELECT s.id  AS id,
-            s.customer_id AS customer, 
-            s.status AS status, 
-            CONCAT(sy.firstName, ' ', sy.lastName) AS initiator
-            FROM sales AS s LEFT JOIN sys_user AS sy ON s.created_by = sy.id
-            ORDER BY s.id DESC 
+            SELECT 
+                s.id AS id,
+                s.customer_id AS customer,
+                s.status AS status,
+                CONCAT(sy.firstName, ' ', sy.lastName) AS initiator
+            FROM sales AS s
+            LEFT JOIN sys_user AS sy ON s.created_by = sy.id
+            WHERE s.company_id = :company_id
+            ORDER BY s.id DESC
             LIMIT :limit OFFSET :offset
         ");
+    
+        $stmt->bindValue(':company_id', $companyId, PDO::PARAM_INT);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    
         $stmt->execute();
-
+    
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Get total count for pagination
-        $countStmt = $pdo->query("SELECT COUNT(*) as total FROM sales");
-        $totalRecords = (int)$countStmt->fetch(PDO::FETCH_ASSOC)['total'];
+    
+        // Total count
+        $countStmt = $pdo->prepare("
+            SELECT COUNT(*) as total
+            FROM sales
+            WHERE company_id = :company_id
+        ");
+    
+        $countStmt->bindValue(':company_id', $companyId, PDO::PARAM_INT);
+        $countStmt->execute();
+    
+        $totalRecords = (int) $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
         $totalPages = ceil($totalRecords / $limit);
-
+    
         return [
             'data' => $data,
             'meta' => [
@@ -45,12 +61,12 @@ class SalesModel {
         ];
     }
 
-    public function fetchSalesDetailsList(int $page, int $limit, array $filters = []): array
+    public function fetchSalesDetailsList(int $companyId, int $page, int $limit, array $filters = []): array
     {
         global $pdo;
         $offset = ($page - 1) * $limit;
-        $where = ['1=1'];
-        $params = [];
+        $where = ['s.company_id = ? '];
+        $params = [$companyId];
 
         if (!empty($filters['phone'])) {
             $where[] = 'c.phone_number LIKE ?';
@@ -167,18 +183,19 @@ class SalesModel {
     }
 
     // Insert a sale
-    public function insertSale(array $data): array {
+    public function insertSale(array $data, $companyId): array {
         try{    
         global $pdo;
 
        //insert into sales 
         $stmt = $pdo->prepare("
-            INSERT INTO sales (customer_id, created_by)
-            VALUES (?,  ?)
+            INSERT INTO sales (customer_id, created_by, company_id)
+            VALUES (?,  ?, ?)
         ");
         $status = $stmt->execute([
             $data['customerId'],
             $data['createdBy'],
+            $companyId
         ]);
     
 
@@ -210,16 +227,19 @@ class SalesModel {
  
 
     //get total sales count for the date raange 
-public function getSalesCountByDate(string $startDate, string $endDate){
+public function getSalesCountByDate(int $companyId, string $startDate, string $endDate){
         global $pdo;
         $stmt = $pdo->prepare("
         SELECT COUNT(*) as TotalSalesCount 
         FROM sales
-        WHERE status='completed' AND created_at
+        WHERE status='completed'
+        AND company_id = ? 
+        AND DATE(created_at)
         BETWEEN ? AND ? ");
 
 
-        $stmt->execute([$startDate, $endDate]);
+
+        $stmt->execute([$companyId, $startDate, $endDate]);
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['TotalSalesCount'] ?? 0;

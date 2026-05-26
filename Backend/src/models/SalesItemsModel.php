@@ -28,16 +28,20 @@ class SalesItemsModel{
     }
 
     //get total sales amout between date range
-    public function getTotalSalesAmountByDateRange(string $startDate, string $endDate){
+    public function getTotalSalesAmountByDateRange(int $companyId, string $startDate, string $endDate){
         global $pdo;
 
        $stmt =  $pdo->prepare("
             SELECT SUM(subtotal) AS totalAmount
-            FROM sales_items 
-            WHERE DATE(created_at) BETWEEN DATE(?) AND DATE(?) 
+            FROM sales_items si
+            INNER JOIN sales s
+            ON si.sale_id = s.id
+            WHERE 
+            s.company_id = ? AND
+            DATE(s.created_at) BETWEEN ? AND ? 
         ");
 
-        $stmt->execute([$startDate, $endDate]);
+        $stmt->execute([$companyId, $startDate, $endDate]);
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['totalAmount'] ?? 0;
@@ -45,7 +49,7 @@ class SalesItemsModel{
     }
 
 
-    public function getSalesAmountOfDateRange(string $startDate, string $endDate){
+    public function getSalesAmountOfDateRange(int $companyId, string $startDate, string $endDate){
         global $pdo;
 
         $stmt = $pdo->prepare("
@@ -63,18 +67,20 @@ class SalesItemsModel{
             date_series ds
         LEFT JOIN
             sales_items si ON DATE(si.created_at) = ds.salesDate
+        INNER JOIN 
+            sales sa ON sa.id = si.sale_id
+        WHERE sa.company_id = ?
         GROUP BY
             ds.salesDate
         ORDER BY
             ds.salesDate
         ");
 
-        $stmt->execute([$startDate, $endDate]);
+        $stmt->execute([$startDate, $endDate, $companyId]);
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result ;
 
     }
 
 }
-
 

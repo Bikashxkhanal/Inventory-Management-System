@@ -12,6 +12,8 @@ use App\Models\SalesItemsModel;
 use App\Models\CustomerModel;
 use App\Models\StockModel;
 use App\Models\ProductModel;
+use App\Services\SessionService;
+use App\Domain\Session\SessionManager;
 
 
 class SalesService {
@@ -27,6 +29,7 @@ class SalesService {
         CustomerModel $customerModel, 
         StockModel $stockModel,
         ProductModel $productModel
+        
     ) {
         
         $this->salesModel = $salesModel;
@@ -34,15 +37,29 @@ class SalesService {
         $this->customerModel = $customerModel;
         $this->stockModel= $stockModel;
         $this->productModel= $productModel;
+        
     }
 
+    private function currentUser(): array
+    {
+        $sessionService = new SessionService(new SessionManager());
+        $session = $sessionService->get('user');
+        if (!$session || empty($session['user'])) {
+            throw new Exception('Unauthorized');
+        }
+       return $session;
+    }
+
+
 public function getPaginatedSales(int $page, int $limit): array {
-        return $this->salesModel->fetchPaginated($page, $limit);
+    $user = $this->currentUser();
+        return $this->salesModel->fetchPaginated($user['company']['companyId'], $page, $limit);
     }
 
     public function getSalesDetailsList(int $page, int $limit, array $filters = []): array
     {
-        return $this->salesModel->fetchSalesDetailsList($page, $limit, $filters);
+        $user = $this->currentUser();
+        return $this->salesModel->fetchSalesDetailsList($user['company']['companyId'],$page, $limit, $filters);
     }
 
     
@@ -100,8 +117,10 @@ public function createSale(array $data): array {
 
             $data['sales']['customerId'] = isset($customer['id']) ? $customer['id'] : $customerId;
 
+            $user = $this->currentUser();
+
             //after inserting sells, it returns success and id.
-            $sale =  $this->salesModel->insertSale($data['sales']);
+            $sale =  $this->salesModel->insertSale($data['sales'], $user['company']['companyId']);
             if(($sale['success']) != true){
                  new Exception("Sales couldnot be created");
              }
@@ -177,7 +196,9 @@ public function getTotalSalesAmountByDateRange(array $requestedData) {
         throw new InvalidArgumentException('startDate must not be after endDate.');
     }
 
-    $result = $this->salesItemsModel->getTotalSalesAmountByDateRange($startDate, $endDate);
+    $user = $this->currentUser();
+
+    $result = $this->salesItemsModel->getTotalSalesAmountByDateRange($user['company']['companyId'], $startDate, $endDate);
 
     return $result;
 }
@@ -213,6 +234,7 @@ public function getSalesCountByDateRange(array $requestedData) {
         throw new InvalidArgumentException('startDate must be before endDate.');
     }
 
+
     return $this->salesModel->getSalesCountByDate($startDate, $endDate);
 }
 
@@ -246,8 +268,9 @@ public function getSalesAmountOfDateRange(array $requestedData){
         throw new InvalidArgumentException('Start Date must be before End Date.');
     }
 
+    $user  = $this->currentUser();
     //calling sales model and returning data 
-    $result =  $this->salesItemsModel->getSalesAmountOfDateRange($startDate, $endDate);
+    $result =  $this->salesItemsModel->getSalesAmountOfDateRange($user['company']['companyId'], $startDate, $endDate);
 
     if($result === null){
     throw new Exception("Failed to get sales data");

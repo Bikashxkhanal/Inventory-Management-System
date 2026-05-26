@@ -27,14 +27,16 @@ use PDOException;
         }
 
         private function currentUser(): array
-        {
-            $session = new SessionService(new SessionManager());
-            $user = $session->get('user');
-            if (!$user) {
-                throw new Exception('Unauthorized');
-            }
-            return $user;
+    {
+        $sessionService = new SessionService(new SessionManager());
+        $session = $sessionService->get('user');
+        if (!$session || empty($session['user'])) {
+            throw new Exception('Unauthorized');
         }
+       return $session;
+    }
+
+       
 
         public function userAccountCreationService($input){
             //TODO add error handling here
