@@ -9,10 +9,10 @@
                 session_set_cookie_params([
                     'lifetime' => $lifetime,
                     'path' => '/',
-                    'domain' => 'localhost',
-                    'secure' => true,
+                    'domain' => $_ENV['NETWORK_IP'],
+                    'secure' => false,
                     'httponly' => true,
-                    'samesite' => 'None',
+                    'samesite' => 'Lax',
                 ]);
                 session_start();
             }

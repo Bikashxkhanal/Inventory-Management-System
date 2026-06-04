@@ -10,6 +10,7 @@ import { useEffect } from "react";
 const DynamicForm = ({
   useCase,
   title = '',
+  submitLabel = 'Create',
   status,
   onSubmit,
   dynamicOptions = {},
@@ -31,7 +32,6 @@ const DynamicForm = ({
   const quantity = watch('quantity');
   const unitPrice = watch('unitPrice');
   const stockQty = watch('stock');
-  const subTotal  = watch('subTotal');  
 
 
   useEffect(() => {
@@ -66,10 +66,10 @@ const DynamicForm = ({
     return (   
         <form
           onSubmit={handleSubmit(onSubmitHandler)}
-          className="relative mt-15 flex w-full max-w-2xl flex-col items-start justify-start gap-4 md:mt-5"
+          className="mt-5 flex w-full max-w-2xl flex-col items-start justify-start gap-4"
         >
-            <p className='text-xl bg-transparent md:text-3xl font-semibold md:font-bold '>{title}</p>
-             <div className='flex flex-col md:grid md:grid-cols-2 gap-4 w-full '>
+            {title && <p className='text-base bg-transparent font-semibold text-slate-900'>{title}</p>}
+             <div className='flex w-full flex-col gap-4 md:grid md:grid-cols-2'>
             {
                 fields?.map((field) => (
                     <div key={field.name}>
@@ -81,7 +81,7 @@ const DynamicForm = ({
 
                             {
                             field.type === 'display' && (
-                          <div className="w-full border-2 border-gray-200 bg-gray-200 rounded-sm py-2 px-3 text-sm text-gray-700">
+                          <div className="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-700">
                           {(() => {
                           const watchedValue = watch(field.name);   
                           const displayValue = watchedValue ?? dynamicValues[field.name]; 
@@ -127,7 +127,7 @@ const DynamicForm = ({
                                 register(field.name).onChange(e); // calling react-hook-form handler
                                 if(onFieldChange) onFieldChange(field.name, e.target.value); // notify parent
                               }}
-                              className="w-full cursor-pointer text-center border-2 border-gray-300 rounded-sm py-2"
+                              className="w-full cursor-pointer rounded-md border border-slate-300 py-3 text-center text-sm text-slate-700 outline-none focus:border-green-600"
                             >
                               <option value="">Select a {field.name}</option>
                               {
@@ -148,7 +148,7 @@ const DynamicForm = ({
 
                         {
                             errors[field.name] && (
-                                <p className="text-red-600">{ errors[field.name].message}</p>
+                                <p className="mt-1 text-sm text-red-600">{ errors[field.name].message}</p>
                             )
                         }
                        
@@ -161,7 +161,15 @@ const DynamicForm = ({
 
             
 
-              <NewButton  className='md:w-50 bg-green-500 hover:bg-green-800 cursor-pointer w-full md:absolute md:right-0 md:top-[110%]' children='Create' loading= {status} />
+              <div className="md:col-span-2 flex w-full justify-end">
+                <NewButton
+                  type="submit"
+                  className='w-full cursor-pointer bg-emerald-600 hover:bg-emerald-700 md:w-auto'
+                  loading={status}
+                >
+                  {submitLabel}
+                </NewButton>
+              </div>
                 </div>
         </form>
       

@@ -16,9 +16,10 @@ public function fetchStocks(int $offset, int $limit,int $companyId,  ?string $se
     $where = ' WHERE p.company_id = ?  ';
     $params = [$companyId];
     if ($search !== null && $search !== '') {
-        $where = ' AND p.name LIKE ? OR CAST(p.id AS CHAR) LIKE ?';
+        $where .= ' AND (p.name LIKE ? OR CAST(p.id AS CHAR) LIKE ?)';
         $q = '%' . $search . '%';
-        $params = [$q, $q];
+        $params[] = $q;
+        $params[] = $q;
     }
     $categoryJoin = '';
     $categorySelect = "'' AS category";
@@ -38,6 +39,7 @@ public function fetchStocks(int $offset, int $limit,int $companyId,  ?string $se
         {$categorySelect},
         s.quantity AS stock,
         s.selling_price AS sellingPrice,
+        (s.quantity * s.selling_price) AS stockValue,
         CASE 
             WHEN s.quantity < 200 THEN 'Low Stock'
             WHEN s.quantity > 1000 THEN 'High Stock'
@@ -59,9 +61,10 @@ public function countStocksFiltered(int $companyId, ?string $search = null): int
     $where = ' WHERE p.company_id = ? ';
     $params = [$companyId];
     if ($search !== null && $search !== '') {
-        $where = '  p.name LIKE ? OR CAST(p.id AS CHAR) LIKE ?';
+        $where .= ' AND (p.name LIKE ? OR CAST(p.id AS CHAR) LIKE ?)';
         $q = '%' . $search . '%';
-        $params = [$q, $q];
+        $params[] = $q;
+        $params[] = $q;
     }
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM product p INNER JOIN stock s ON p.id = s.product_id{$where}");
     $stmt->execute($params);

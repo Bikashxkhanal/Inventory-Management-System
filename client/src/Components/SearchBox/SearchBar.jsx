@@ -137,7 +137,7 @@ const handleClear = useCallback(() => {
             bg-transparent outline-none border-none
             text-xs md:text-sm text-gray-700
             placeholder:text-gray-400
-            w-40 md:w-56
+            min-w-0 flex-1
           "
         />
 

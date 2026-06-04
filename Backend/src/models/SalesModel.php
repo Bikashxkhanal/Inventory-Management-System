@@ -20,10 +20,18 @@ class SalesModel {
         $stmt = $pdo->prepare("
             SELECT 
                 s.id AS id,
-                s.customer_id AS customer,
+                s.created_at AS saleDate,
+                c.phone_number AS customerPhone,
                 s.status AS status,
-                CONCAT(sy.firstName, ' ', sy.lastName) AS initiator
+                CONCAT(sy.firstName, ' ', sy.lastName) AS soldBy,
+                COALESCE((
+                    SELECT COUNT(*) FROM sales_items si WHERE si.sale_id = s.id
+                ), 0) AS itemCount,
+                COALESCE((
+                    SELECT SUM(si.subtotal) FROM sales_items si WHERE si.sale_id = s.id
+                ), 0) AS totalAmount
             FROM sales AS s
+            LEFT JOIN customer AS c ON c.id = s.customer_id
             LEFT JOIN sys_user AS sy ON s.created_by = sy.id
             WHERE s.company_id = :company_id
             ORDER BY s.id DESC

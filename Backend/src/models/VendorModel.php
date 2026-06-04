@@ -12,9 +12,21 @@ class VendorModel {
       
     }
 
-    public function fetchAll() {
-            global $pdo;
-        $stmt = $pdo->query("SELECT id, name FROM vendor ORDER BY name ASC");
+    public function fetchAll(int $companyId, ?string $viewerRole = null) {
+        global $pdo;
+        $where = ['company_id = ?'];
+        $params = [$companyId];
+
+        if (\App\Helpers\EntitySchema::hasColumn('vendor', 'approval_status')) {
+            if (strtolower((string) $viewerRole) !== 'superadmin') {
+                $where[] = "(approval_status IS NULL OR approval_status = 'active')";
+            }
+        }
+
+        $stmt = $pdo->prepare(
+            'SELECT id, name FROM vendor WHERE ' . implode(' AND ', $where) . ' ORDER BY name ASC'
+        );
+        $stmt->execute($params);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
@@ -26,9 +38,9 @@ class VendorModel {
         $params = [$companyId];
 
         if (\App\Helpers\EntitySchema::hasColumn('vendor', 'approval_status')) {
-            if (strtolower((string) $viewerRole) !== 'superadmin') {
+            // if (strtolower((string) $viewerRole) !== 'superadmin') {
                 $where[] = "(v.approval_status IS NULL OR v.approval_status = 'active')";
-            }
+            // }
         }
         if ($search) {
             $where[] = '(v.name LIKE ? OR CAST(v.id AS CHAR) LIKE ?)';

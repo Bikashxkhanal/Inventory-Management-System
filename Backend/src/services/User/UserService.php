@@ -170,7 +170,7 @@ public function updateStaffService(int $id, array $input): void
 
     $email = $input['email'] ?? $existing['email'];
     $phone = $input['phoneNumber'] ?? $existing['phoneNumber'];
-    $conflict = $this->userModel->getDuplicateConflict($email, $phone, $id);
+    $conflict = $this->userModel->getDuplicateConflict($currentUser['company']['companyId'], $email, $phone, $id);
     if ($conflict !== null) {
         throw new Exception($conflict);
     }

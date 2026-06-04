@@ -177,7 +177,7 @@
   
    //  if (!$this->companyModel->isAccountExist($user['companyId'])) {
    //      throw new DomainException("No such company found");
-   //  }
+   //  } 
 
     $user['role'] = 'superadmin';
     $user['isVerified'] = true; // TODO: change to false when email verification added
