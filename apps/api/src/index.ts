@@ -1,18 +1,6 @@
-import dotenv from 'dotenv'
-import path from 'node:path'
-
-
-dotenv.config({
-    path : path.resolve(__dirname, "./../../../.env")
-})
-console.log(__dirname);
-
 
 import {connectMongoDB} from "@repo/db-nosql";
 import { httpServer } from "./app";
-
-
-
 
 ;(async() => {
     

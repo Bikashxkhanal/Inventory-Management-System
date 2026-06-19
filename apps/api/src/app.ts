@@ -7,6 +7,8 @@ import { createServer } from "node:http";
 import dotenv from 'dotenv'
 import path from 'node:path'
 
+import { getSocketIOConnection } from "./websocket";
+
 
 dotenv.config({
     path : path.resolve(__dirname, "./../../../.env")
@@ -26,32 +28,16 @@ const io = new Server(httpServer, {
     }
 });
 
-io.on('connection', (socket) => {
-    console.log(`Connection established ${socket.id}`);
-
-    socket.on('send-message', (data) => {
-        console.log(data);
-
-        socket.broadcast.emit('receive-message',data);
-        io.emit(data)
-    })
+// socket connection 
+getSocketIOConnection(io);
    
-
-
-    socket.on('disconnect', () => {
-        console.log(`Connection discontined`);
-        
-    })
-    
-})
-
 
 
 // cookie parser setup
 app.use(express.json())
 app.use(express.urlencoded({extended : true}))
 
-app.use(cookieParser())
+app.use(cookieParser());
 
 import { authRouter } from "./modules/auth/auth.route";
 
